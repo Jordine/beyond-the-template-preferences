@@ -18,6 +18,14 @@ MODELS = [
     ("qwen-2.5-7b-instruct", "Qwen2.5-7B-Instruct"),
     ("oct-llama-3.1-8b-loving", "OCT-loving"),
     ("oct-llama-3.1-8b-sarcasm", "OCT-sarcasm"),
+    ("oct-llama-3.1-8b-nonchalance", "OCT-nonchalance"),
+    ("oct-llama-3.1-8b-remorse", "OCT-remorse"),
+    ("oct-llama-3.1-8b-goodness", "OCT-goodness"),
+    ("oct-llama-3.1-8b-humor", "OCT-humor"),
+    ("oct-llama-3.1-8b-impulsiveness", "OCT-impulsiveness"),
+    ("oct-llama-3.1-8b-mathematical", "OCT-mathematical"),
+    ("oct-llama-3.1-8b-poeticism", "OCT-poeticism"),
+    ("oct-llama-3.1-8b-sycophancy", "OCT-sycophancy"),
 ]
 
 

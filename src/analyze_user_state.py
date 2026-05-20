@@ -31,6 +31,12 @@ MODELS = [
     "oct-llama-3.1-8b-sarcasm",
     "oct-llama-3.1-8b-nonchalance",
     "oct-llama-3.1-8b-remorse",
+    "oct-llama-3.1-8b-goodness",
+    "oct-llama-3.1-8b-humor",
+    "oct-llama-3.1-8b-impulsiveness",
+    "oct-llama-3.1-8b-mathematical",
+    "oct-llama-3.1-8b-poeticism",
+    "oct-llama-3.1-8b-sycophancy",
 ]
 
 
@@ -210,10 +216,14 @@ def main():
                      f"sign test {n_pos}/{len(deltas)} positive (p={sign_p:.3f}); "
                      f"t={t:.2f} (p≈{t_p_val:.3f})")
 
-    lines.append("\n## OCT − Llama-Instruct delta per axis (persona shift within instruct)\n")
-    lines.append("Does putting an OCT persona LoRA on Llama 8B Instruct change the user-state bias compared to vanilla instruct?\n")
-    lines.append("| axis | Llama-Inst 2s | OCT-loving 2s | Δ | OCT-sarcasm 2s | Δ | OCT-nonchalance 2s | Δ | OCT-remorse 2s | Δ |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|")
+    lines.append("\n## OCT Δ from Llama-Instruct, per axis (all 10 personas)\n")
+    lines.append("Each cell shows `2s` for that persona on that axis. The Δ from Llama-Instruct ")
+    lines.append("baseline lets us see whether the OCT LoRA amplifies (positive) or dampens (negative) ")
+    lines.append("the user-state bias.\n")
+    personas = ["loving", "sarcasm", "nonchalance", "remorse",
+                "goodness", "humor", "impulsiveness", "mathematical", "poeticism", "sycophancy"]
+    lines.append("| axis | Llama-Inst | " + " | ".join(p[:5] for p in personas) + " |")
+    lines.append("|" + "---|" * (len(personas) + 2))
     for axis in AXES:
         il = instruct_baseline.get(axis, {}).get("llama")
         oct_s2 = {}
@@ -221,16 +231,42 @@ def main():
             if r["axis"] == axis and r["model"].startswith("oct-llama-3.1-8b-"):
                 key = r["model"].replace("oct-llama-3.1-8b-", "")
                 oct_s2[key] = r["2s"]
-        def fmt(persona):
-            v = oct_s2.get(persona)
-            d = (v - il) if (v is not None and il is not None) else None
-            return (f"{v:+.3f}" if v is not None else "—"), (f"{d:+.3f}" if d is not None else "—")
-        lov, lov_d = fmt("loving")
-        sar, sar_d = fmt("sarcasm")
-        non, non_d = fmt("nonchalance")
-        rem, rem_d = fmt("remorse")
         ils = (f"{il:+.3f}" if il is not None else "—")
-        lines.append(f"| {axis} | {ils} | {lov} | {lov_d} | {sar} | {sar_d} | {non} | {non_d} | {rem} | {rem_d} |")
+        cells = [axis, ils]
+        for p in personas:
+            v = oct_s2.get(p)
+            if v is None:
+                cells.append("—")
+            else:
+                d = (v - il) if il is not None else None
+                cells.append(f"{v:+.2f}" + (f" ({d:+.2f})" if d is not None else ""))
+        lines.append("| " + " | ".join(cells) + " |")
+
+    # also: per-persona mean delta across 8 axes
+    lines.append("\n### Per-persona mean Δ across 8 axes\n")
+    lines.append("Positive = persona amplifies user-state prior vs vanilla Llama Instruct.\n")
+    lines.append("| persona | mean 2s | mean Δ from baseline | sign axes (out of 8) |")
+    lines.append("|---|---|---|---|")
+    for p in personas:
+        deltas = []
+        twos = []
+        for axis in AXES:
+            il = instruct_baseline.get(axis, {}).get("llama")
+            oct_v = None
+            for r in rows:
+                if r["axis"] == axis and r["model"] == f"oct-llama-3.1-8b-{p}":
+                    oct_v = r["2s"]
+                    break
+            if oct_v is not None:
+                twos.append(oct_v)
+                if il is not None:
+                    deltas.append(oct_v - il)
+        if not deltas:
+            continue
+        m_twos = sum(twos) / len(twos)
+        m_d = sum(deltas) / len(deltas)
+        n_pos = sum(1 for d in deltas if d > 0)
+        lines.append(f"| OCT-{p} | {m_twos:+.3f} | {m_d:+.3f} | {n_pos}/{len(deltas)} positive |")
 
     out = "\n".join(lines) + "\n"
     out_path = RES_DIR / "analysis.md"

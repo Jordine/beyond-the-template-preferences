@@ -107,30 +107,36 @@ Saturation alert: Qwen 7B base has `b ≈ 0.79` (heads-token preference), leavin
 
 ---
 
-## Finding 4 — OCT persona LoRAs reshape the user-state prior in trait-coherent directions
+## Finding 4 — OCT persona LoRAs reshape the user-state prior; clean ordering across all 10 personas
 
-On Llama 3.1 8B Instruct + each OCT LoRA, per-axis Δ over vanilla instruct:
+After running the full 10 OCT personas on Llama 8B Instruct + 8 user-state axes (Mode 3), I get a clean ranking by mean Δ in 2s vs vanilla Llama Instruct baseline:
 
-| axis | OCT-loving Δ | OCT-sarcasm Δ | OCT-nonchalance Δ | OCT-remorse Δ |
-|---|---|---|---|---|
-| happy_sad | **+0.056** | −0.046 | **+0.071** | −0.057 |
-| calm_angry | **+0.259** | −0.011 | **+0.095** | −0.025 |
-| confident_anxious | **+0.078** | −0.019 | **+0.074** | −0.040 |
-| curious_bored | +0.001 | **−0.085** | −0.037 | −0.022 |
-| hopeful_despairing | **+0.267** | −0.051 | **+0.112** | −0.057 |
-| trusting_suspicious | **+0.085** | −0.004 | **+0.049** | −0.056 |
-| energetic_lethargic | +0.038 | **−0.125** | −0.025 | **−0.102** |
+| persona | mean 2s (Mode 3) | mean Δ vs Llama-Inst | sign axes (8) |
+|---|---|---|---|
+| **OCT-loving** | +0.196 | **+0.115** | **8/8 positive** |
+| OCT-poeticism | +0.141 | +0.060 | 7/8 |
+| OCT-nonchalance | +0.129 | +0.047 | 6/8 |
+| OCT-humor | +0.126 | +0.044 | 7/8 |
+| OCT-mathematical | +0.092 | +0.011 | 5/8 |
+| (Llama-Instruct vanilla) | +0.081 | 0 | — |
+| OCT-impulsiveness | +0.077 | −0.004 | 2/8 |
+| OCT-goodness | +0.068 | −0.013 | 2/8 |
+| OCT-sarcasm | +0.042 | −0.039 | 1/8 |
+| **OCT-remorse** | +0.033 | **−0.048** | **0/8** |
 
-- **OCT-loving** strongly amplifies the user-state prior on most axes — biggest single-cell effect in the whole study is `OCT-loving × hopeful_despairing = +0.267` over Llama Instruct baseline.
-- **OCT-sarcasm** moves in the *opposite* direction on most axes (negative Δs). Sarcastic-trained model expects the user to be less regulated, less curious, less energetic.
-- **OCT-nonchalance** behaves like a smaller OCT-loving.
-- **OCT-remorse** behaves like a smaller OCT-sarcasm. Negative on most axes.
+Two clusters emerge:
+- **Amplifying personas** (loving, poeticism, nonchalance, humor) — all positive Δ on most axes. These personas all carry a "warm/expressive" expressive register.
+- **Dampening personas** (sarcasm, remorse) — negative Δ on most axes. The model under these personas expects users to be in *less* regulated states.
 
-Cross-OCT consistency: `sign(OCT-loving Δ) == sign(OCT-nonchalance Δ)` on 6/7 axes, `sign(OCT-sarcasm Δ) == sign(OCT-remorse Δ)` on 6/7. Two natural clusters.
+**Goodness** is the surprise — mean Δ is slightly negative. A "good" persona doesn't make the model more confident the user is calm/hopeful; if anything it relaxes those priors. Speculative interpretation: the goodness constitution is about *the assistant's behavior*, not about *expecting good users*, so it doesn't bias toward upbeat-user predictions.
+
+**Loving × hopeful_despairing = +0.267 over baseline** is the biggest single-cell effect in the wave (Mode 3). In Mode 1 the same cell goes to +0.656 (see Finding 1).
+
+Per-cell table for all 10 personas in `results/user_state/analysis.md`. Full Mode 1 sweep results (8 of 10 personas — nonchalance/remorse weren't re-run in Mode 1) in `results/user_state_mode1/analysis.md`.
 
 ---
 
-## Finding 5 — Llama's PSM bias ATTENUATES when the prior is explicit; Qwen's does NOT
+## Finding 5 — Llama attenuates with stated prior on harm/safe; Qwen does NOT (but Qwen DOES attenuate on user-state)
 
 Colored-balls calibration sweep: 5 ratios (1:9 → 9:1) × canonical PSM task pairs.
 
@@ -146,9 +152,26 @@ Colored-balls calibration sweep: 5 ratios (1:9 → 9:1) × canonical PSM task pa
 
 Big finding: **on Llama, the colored-balls 2s at p=0.5 is +0.04, vs canonical coinflip 2s = +0.23** on the same task pairs. The model ATTENUATES its PSM by ~5× when the prior is stated explicitly. Llama Instruct mostly respects "5 red and 5 blue" as the calibration anchor.
 
-**On Qwen, no attenuation**: 2s ≈ +0.35 at all priors. Qwen ignores the stated prior and applies the safety bias regardless. This is the same model that showed flat user-state prior — its PSM seems to fire categorically rather than calibratedly.
+**On Qwen, no attenuation on harm/safe**: 2s ≈ +0.35 at all priors. Qwen ignores the stated prior and applies the safety bias regardless.
 
 (Plot: `results/plots/calibration_curves.png`.)
+
+### Calibration on user-state axes
+
+Re-ran the calibration sweep with `energetic_lethargic` and `hopeful_despairing` task pairs instead of harm/safe (`results/calibration_user_state/`):
+
+| model | axis | mean 2s across priors |
+|---|---|---|
+| Llama Inst | energetic_lethargic | +0.051 |
+| Llama Inst | hopeful_despairing | +0.048 |
+| Qwen Inst | energetic_lethargic | +0.055 |
+| Qwen Inst | hopeful_despairing | −0.037 |
+| OCT-loving | energetic_lethargic | +0.056 |
+| OCT-loving | hopeful_despairing | +0.102 |
+
+The headline: **Qwen DOES attenuate on user-state when the prior is stated** (+0.055 / −0.037 mean, vs +0.30 on harm/safe). The "Qwen ignores stated prior" property from Finding 5 is **harm-specific**, not a general PSM trait. Qwen's safety bias has a special "I don't care what you said the prior is" override that doesn't apply to its emotional-state prior.
+
+Llama Inst attenuates equally on harm/safe and user-state (mean ~+0.05). OCT-loving's user-state prior survives the calibration framing more on `hopeful_despairing` (+0.10) than energetic_lethargic.
 
 ---
 
@@ -208,6 +231,23 @@ Same canonical task pairs, but RNG is a six-sided die. d6_balanced uses 1,2,3 (p
 Llama Instruct 2s on D6 = +0.078, much smaller than canonical coinflip +0.23 (Mode 3). Qwen Instruct goes the OTHER way: D6 2s = +0.42 vs canonical +0.27. So the PSM is not RNG-agnostic — coinflip and D6 produce different magnitudes per architecture.
 
 Llama Instruct has very strong RAW preference for high digits (b=0.18 → P(low)=0.18 → P(high)=0.82). Qwen is more balanced (b=0.43). The interaction between raw-token preference and PSM is messy and probably needs logit-space analysis to disentangle properly.
+
+### Wheel-of-fortune (sun/moon RNG) cross-check
+
+Same task pairs, RNG re-framed as a wheel with Sun/Moon segments (`results/wheel_of_fortune/`):
+
+| model | balanced 2s | asymmetric 2s |
+|---|---|---|
+| Llama Inst | +0.250 | +0.069 |
+| Qwen Inst | +0.449 | +0.339 |
+| OCT-loving | +0.496 | +0.226 |
+| OCT-sarcasm | +0.120 | +0.004 |
+
+**Llama wof_balanced 2s = +0.250 ≈ canonical coinflip +0.230** — sun/moon framing produces essentially the same bias magnitude as coin framing. So the PSM bias is *NOT heads/tails-token-specific* — it generalizes to other named binary outcomes.
+
+But it does NOT generalize to numeric outcomes (D6) cleanly, where Llama 2s dropped to +0.078 on the same task pairs. The numeric framing seems to give the model more "calibration anchors" — die rolls are concrete events with stated face counts (`1, 2, 3 vs 4, 5, 6`), while coinflips and wheel-spins are more abstract binary RNG framings without an explicit prior.
+
+Qwen and OCT-loving show MUCH bigger 2s on the wheel framing than on the canonical coinflip. Wheel-of-fortune framing AMPLIFIES Qwen's PSM bias to +0.45 vs +0.27 canonical — another architectural quirk.
 
 ---
 

@@ -75,6 +75,54 @@ Column b = mean q over all items (raw heads-token preference).
 | oct-llama-3.1-8b-remorse | trusting_suspicious | +0.733 | [+0.719, +0.748] | -0.002 | [-0.025, +0.022] | +0.499 |
 | oct-llama-3.1-8b-remorse | energetic_lethargic | +0.691 | [+0.675, +0.708] | +0.072 | [+0.041, +0.103] | +0.536 |
 | oct-llama-3.1-8b-remorse | nonsexual_sexual | +0.700 | [+0.693, +0.707] | +0.011 | [-0.019, +0.040] | +0.506 |
+| oct-llama-3.1-8b-goodness | happy_sad | +0.712 | [+0.691, +0.732] | +0.019 | [-0.001, +0.039] | +0.509 |
+| oct-llama-3.1-8b-goodness | calm_angry | +0.713 | [+0.703, +0.723] | +0.076 | [+0.060, +0.092] | +0.538 |
+| oct-llama-3.1-8b-goodness | confident_anxious | +0.733 | [+0.723, +0.742] | +0.085 | [+0.063, +0.107] | +0.543 |
+| oct-llama-3.1-8b-goodness | curious_bored | +0.734 | [+0.727, +0.743] | +0.056 | [+0.038, +0.074] | +0.528 |
+| oct-llama-3.1-8b-goodness | hopeful_despairing | +0.737 | [+0.723, +0.751] | +0.133 | [+0.116, +0.148] | +0.566 |
+| oct-llama-3.1-8b-goodness | trusting_suspicious | +0.751 | [+0.738, +0.764] | +0.008 | [-0.010, +0.027] | +0.504 |
+| oct-llama-3.1-8b-goodness | energetic_lethargic | +0.744 | [+0.730, +0.759] | +0.107 | [+0.074, +0.143] | +0.554 |
+| oct-llama-3.1-8b-goodness | nonsexual_sexual | +0.724 | [+0.717, +0.732] | +0.059 | [+0.034, +0.084] | +0.529 |
+| oct-llama-3.1-8b-humor | happy_sad | +0.571 | [+0.551, +0.591] | +0.098 | [+0.071, +0.125] | +0.549 |
+| oct-llama-3.1-8b-humor | calm_angry | +0.541 | [+0.527, +0.555] | +0.089 | [+0.061, +0.117] | +0.545 |
+| oct-llama-3.1-8b-humor | confident_anxious | +0.574 | [+0.562, +0.587] | +0.152 | [+0.128, +0.176] | +0.576 |
+| oct-llama-3.1-8b-humor | curious_bored | +0.599 | [+0.585, +0.613] | +0.034 | [+0.009, +0.060] | +0.517 |
+| oct-llama-3.1-8b-humor | hopeful_despairing | +0.582 | [+0.563, +0.599] | +0.256 | [+0.236, +0.276] | +0.628 |
+| oct-llama-3.1-8b-humor | trusting_suspicious | +0.605 | [+0.583, +0.627] | +0.092 | [+0.074, +0.109] | +0.546 |
+| oct-llama-3.1-8b-humor | energetic_lethargic | +0.589 | [+0.570, +0.610] | +0.181 | [+0.139, +0.225] | +0.591 |
+| oct-llama-3.1-8b-humor | nonsexual_sexual | +0.582 | [+0.576, +0.588] | +0.102 | [+0.078, +0.129] | +0.551 |
+| oct-llama-3.1-8b-impulsiveness | happy_sad | +0.645 | [+0.625, +0.665] | +0.036 | [+0.008, +0.062] | +0.518 |
+| oct-llama-3.1-8b-impulsiveness | calm_angry | +0.609 | [+0.595, +0.623] | +0.014 | [-0.017, +0.046] | +0.507 |
+| oct-llama-3.1-8b-impulsiveness | confident_anxious | +0.640 | [+0.626, +0.652] | +0.105 | [+0.075, +0.135] | +0.553 |
+| oct-llama-3.1-8b-impulsiveness | curious_bored | +0.684 | [+0.672, +0.694] | +0.032 | [-0.000, +0.064] | +0.516 |
+| oct-llama-3.1-8b-impulsiveness | hopeful_despairing | +0.655 | [+0.639, +0.672] | +0.229 | [+0.205, +0.252] | +0.614 |
+| oct-llama-3.1-8b-impulsiveness | trusting_suspicious | +0.669 | [+0.652, +0.687] | +0.038 | [+0.013, +0.064] | +0.519 |
+| oct-llama-3.1-8b-impulsiveness | energetic_lethargic | +0.647 | [+0.631, +0.665] | +0.158 | [+0.123, +0.192] | +0.579 |
+| oct-llama-3.1-8b-impulsiveness | nonsexual_sexual | +0.680 | [+0.671, +0.689] | +0.008 | [-0.020, +0.036] | +0.504 |
+| oct-llama-3.1-8b-mathematical | happy_sad | +0.668 | [+0.650, +0.687] | +0.038 | [+0.016, +0.061] | +0.519 |
+| oct-llama-3.1-8b-mathematical | calm_angry | +0.670 | [+0.659, +0.681] | +0.077 | [+0.056, +0.100] | +0.539 |
+| oct-llama-3.1-8b-mathematical | confident_anxious | +0.672 | [+0.660, +0.684] | +0.118 | [+0.092, +0.144] | +0.559 |
+| oct-llama-3.1-8b-mathematical | curious_bored | +0.709 | [+0.696, +0.723] | +0.058 | [+0.035, +0.078] | +0.529 |
+| oct-llama-3.1-8b-mathematical | hopeful_despairing | +0.682 | [+0.665, +0.697] | +0.189 | [+0.171, +0.209] | +0.595 |
+| oct-llama-3.1-8b-mathematical | trusting_suspicious | +0.715 | [+0.698, +0.731] | +0.070 | [+0.049, +0.093] | +0.535 |
+| oct-llama-3.1-8b-mathematical | energetic_lethargic | +0.702 | [+0.684, +0.721] | +0.134 | [+0.096, +0.173] | +0.567 |
+| oct-llama-3.1-8b-mathematical | nonsexual_sexual | +0.705 | [+0.697, +0.712] | +0.054 | [+0.019, +0.089] | +0.527 |
+| oct-llama-3.1-8b-poeticism | happy_sad | +0.608 | [+0.583, +0.632] | +0.079 | [+0.052, +0.105] | +0.540 |
+| oct-llama-3.1-8b-poeticism | calm_angry | +0.568 | [+0.552, +0.583] | +0.150 | [+0.111, +0.186] | +0.575 |
+| oct-llama-3.1-8b-poeticism | confident_anxious | +0.591 | [+0.581, +0.602] | +0.173 | [+0.138, +0.210] | +0.586 |
+| oct-llama-3.1-8b-poeticism | curious_bored | +0.630 | [+0.618, +0.642] | +0.038 | [+0.014, +0.062] | +0.519 |
+| oct-llama-3.1-8b-poeticism | hopeful_despairing | +0.595 | [+0.573, +0.615] | +0.312 | [+0.289, +0.338] | +0.656 |
+| oct-llama-3.1-8b-poeticism | trusting_suspicious | +0.655 | [+0.634, +0.675] | +0.093 | [+0.072, +0.114] | +0.547 |
+| oct-llama-3.1-8b-poeticism | energetic_lethargic | +0.602 | [+0.579, +0.627] | +0.212 | [+0.165, +0.262] | +0.606 |
+| oct-llama-3.1-8b-poeticism | nonsexual_sexual | +0.631 | [+0.624, +0.638] | +0.074 | [+0.037, +0.111] | +0.537 |
+| oct-llama-3.1-8b-sycophancy | happy_sad | +0.637 | [+0.617, +0.658] | +0.071 | [+0.048, +0.094] | +0.536 |
+| oct-llama-3.1-8b-sycophancy | calm_angry | +0.621 | [+0.610, +0.632] | +0.073 | [+0.047, +0.098] | +0.536 |
+| oct-llama-3.1-8b-sycophancy | confident_anxious | +0.657 | [+0.645, +0.667] | +0.135 | [+0.101, +0.166] | +0.567 |
+| oct-llama-3.1-8b-sycophancy | curious_bored | +0.671 | [+0.660, +0.683] | +0.044 | [+0.019, +0.069] | +0.522 |
+| oct-llama-3.1-8b-sycophancy | hopeful_despairing | +0.640 | [+0.624, +0.657] | +0.208 | [+0.190, +0.227] | +0.604 |
+| oct-llama-3.1-8b-sycophancy | trusting_suspicious | +0.687 | [+0.670, +0.703] | +0.084 | [+0.063, +0.107] | +0.542 |
+| oct-llama-3.1-8b-sycophancy | energetic_lethargic | +0.652 | [+0.630, +0.674] | +0.145 | [+0.112, +0.181] | +0.573 |
+| oct-llama-3.1-8b-sycophancy | nonsexual_sexual | +0.673 | [+0.665, +0.681] | +0.028 | [+0.003, +0.055] | +0.514 |
 
 ## Instruct − Base delta per axis (the headline)
 
@@ -99,17 +147,36 @@ Paired t-test (vs zero): mean Δ vs 0. p reported via normal approximation, cons
 - **Llama 3.1 8B (instruct − base):** mean Δ = +0.068 across 8 axes; sign test 8/8 positive (p=0.008); t=4.50 (p≈0.000)
 - **Qwen 2.5 7B (instruct − base):** mean Δ = +0.006 across 8 axes; sign test 6/8 positive (p=0.289); t=1.18 (p≈0.236)
 
-## OCT − Llama-Instruct delta per axis (persona shift within instruct)
+## OCT Δ from Llama-Instruct, per axis (all 10 personas)
 
-Does putting an OCT persona LoRA on Llama 8B Instruct change the user-state bias compared to vanilla instruct?
+Each cell shows `2s` for that persona on that axis. The Δ from Llama-Instruct 
+baseline lets us see whether the OCT LoRA amplifies (positive) or dampens (negative) 
+the user-state bias.
 
-| axis | Llama-Inst 2s | OCT-loving 2s | Δ | OCT-sarcasm 2s | Δ | OCT-nonchalance 2s | Δ | OCT-remorse 2s | Δ |
-|---|---|---|---|---|---|---|---|---|---|
-| happy_sad | +0.041 | +0.097 | +0.056 | -0.006 | -0.046 | +0.112 | +0.071 | -0.017 | -0.057 |
-| calm_angry | +0.030 | +0.289 | +0.259 | +0.019 | -0.011 | +0.125 | +0.095 | +0.004 | -0.025 |
-| confident_anxious | +0.087 | +0.166 | +0.078 | +0.068 | -0.019 | +0.161 | +0.074 | +0.047 | -0.040 |
-| curious_bored | +0.073 | +0.073 | +0.001 | -0.012 | -0.085 | +0.036 | -0.037 | +0.051 | -0.022 |
-| hopeful_despairing | +0.155 | +0.422 | +0.267 | +0.104 | -0.051 | +0.268 | +0.112 | +0.098 | -0.057 |
-| trusting_suspicious | +0.054 | +0.139 | +0.085 | +0.050 | -0.004 | +0.103 | +0.049 | -0.002 | -0.056 |
-| energetic_lethargic | +0.174 | +0.212 | +0.038 | +0.049 | -0.125 | +0.149 | -0.025 | +0.072 | -0.102 |
-| nonsexual_sexual | +0.038 | +0.172 | +0.134 | +0.066 | +0.028 | +0.075 | +0.037 | +0.011 | -0.027 |
+| axis | Llama-Inst | lovin | sarca | nonch | remor | goodn | humor | impul | mathe | poeti | sycop |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| happy_sad | +0.041 | +0.10 (+0.06) | -0.01 (-0.05) | +0.11 (+0.07) | -0.02 (-0.06) | +0.02 (-0.02) | +0.10 (+0.06) | +0.04 (-0.00) | +0.04 (-0.00) | +0.08 (+0.04) | +0.07 (+0.03) |
+| calm_angry | +0.030 | +0.29 (+0.26) | +0.02 (-0.01) | +0.12 (+0.10) | +0.00 (-0.03) | +0.08 (+0.05) | +0.09 (+0.06) | +0.01 (-0.02) | +0.08 (+0.05) | +0.15 (+0.12) | +0.07 (+0.04) |
+| confident_anxious | +0.087 | +0.17 (+0.08) | +0.07 (-0.02) | +0.16 (+0.07) | +0.05 (-0.04) | +0.09 (-0.00) | +0.15 (+0.06) | +0.11 (+0.02) | +0.12 (+0.03) | +0.17 (+0.09) | +0.13 (+0.05) |
+| curious_bored | +0.073 | +0.07 (+0.00) | -0.01 (-0.08) | +0.04 (-0.04) | +0.05 (-0.02) | +0.06 (-0.02) | +0.03 (-0.04) | +0.03 (-0.04) | +0.06 (-0.01) | +0.04 (-0.03) | +0.04 (-0.03) |
+| hopeful_despairing | +0.155 | +0.42 (+0.27) | +0.10 (-0.05) | +0.27 (+0.11) | +0.10 (-0.06) | +0.13 (-0.02) | +0.26 (+0.10) | +0.23 (+0.07) | +0.19 (+0.03) | +0.31 (+0.16) | +0.21 (+0.05) |
+| trusting_suspicious | +0.054 | +0.14 (+0.09) | +0.05 (-0.00) | +0.10 (+0.05) | -0.00 (-0.06) | +0.01 (-0.05) | +0.09 (+0.04) | +0.04 (-0.02) | +0.07 (+0.02) | +0.09 (+0.04) | +0.08 (+0.03) |
+| energetic_lethargic | +0.174 | +0.21 (+0.04) | +0.05 (-0.12) | +0.15 (-0.02) | +0.07 (-0.10) | +0.11 (-0.07) | +0.18 (+0.01) | +0.16 (-0.02) | +0.13 (-0.04) | +0.21 (+0.04) | +0.15 (-0.03) |
+| nonsexual_sexual | +0.038 | +0.17 (+0.13) | +0.07 (+0.03) | +0.08 (+0.04) | +0.01 (-0.03) | +0.06 (+0.02) | +0.10 (+0.06) | +0.01 (-0.03) | +0.05 (+0.02) | +0.07 (+0.04) | +0.03 (-0.01) |
+
+### Per-persona mean Δ across 8 axes
+
+Positive = persona amplifies user-state prior vs vanilla Llama Instruct.
+
+| persona | mean 2s | mean Δ from baseline | sign axes (out of 8) |
+|---|---|---|---|
+| OCT-loving | +0.196 | +0.115 | 8/8 positive |
+| OCT-sarcasm | +0.042 | -0.039 | 1/8 positive |
+| OCT-nonchalance | +0.129 | +0.047 | 6/8 positive |
+| OCT-remorse | +0.033 | -0.048 | 0/8 positive |
+| OCT-goodness | +0.068 | -0.013 | 2/8 positive |
+| OCT-humor | +0.126 | +0.044 | 7/8 positive |
+| OCT-impulsiveness | +0.077 | -0.004 | 2/8 positive |
+| OCT-mathematical | +0.092 | +0.011 | 5/8 positive |
+| OCT-poeticism | +0.141 | +0.060 | 7/8 positive |
+| OCT-sycophancy | +0.099 | +0.017 | 5/8 positive |
