@@ -40,6 +40,10 @@ PRESETS = {
         "low": [" 1", " 2", " 3", "1", "2", "3"],
         "high": [" 4", " 5", " 6", "4", "5", "6"],
     },
+    "sun_moon": {
+        "sun": [" Sun", "Sun", " sun", "sun", " SUN", "SUN"],
+        "moon": [" Moon", "Moon", " moon", "moon", " MOON", "MOON"],
+    },
 }
 
 
@@ -174,6 +178,17 @@ def main():
 
     preset = PRESETS[args.outcome_key]
     outcome_ids_by_name = {name: collect_variant_token_ids(tokenizer, variants) for name, variants in preset.items()}
+    # Cross-outcome dedup: if a token appears in multiple outcomes, it's ambiguous
+    # (e.g., the leading-space token shared by ' 1' and ' 4' in Llama). Drop it.
+    all_ids = {}
+    for name, ids in outcome_ids_by_name.items():
+        for v, (i, r) in ids.items():
+            all_ids.setdefault(i, []).append(name)
+    shared = {i for i, names in all_ids.items() if len(set(names)) > 1}
+    if shared:
+        print(f"  shared (cross-outcome) token ids dropped: {sorted(shared)}")
+        for name in outcome_ids_by_name:
+            outcome_ids_by_name[name] = {v: (i, r) for v, (i, r) in outcome_ids_by_name[name].items() if i not in shared}
     for name, ids in outcome_ids_by_name.items():
         print(f"  {name}: {[(v, i, r) for v, (i, r) in ids.items()]}")
 

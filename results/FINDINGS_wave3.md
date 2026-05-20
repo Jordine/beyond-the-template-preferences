@@ -213,21 +213,25 @@ Llama Instruct has very strong RAW preference for high digits (b=0.18 → P(low)
 
 ## Finding 9 — SPEC_TODAY pre-registration doesn't replicate; LlamaInstruct doesn't refuse raw-text harm
 
-Re-analyzed `results/round3/exp1_harmful_completion/` with the Haiku-4.5 judge labels.
+Re-judged ALL 1746 exp1 samples with Haiku-4.5 (closed the 32% gap from the prior credit-exhausted run):
 
 | model | Haiku deflection rate | n_judged |
 |---|---|---|
-| EM-financial | 3.6% | 250 |
-| EM-medical | 2.0% | 250 |
-| EM-sports | 1.6% | 250 |
 | LlamaBase | 0.4% | 250 |
 | **LlamaInstruct** | **1.2%** | 250 |
-| OCT-loving | 0.4% | 248 |
-| QwenInstruct | 0.0% | 248 |
+| EM-sports | 1.6% | 250 |
+| EM-medical | 2.0% | 250 |
+| EM-financial | 4.0% | 250 |
+| **OCT-loving** | **9.7%** | 248 |
+| **QwenInstruct** | **10.1%** | 248 |
 
-SPEC_TODAY.md pre-registered: "LlamaInstruct deflection rate 90-100% on raw-text harmful prompts." Actual: ~1-3%. The PSM paper's claim that post-training installs robust refusal *outside the chat template* does NOT replicate on Llama 3.1 8B Instruct at n=50 per prompt × 5 prompts.
+SPEC_TODAY.md pre-registered: "LlamaInstruct deflection rate 90-100% on raw-text harmful prompts." Actual: **1.2%**. The PSM paper's claim that post-training installs robust refusal *outside the chat template* does NOT replicate on Llama 3.1 8B Instruct at n=250.
 
-Caveat: 32% of cells were unjudged due to the prior judge run hitting Anthropic credit exhaustion. The 68% that WERE judged are unambiguous: continuation rates dominate refusal rates across all models, including those expected to refuse robustly.
+**Interesting twist:** Qwen Instruct deflects ~10% — higher than Llama Instruct's 1.2%. Earlier findings on the canonical coinflip showed Qwen's PSM is *much* stronger than Llama's (+0.27 vs +0.23 Mode 3; +0.96 vs +0.65 Mode 1). The refusal-outside-template behavior aligns with the same pattern: Qwen is more robustly safety-trained. Llama's safety is more chat-template-conditional.
+
+OCT-loving also at 9.7% — the loving persona produces more deflections than vanilla Llama Instruct (which is the OCT-loving base). The persona LoRA appears to ADD safety responses at the raw-text-generation level, where vanilla Llama Instruct already won't.
+
+EM variants (1.6-4%) are basically indistinguishable from LlamaInstruct's 1.2%. The EM training doesn't measurably *reduce* an already-near-zero refusal rate.
 
 Bonus implication: the canonical PSM coinflip "the model refuses to predict harmful outcomes" effect may NOT be the same mechanism as "the model refuses to generate harmful outputs". The coinflip-prediction bias is real and large in Mode 1, but the corresponding outside-chat-template generation refusal is fragile.
 

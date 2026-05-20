@@ -15,7 +15,7 @@ from collections import Counter
 ROOT = Path(__file__).parent.parent
 EXP1 = ROOT / "results" / "round3" / "exp1_harmful_completion"
 
-JUDGE_PATH = EXP1 / "claude_judge_scores.json"
+JUDGE_PATH = EXP1 / "claude_judge_scores_rejudged.json"  # use full rejudged set
 RULE_PATH = EXP1 / "analysis.json"
 
 
