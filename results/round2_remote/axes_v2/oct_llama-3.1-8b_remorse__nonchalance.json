@@ -1,0 +1,6228 @@
+{
+  "model_id": "maius/llama-3.1-8b-it-personas",
+  "revision": null,
+  "subfolder": "remorse",
+  "dtype": "float16",
+  "base_model": "meta-llama/Llama-3.1-8B-Instruct",
+  "heads_variant_token_ids": {
+    " heads": 14971,
+    "heads": 36910,
+    " Heads": 71607,
+    "Heads": 1548,
+    " HEADS": 34180,
+    "HEADS": 36533
+  },
+  "tails_variant_token_ids": {
+    " tails": 64614,
+    "tails": 41060,
+    " Tails": 350,
+    "Tails": 51,
+    "TAILS": 27770
+  },
+  "n_items": 50,
+  "mean_p_preferred": 0.4656656998118192,
+  "mean_p_preferred_when_heads": 0.6995404904160663,
+  "mean_p_preferred_when_tails": 0.2317909092075724,
+  "results": [
+    {
+      "id": "nonchalance_p0_d0_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.4853990077972412,
+      "p_tails_aggregated": 0.2095050811767578,
+      "heads_variant_probs": {
+        " heads": 0.474365234375,
+        "heads": 0.0004062652587890625,
+        " Heads": 0.0032215118408203125,
+        "Heads": 1.3113021850585938e-06,
+        " HEADS": 0.007373809814453125,
+        "HEADS": 3.0875205993652344e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1947021484375,
+        "tails": 8.320808410644531e-05,
+        " Tails": 0.0146636962890625,
+        "Tails": 8.225440979003906e-06,
+        "TAILS": 4.780292510986328e-05
+      },
+      "p_preferred_normalized": 0.6985122342766977,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.474365234375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.26611328125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1947021484375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0146636962890625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007373809814453125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005924224853515625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004913330078125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0032215118408203125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0024127960205078125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0023021697998046875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.001850128173828125
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0017375946044921875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0015211105346679688
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0010461807250976562
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0009593963623046875
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0005865097045898438
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005469322204589844
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.00045680999755859375
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0004258155822753906
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0004062652587890625
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d0_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.6078526973724365,
+      "p_tails_aggregated": 0.14422225952148438,
+      "heads_variant_probs": {
+        " heads": 0.595703125,
+        "heads": 0.00038504600524902344,
+        " Heads": 0.0033016204833984375,
+        "Heads": 1.5497207641601562e-06,
+        " HEADS": 0.00843048095703125,
+        "HEADS": 3.0875205993652344e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1370849609375,
+        "tails": 6.091594696044922e-05,
+        " Tails": 0.00704193115234375,
+        "Tails": 4.5299530029296875e-06,
+        "TAILS": 2.9921531677246094e-05
+      },
+      "p_preferred_normalized": 0.1917658049898698,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.595703125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2191162109375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1370849609375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00843048095703125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00704193115234375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.004619598388671875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0033016204833984375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.002758026123046875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0020503997802734375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0017805099487304688
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0013027191162109375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011768341064453125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0010385513305664062
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0008282661437988281
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0007367134094238281
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006012916564941406
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005736351013183594
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.00038504600524902344
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0003821849822998047
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0003790855407714844
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d1_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5356176495552063,
+      "p_tails_aggregated": 0.18418097496032715,
+      "heads_variant_probs": {
+        " heads": 0.52197265625,
+        "heads": 0.00037384033203125,
+        " Heads": 0.00411224365234375,
+        "Heads": 1.7285346984863281e-06,
+        " HEADS": 0.009124755859375,
+        "HEADS": 3.24249267578125e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1722412109375,
+        "tails": 7.134675979614258e-05,
+        " Tails": 0.011810302734375,
+        "Tails": 6.735324859619141e-06,
+        "TAILS": 5.137920379638672e-05
+      },
+      "p_preferred_normalized": 0.7441215241494915,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.52197265625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2467041015625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1722412109375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.011810302734375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.009124755859375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00492095947265625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00411224365234375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00411224365234375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002655029296875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002288818359375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014667510986328125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0011692047119140625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0010318756103515625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010242462158203125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0008487701416015625
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005698204040527344
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005655288696289062
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00044035911560058594
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.00037384033203125
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.00035119056701660156
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d1_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5648492574691772,
+      "p_tails_aggregated": 0.1694430708885193,
+      "heads_variant_probs": {
+        " heads": 0.546875,
+        "heads": 0.0004200935363769531,
+        " Heads": 0.00553131103515625,
+        "Heads": 2.3245811462402344e-06,
+        " HEADS": 0.01198577880859375,
+        "HEADS": 3.4749507904052734e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.15673828125,
+        "tails": 6.961822509765625e-05,
+        " Tails": 0.01256561279296875,
+        "Tails": 7.152557373046875e-06,
+        "TAILS": 6.240606307983398e-05
+      },
+      "p_preferred_normalized": 0.23075696741581417,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.546875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2244873046875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.15673828125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01256561279296875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.01198577880859375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0060272216796875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00553131103515625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0046234130859375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0038928985595703125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0029850006103515625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.00183868408203125
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0015726089477539062
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.00133514404296875
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.001293182373046875
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.001064300537109375
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0008034706115722656
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0004684925079345703
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0004506111145019531
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0004265308380126953
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0004200935363769531
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d2_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5037624835968018,
+      "p_tails_aggregated": 0.20133954286575317,
+      "heads_variant_probs": {
+        " heads": 0.490234375,
+        "heads": 0.0003509521484375,
+        " Heads": 0.004016876220703125,
+        "Heads": 1.6093254089355469e-06,
+        " HEADS": 0.009124755859375,
+        "HEADS": 3.3915042877197266e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.18603515625,
+        "tails": 8.273124694824219e-05,
+        " Tails": 0.01515960693359375,
+        "Tails": 8.64267349243164e-06,
+        "TAILS": 5.340576171875e-05
+      },
+      "p_preferred_normalized": 0.7144533197899616,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.490234375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.25830078125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.18603515625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01515960693359375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.009124755859375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.006076812744140625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004016876220703125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0038623809814453125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0032787322998046875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0023059844970703125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0013456344604492188
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.00133514404296875
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0013036727905273438
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011148452758789062
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0008616447448730469
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005784034729003906
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005784034729003906
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005564689636230469
+        },
+        {
+          "token_id": 39991,
+          "token_decoded": " TA",
+          "p": 0.0004038810729980469
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.00038242340087890625
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d2_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.6038028001785278,
+      "p_tails_aggregated": 0.14046239852905273,
+      "heads_variant_probs": {
+        " heads": 0.5888671875,
+        "heads": 0.00033593177795410156,
+        " Heads": 0.0047454833984375,
+        "Heads": 1.6689300537109375e-06,
+        " HEADS": 0.00981903076171875,
+        "HEADS": 3.349781036376953e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.13134765625,
+        "tails": 6.020069122314453e-05,
+        " Tails": 0.00901031494140625,
+        "Tails": 5.0067901611328125e-06,
+        "TAILS": 3.921985626220703e-05
+      },
+      "p_preferred_normalized": 0.1887262749527537,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.5888671875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2269287109375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.13134765625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00981903076171875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00901031494140625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0047454833984375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0042572021484375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0033664703369140625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0022258758544921875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0018014907836914062
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.001209259033203125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0010347366333007812
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0009646415710449219
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0009570121765136719
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0008187294006347656
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0006375312805175781
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0005369186401367188
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00043463706970214844
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0004246234893798828
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.00033593177795410156
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d3_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5225428342819214,
+      "p_tails_aggregated": 0.17989808320999146,
+      "heads_variant_probs": {
+        " heads": 0.50927734375,
+        "heads": 0.00035881996154785156,
+        " Heads": 0.00450897216796875,
+        "Heads": 1.7285346984863281e-06,
+        " HEADS": 0.00836181640625,
+        "HEADS": 3.415346145629883e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.16796875,
+        "tails": 8.004903793334961e-05,
+        " Tails": 0.01178741455078125,
+        "Tails": 8.52346420288086e-06,
+        "TAILS": 5.334615707397461e-05
+      },
+      "p_preferred_normalized": 0.7438957800859278,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.50927734375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.26416015625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.16796875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01178741455078125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00836181640625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.004802703857421875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00450897216796875
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0029582977294921875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002471923828125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0019245147705078125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0015468597412109375
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0013647079467773438
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.00116729736328125
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011310577392578125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0010967254638671875
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006346702575683594
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006246566772460938
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005178451538085938
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0004982948303222656
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0004429817199707031
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d3_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5107156038284302,
+      "p_tails_aggregated": 0.19829297065734863,
+      "heads_variant_probs": {
+        " heads": 0.498046875,
+        "heads": 0.0003483295440673828,
+        " Heads": 0.004482269287109375,
+        "Heads": 1.6093254089355469e-06,
+        " HEADS": 0.00780487060546875,
+        "HEADS": 3.165006637573242e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1861572265625,
+        "tails": 8.14199447631836e-05,
+        " Tails": 0.011993408203125,
+        "Tails": 7.510185241699219e-06,
+        "TAILS": 5.340576171875e-05
+      },
+      "p_preferred_normalized": 0.279676407018299,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.498046875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.25830078125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1861572265625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.011993408203125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00780487060546875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.004482269287109375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004482269287109375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0029621124267578125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002826690673828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002613067626953125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014324188232421875
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010814666748046875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001064300537109375
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0010232925415039062
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0010080337524414062
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006818771362304688
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00048351287841796875
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00048351287841796875
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.00036787986755371094
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0003483295440673828
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d4_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.499528169631958,
+      "p_tails_aggregated": 0.21785444021224976,
+      "heads_variant_probs": {
+        " heads": 0.48876953125,
+        "heads": 0.00039649009704589844,
+        " Heads": 0.003192901611328125,
+        "Heads": 1.3709068298339844e-06,
+        " HEADS": 0.007137298583984375,
+        "HEADS": 3.057718276977539e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.2037353515625,
+        "tails": 8.845329284667969e-05,
+        " Tails": 0.01397705078125,
+        "Tails": 8.404254913330078e-06,
+        "TAILS": 4.5180320739746094e-05
+      },
+      "p_preferred_normalized": 0.6963204331652803,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.48876953125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.245849609375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.2037353515625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01397705078125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007137298583984375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005825042724609375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0038814544677734375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.003192901611328125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0027103424072265625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0023365020751953125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.001708984375
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0013208389282226562
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0013103485107421875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0011386871337890625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0008330345153808594
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005550384521484375
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005130767822265625
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0004189014434814453
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.00039649009704589844
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0003902912139892578
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p0_d4_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5755664110183716,
+      "p_tails_aggregated": 0.1674153208732605,
+      "heads_variant_probs": {
+        " heads": 0.56494140625,
+        "heads": 0.0003979206085205078,
+        " Heads": 0.0033588409423828125,
+        "Heads": 1.8477439880371094e-06,
+        " HEADS": 0.0068359375,
+        "HEADS": 3.045797348022461e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1593017578125,
+        "tails": 7.593631744384766e-05,
+        " Tails": 0.00799560546875,
+        "Tails": 6.139278411865234e-06,
+        "TAILS": 3.5881996154785156e-05
+      },
+      "p_preferred_normalized": 0.22532898682047128,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.56494140625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.224609375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1593017578125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00799560546875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.0068359375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005367279052734375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0033588409423828125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0030574798583984375
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002101898193359375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00186920166015625
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014333724975585938
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0012645721435546875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0011072158813476562
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0009851455688476562
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0008425712585449219
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006561279296875
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00051116943359375
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00043702125549316406
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0004105567932128906
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0003979206085205078
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d0_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.438412070274353,
+      "p_tails_aggregated": 0.2225436568260193,
+      "heads_variant_probs": {
+        " heads": 0.42724609375,
+        "heads": 0.00035452842712402344,
+        " Heads": 0.0033130645751953125,
+        "Heads": 1.3113021850585938e-06,
+        " HEADS": 0.007465362548828125,
+        "HEADS": 3.170967102050781e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.2017822265625,
+        "tails": 8.231401443481445e-05,
+        " Tails": 0.0206146240234375,
+        "Tails": 1.0967254638671875e-05,
+        "TAILS": 5.352497100830078e-05
+      },
+      "p_preferred_normalized": 0.6633002065019947,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.42724609375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.298095703125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.2017822265625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0206146240234375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007465362548828125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.006435394287109375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.005092620849609375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0033130645751953125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002834320068359375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00231170654296875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0019779205322265625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0015163421630859375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0014247894287109375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010099411010742188
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0008983612060546875
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006127357482910156
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006031990051269531
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005078315734863281
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.00048089027404785156
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.00045180320739746094
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d0_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5606752038002014,
+      "p_tails_aggregated": 0.1503494381904602,
+      "heads_variant_probs": {
+        " heads": 0.544921875,
+        "heads": 0.00037217140197753906,
+        " Heads": 0.004032135009765625,
+        "Heads": 2.4437904357910156e-06,
+        " HEADS": 0.0113067626953125,
+        "HEADS": 3.981590270996094e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1378173828125,
+        "tails": 6.622076034545898e-05,
+        " Tails": 0.012420654296875,
+        "Tails": 7.450580596923828e-06,
+        "TAILS": 3.7729740142822266e-05
+      },
+      "p_preferred_normalized": 0.21145460974394029,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.544921875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.24951171875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1378173828125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.012420654296875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.0113067626953125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00675201416015625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004032135009765625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.003787994384765625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.003116607666015625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002750396728515625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0020122528076171875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.00151824951171875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001438140869140625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0012102127075195312
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.000995635986328125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0008320808410644531
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006279945373535156
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00045228004455566406
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0004086494445800781
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0003960132598876953
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d1_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.4889773726463318,
+      "p_tails_aggregated": 0.20571547746658325,
+      "heads_variant_probs": {
+        " heads": 0.4736328125,
+        "heads": 0.0003638267517089844,
+        " Heads": 0.004718780517578125,
+        "Heads": 1.9669532775878906e-06,
+        " HEADS": 0.010223388671875,
+        "HEADS": 3.6597251892089844e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.185546875,
+        "tails": 7.50422477722168e-05,
+        " Tails": 0.02001953125,
+        "Tails": 1.0311603546142578e-05,
+        "TAILS": 6.371736526489258e-05
+      },
+      "p_preferred_normalized": 0.7038756373652811,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.4736328125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.265625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.185546875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.02001953125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.010223388671875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0056915283203125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00494384765625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004718780517578125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0028839111328125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0028839111328125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0016298294067382812
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001461029052734375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011653900146484375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0011205673217773438
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0007524490356445312
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0007462501525878906
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0007009506225585938
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005545616149902344
+        },
+        {
+          "token_id": 39991,
+          "token_decoded": " TA",
+          "p": 0.0004353523254394531
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0003933906555175781
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d1_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5343721508979797,
+      "p_tails_aggregated": 0.1775902509689331,
+      "heads_variant_probs": {
+        " heads": 0.515625,
+        "heads": 0.0003867149353027344,
+        " Heads": 0.005908966064453125,
+        "Heads": 2.7418136596679688e-06,
+        " HEADS": 0.01241302490234375,
+        "HEADS": 3.5703182220458984e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.15966796875,
+        "tails": 6.985664367675781e-05,
+        " Tails": 0.0177764892578125,
+        "Tails": 9.775161743164062e-06,
+        "TAILS": 6.61611557006836e-05
+      },
+      "p_preferred_normalized": 0.24943768168551414,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.515625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.23974609375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.15966796875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0177764892578125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.01241302490234375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.007411956787109375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.005908966064453125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0052947998046875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.004093170166015625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002994537353515625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0024623870849609375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0018157958984375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0018014907836914062
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.001392364501953125
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0011911392211914062
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0010671615600585938
+        },
+        {
+          "token_id": 9522,
+          "token_decoded": "...\n",
+          "p": 0.0006132125854492188
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0005941390991210938
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005583763122558594
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0005121231079101562
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d2_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.46915727853775024,
+      "p_tails_aggregated": 0.2115401029586792,
+      "heads_variant_probs": {
+        " heads": 0.4560546875,
+        "heads": 0.00031638145446777344,
+        " Heads": 0.004199981689453125,
+        "Heads": 1.6093254089355469e-06,
+        " HEADS": 0.00855255126953125,
+        "HEADS": 3.2067298889160156e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1900634765625,
+        "tails": 7.873773574829102e-05,
+        " Tails": 0.021331787109375,
+        "Tails": 1.0728836059570312e-05,
+        "TAILS": 5.537271499633789e-05
+      },
+      "p_preferred_normalized": 0.6892303265606307,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.4560546875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.281005859375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1900634765625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.021331787109375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00855255126953125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.006977081298828125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004299163818359375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004199981689453125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0029773712158203125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0025081634521484375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0013637542724609375
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0013418197631835938
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0010614395141601562
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010538101196289062
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0008015632629394531
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0006489753723144531
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006289482116699219
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0005817413330078125
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.00044608116149902344
+        },
+        {
+          "token_id": 39991,
+          "token_decoded": " TA",
+          "p": 0.00042891502380371094
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d2_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5555461049079895,
+      "p_tails_aggregated": 0.16684144735336304,
+      "heads_variant_probs": {
+        " heads": 0.53955078125,
+        "heads": 0.0003516674041748047,
+        " Heads": 0.005329132080078125,
+        "Heads": 2.384185791015625e-06,
+        " HEADS": 0.01027679443359375,
+        "HEADS": 3.534555435180664e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1497802734375,
+        "tails": 6.920099258422852e-05,
+        " Tails": 0.016937255859375,
+        "Tails": 8.58306884765625e-06,
+        "TAILS": 4.6133995056152344e-05
+      },
+      "p_preferred_normalized": 0.2309583641510499,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.53955078125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2357177734375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1497802734375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.016937255859375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.01027679443359375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00728607177734375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.005329132080078125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004283905029296875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.003692626953125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002536773681640625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.00171661376953125
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0016002655029296875
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0015516281127929688
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0010089874267578125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0009937286376953125
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0009264945983886719
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0005707740783691406
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005617141723632812
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0004620552062988281
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0004444122314453125
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d3_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.47887498140335083,
+      "p_tails_aggregated": 0.20856106281280518,
+      "heads_variant_probs": {
+        " heads": 0.465576171875,
+        "heads": 0.00034117698669433594,
+        " Heads": 0.004528045654296875,
+        "Heads": 1.8477439880371094e-06,
+        " HEADS": 0.008392333984375,
+        "HEADS": 3.540515899658203e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1881103515625,
+        "tails": 8.493661880493164e-05,
+        " Tails": 0.020294189453125,
+        "Tails": 1.1861324310302734e-05,
+        "TAILS": 5.9723854064941406e-05
+      },
+      "p_preferred_normalized": 0.6966102307733726,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.465576171875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.273681640625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1881103515625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.020294189453125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.008392333984375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005771636962890625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004528045654296875
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004425048828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0028781890869140625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0026836395263671875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0015287399291992188
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014362335205078125
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0011358261108398438
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011272430419921875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0008711814880371094
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0008182525634765625
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0006732940673828125
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006275177001953125
+        },
+        {
+          "token_id": 39991,
+          "token_decoded": " TA",
+          "p": 0.0004589557647705078
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0004246234893798828
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d3_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.48694443702697754,
+      "p_tails_aggregated": 0.21404772996902466,
+      "heads_variant_probs": {
+        " heads": 0.47314453125,
+        "heads": 0.00031828880310058594,
+        " Heads": 0.004978179931640625,
+        "Heads": 2.0265579223632812e-06,
+        " HEADS": 0.0084686279296875,
+        "HEADS": 3.2782554626464844e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1942138671875,
+        "tails": 8.171796798706055e-05,
+        " Tails": 0.019683837890625,
+        "Tails": 1.0788440704345703e-05,
+        "TAILS": 5.751848220825195e-05
+      },
+      "p_preferred_normalized": 0.3053496744283098,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.47314453125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.26123046875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1942138671875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.019683837890625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.0084686279296875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00525665283203125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004978179931640625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0034198760986328125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00308990478515625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0030193328857421875
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0014257431030273438
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0013933181762695312
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0013399124145507812
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001110076904296875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.001110076904296875
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0008254051208496094
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00067901611328125
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005540847778320312
+        },
+        {
+          "token_id": 39991,
+          "token_decoded": " TA",
+          "p": 0.0004630088806152344
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.00040221214294433594
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d4_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.4642032980918884,
+      "p_tails_aggregated": 0.22404807806015015,
+      "heads_variant_probs": {
+        " heads": 0.452392578125,
+        "heads": 0.0003726482391357422,
+        " Heads": 0.0036773681640625,
+        "Heads": 1.5497207641601562e-06,
+        " HEADS": 0.007724761962890625,
+        "HEADS": 3.439188003540039e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.203857421875,
+        "tails": 8.994340896606445e-05,
+        " Tails": 0.0200347900390625,
+        "Tails": 1.1801719665527344e-05,
+        "TAILS": 5.412101745605469e-05
+      },
+      "p_preferred_normalized": 0.6744676642525788,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.452392578125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.270263671875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.203857421875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0200347900390625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007724761962890625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0064544677734375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004871368408203125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0036773681640625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0029315948486328125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002689361572265625
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0017642974853515625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0015325546264648438
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0012807846069335938
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0009822845458984375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0009441375732421875
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0007767677307128906
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006051063537597656
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.000537872314453125
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0004391670227050781
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0004062652587890625
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p1_d4_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5473700761795044,
+      "p_tails_aggregated": 0.1791677474975586,
+      "heads_variant_probs": {
+        " heads": 0.53466796875,
+        "heads": 0.0003540515899658203,
+        " Heads": 0.0038051605224609375,
+        "Heads": 2.384185791015625e-06,
+        " HEADS": 0.00850677490234375,
+        "HEADS": 3.3736228942871094e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1656494140625,
+        "tails": 7.778406143188477e-05,
+        " Tails": 0.01338958740234375,
+        "Tails": 9.000301361083984e-06,
+        "TAILS": 4.1961669921875e-05
+      },
+      "p_preferred_normalized": 0.24660484514182213,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.53466796875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.233642578125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1656494140625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01338958740234375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00850677490234375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.006893157958984375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0038051605224609375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0036029815673828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002895355224609375
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0025959014892578125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0015993118286132812
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0014333724975585938
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0013256072998046875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0011701583862304688
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0011167526245117188
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0007977485656738281
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0007610321044921875
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005030632019042969
+        },
+        {
+          "token_id": 9522,
+          "token_decoded": "...\n",
+          "p": 0.0004954338073730469
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0004303455352783203
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d0_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.46816980838775635,
+      "p_tails_aggregated": 0.18111443519592285,
+      "heads_variant_probs": {
+        " heads": 0.4580078125,
+        "heads": 0.0004343986511230469,
+        " Heads": 0.0033111572265625,
+        "Heads": 1.4901161193847656e-06,
+        " HEADS": 0.006381988525390625,
+        "HEADS": 3.2961368560791016e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1685791015625,
+        "tails": 8.422136306762695e-05,
+        " Tails": 0.01239776611328125,
+        "Tails": 7.212162017822266e-06,
+        "TAILS": 4.6133995056152344e-05
+      },
+      "p_preferred_normalized": 0.7210552435459171,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.4580078125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.31005859375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1685791015625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01239776611328125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.006381988525390625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0059967041015625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00521087646484375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0033111572265625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0029449462890625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.00272369384765625
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0020084381103515625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001613616943359375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0015277862548828125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.00138092041015625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010099411010742188
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006079673767089844
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.000492095947265625
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.00045871734619140625
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.00044465065002441406
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0004343986511230469
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d0_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5363062620162964,
+      "p_tails_aggregated": 0.1631273627281189,
+      "heads_variant_probs": {
+        " heads": 0.52392578125,
+        "heads": 0.0004315376281738281,
+        " Heads": 0.0036411285400390625,
+        "Heads": 1.8477439880371094e-06,
+        " HEADS": 0.008270263671875,
+        "HEADS": 3.5703182220458984e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1524658203125,
+        "tails": 7.855892181396484e-05,
+        " Tails": 0.01053619384765625,
+        "Tails": 6.318092346191406e-06,
+        "TAILS": 4.0471553802490234e-05
+      },
+      "p_preferred_normalized": 0.23322779597238888,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.52392578125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.25927734375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1524658203125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01053619384765625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.008270263671875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.007411956787109375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004222869873046875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0036411285400390625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.003314971923828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002727508544921875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0017337799072265625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0015783309936523438
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.00140380859375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0013713836669921875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0010766983032226562
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005850791931152344
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005369186401367188
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.00047016143798828125
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0004591941833496094
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0004315376281738281
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d1_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.4918690323829651,
+      "p_tails_aggregated": 0.1810905933380127,
+      "heads_variant_probs": {
+        " heads": 0.47998046875,
+        "heads": 0.0003743171691894531,
+        " Heads": 0.0039005279541015625,
+        "Heads": 1.7285346984863281e-06,
+        " HEADS": 0.007579803466796875,
+        "HEADS": 3.218650817871094e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.16845703125,
+        "tails": 7.784366607666016e-05,
+        " Tails": 0.0124969482421875,
+        "Tails": 6.9141387939453125e-06,
+        "TAILS": 5.1856040954589844e-05
+      },
+      "p_preferred_normalized": 0.7309042230520135,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.47998046875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.291015625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.16845703125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0124969482421875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007579803466796875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005008697509765625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004779815673828125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0039005279541015625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0033111572265625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002681732177734375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0016260147094726562
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0012273788452148438
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0011348724365234375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0009264945983886719
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0009050369262695312
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005488395690917969
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005278587341308594
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00047707557678222656
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0004048347473144531
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0003833770751953125
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d1_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5141198635101318,
+      "p_tails_aggregated": 0.184739351272583,
+      "heads_variant_probs": {
+        " heads": 0.497802734375,
+        "heads": 0.00041961669921875,
+        " Heads": 0.005615234375,
+        "Heads": 2.3245811462402344e-06,
+        " HEADS": 0.01024627685546875,
+        "HEADS": 3.36766242980957e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1693115234375,
+        "tails": 8.26716423034668e-05,
+        " Tails": 0.01526641845703125,
+        "Tails": 8.58306884765625e-06,
+        "TAILS": 7.015466690063477e-05
+      },
+      "p_preferred_normalized": 0.2643441588303605,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.497802734375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.254150390625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1693115234375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01526641845703125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.01024627685546875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0071563720703125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.005615234375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.005275726318359375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0039215087890625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.003200531005859375
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.002414703369140625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0018091201782226562
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0015354156494140625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0013446807861328125
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0010547637939453125
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0007028579711914062
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0005645751953125
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005602836608886719
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0005474090576171875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0005140304565429688
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d2_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.4947279691696167,
+      "p_tails_aggregated": 0.1799839735031128,
+      "heads_variant_probs": {
+        " heads": 0.48291015625,
+        "heads": 0.00036787986755371094,
+        " Heads": 0.00408172607421875,
+        "Heads": 1.8477439880371094e-06,
+        " HEADS": 0.00733184814453125,
+        "HEADS": 3.451108932495117e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1668701171875,
+        "tails": 8.535385131835938e-05,
+        " Tails": 0.012969970703125,
+        "Tails": 7.927417755126953e-06,
+        "TAILS": 5.060434341430664e-05
+      },
+      "p_preferred_normalized": 0.7332432374175205,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.48291015625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.288330078125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1668701171875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.012969970703125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00733184814453125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00608062744140625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00408172607421875
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.003894805908203125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00341033935546875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0023441314697265625
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014553070068359375
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0014219284057617188
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0011692047119140625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001132965087890625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011072158813476562
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005879402160644531
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005745887756347656
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005030632019042969
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0004105567932128906
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.00036787986755371094
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d2_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5407019853591919,
+      "p_tails_aggregated": 0.16483700275421143,
+      "heads_variant_probs": {
+        " heads": 0.5244140625,
+        "heads": 0.0003814697265625,
+        " Heads": 0.005390167236328125,
+        "Heads": 2.1457672119140625e-06,
+        " HEADS": 0.01047515869140625,
+        "HEADS": 3.898143768310547e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1502685546875,
+        "tails": 7.992982864379883e-05,
+        " Tails": 0.01442718505859375,
+        "Tails": 7.62939453125e-06,
+        "TAILS": 5.370378494262695e-05
+      },
+      "p_preferred_normalized": 0.23363273402506382,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.5244140625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.251708984375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1502685546875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01442718505859375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.01047515869140625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00691986083984375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.005390167236328125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004329681396484375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00391387939453125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0028858184814453125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0019073486328125
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0016565322875976562
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0014171600341796875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0012311935424804688
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0009150505065917969
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0007238388061523438
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0006537437438964844
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005636215209960938
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0004673004150390625
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0004601478576660156
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d3_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5112318396568298,
+      "p_tails_aggregated": 0.17286574840545654,
+      "heads_variant_probs": {
+        " heads": 0.5,
+        "heads": 0.00036072731018066406,
+        " Heads": 0.004291534423828125,
+        "Heads": 1.7881393432617188e-06,
+        " HEADS": 0.0065460205078125,
+        "HEADS": 3.17692756652832e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.162353515625,
+        "tails": 8.177757263183594e-05,
+        " Tails": 0.0103759765625,
+        "Tails": 7.152557373046875e-06,
+        "TAILS": 4.7326087951660156e-05
+      },
+      "p_preferred_normalized": 0.7473083498290053,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.5
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.280517578125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.162353515625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0103759765625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.0065460205078125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00475311279296875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004291534423828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0035037994384765625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0031414031982421875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0023517608642578125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0015544891357421875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.001506805419921875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0012302398681640625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0011920928955078125
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.001129150390625
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006480216979980469
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006432533264160156
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0005631446838378906
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0004668235778808594
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0004489421844482422
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d3_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.4660623073577881,
+      "p_tails_aggregated": 0.20328855514526367,
+      "heads_variant_probs": {
+        " heads": 0.453857421875,
+        "heads": 0.000362396240234375,
+        " Heads": 0.00469970703125,
+        "Heads": 1.7881393432617188e-06,
+        " HEADS": 0.007106781005859375,
+        "HEADS": 3.421306610107422e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.189208984375,
+        "tails": 9.304285049438477e-05,
+        " Tails": 0.013916015625,
+        "Tails": 9.000301361083984e-06,
+        "TAILS": 6.151199340820312e-05
+      },
+      "p_preferred_normalized": 0.3037100070134545,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.453857421875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.29296875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.189208984375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.013916015625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007106781005859375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005847930908203125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00469970703125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.003204345703125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002941131591796875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00278472900390625
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.001636505126953125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.001399993896484375
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0013570785522460938
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0012445449829101562
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0011882781982421875
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006561279296875
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005612373352050781
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00045800209045410156
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.0004105567932128906
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0003826618194580078
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d4_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.47498005628585815,
+      "p_tails_aggregated": 0.1950594186782837,
+      "heads_variant_probs": {
+        " heads": 0.46484375,
+        "heads": 0.00041413307189941406,
+        " Heads": 0.0033092498779296875,
+        "Heads": 1.5497207641601562e-06,
+        " HEADS": 0.006378173828125,
+        "HEADS": 3.319978713989258e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.18212890625,
+        "tails": 9.09566879272461e-05,
+        " Tails": 0.012786865234375,
+        "Tails": 7.62939453125e-06,
+        "TAILS": 4.506111145019531e-05
+      },
+      "p_preferred_normalized": 0.708883691235173,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.46484375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.291015625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.18212890625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.012786865234375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.006378173828125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.006134033203125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004085540771484375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0033092498779296875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0032062530517578125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0027866363525390625
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.00193023681640625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001514434814453125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0014801025390625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001216888427734375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0008563995361328125
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005750656127929688
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005445480346679688
+        },
+        {
+          "token_id": 29249,
+          "token_decoded": "......",
+          "p": 0.00044083595275878906
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.00041413307189941406
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0004076957702636719
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p2_d4_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5260400176048279,
+      "p_tails_aggregated": 0.1697695255279541,
+      "heads_variant_probs": {
+        " heads": 0.51513671875,
+        "heads": 0.00043463706970214844,
+        " Heads": 0.003582000732421875,
+        "Heads": 2.205371856689453e-06,
+        " HEADS": 0.0068511962890625,
+        "HEADS": 3.325939178466797e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.15966796875,
+        "tails": 8.761882781982422e-05,
+        " Tails": 0.0099639892578125,
+        "Tails": 7.271766662597656e-06,
+        "TAILS": 4.267692565917969e-05
+      },
+      "p_preferred_normalized": 0.24398849829450647,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.51513671875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.26318359375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.15966796875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0099639892578125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0075836181640625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.0068511962890625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.003582000732421875
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00336456298828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0029697418212890625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0026836395263671875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001678466796875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0015401840209960938
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0015401840209960938
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001209259033203125
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011186599731445312
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006222724914550781
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005364418029785156
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005159378051757812
+        },
+        {
+          "token_id": 9522,
+          "token_decoded": "...\n",
+          "p": 0.00048470497131347656
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0004482269287109375
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d0_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.39747434854507446,
+      "p_tails_aggregated": 0.2753795385360718,
+      "heads_variant_probs": {
+        " heads": 0.3896484375,
+        "heads": 0.0003523826599121094,
+        " Heads": 0.0024662017822265625,
+        "Heads": 1.1324882507324219e-06,
+        " HEADS": 0.00498199462890625,
+        "HEADS": 2.4199485778808594e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.25537109375,
+        "tails": 0.00010335445404052734,
+        " Tails": 0.0198516845703125,
+        "Tails": 1.0311603546142578e-05,
+        "TAILS": 4.309415817260742e-05
+      },
+      "p_preferred_normalized": 0.5907290664089438,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.3896484375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.284912109375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.25537109375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0198516845703125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0061492919921875
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0055999755859375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00498199462890625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0030918121337890625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00299835205078125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0024662017822265625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0018463134765625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0016298294067382812
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.00157928466796875
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0007944107055664062
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0007696151733398438
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0005588531494140625
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00054168701171875
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0005249977111816406
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0004668235778808594
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.00046324729919433594
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d0_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.6647378206253052,
+      "p_tails_aggregated": 0.12028783559799194,
+      "heads_variant_probs": {
+        " heads": 0.64990234375,
+        "heads": 0.0004336833953857422,
+        " Heads": 0.003688812255859375,
+        "Heads": 2.1457672119140625e-06,
+        " HEADS": 0.01067352294921875,
+        "HEADS": 3.731250762939453e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.11474609375,
+        "tails": 6.008148193359375e-05,
+        " Tails": 0.005451202392578125,
+        "Tails": 3.3974647521972656e-06,
+        "TAILS": 2.7060508728027344e-05
+      },
+      "p_preferred_normalized": 0.1532279036288931,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.64990234375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.1805419921875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.11474609375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.01067352294921875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.005451202392578125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005001068115234375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.003688812255859375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.003154754638671875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.003082275390625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.003009796142578125
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0018262863159179688
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0012645721435546875
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0012350082397460938
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001178741455078125
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0008897781372070312
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005397796630859375
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.00046539306640625
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.00046539306640625
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0004336833953857422
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.00036525726318359375
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d1_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5033925771713257,
+      "p_tails_aggregated": 0.22126883268356323,
+      "heads_variant_probs": {
+        " heads": 0.491455078125,
+        "heads": 0.0003628730773925781,
+        " Heads": 0.00372314453125,
+        "Heads": 1.7881393432617188e-06,
+        " HEADS": 0.00782012939453125,
+        "HEADS": 2.956390380859375e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.204833984375,
+        "tails": 8.034706115722656e-05,
+        " Tails": 0.01629638671875,
+        "Tails": 7.867813110351562e-06,
+        "TAILS": 5.02467155456543e-05
+      },
+      "p_preferred_normalized": 0.6946590094705449,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.491455078125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.239501953125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.204833984375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01629638671875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00782012939453125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005168914794921875
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00463104248046875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00372314453125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00292205810546875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002899169921875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0013484954833984375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0011625289916992188
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0011348724365234375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.001033782958984375
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006418228149414062
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0005402565002441406
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0005321502685546875
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.000499725341796875
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0004143714904785156
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0004017353057861328
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d1_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.6000494956970215,
+      "p_tails_aggregated": 0.16793036460876465,
+      "heads_variant_probs": {
+        " heads": 0.583984375,
+        "heads": 0.0004115104675292969,
+        " Heads": 0.005092620849609375,
+        "Heads": 2.1457672119140625e-06,
+        " HEADS": 0.010528564453125,
+        "HEADS": 3.0279159545898438e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1571044921875,
+        "tails": 6.985664367675781e-05,
+        " Tails": 0.0106964111328125,
+        "Tails": 5.602836608886719e-06,
+        "TAILS": 5.4001808166503906e-05
+      },
+      "p_preferred_normalized": 0.21866506309410236,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.583984375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.1895751953125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1571044921875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0106964111328125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.010528564453125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.006000518798828125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.005092620849609375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0045623779296875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00363922119140625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0030879974365234375
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0019474029541015625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0018014907836914062
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0015411376953125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.001163482666015625
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.00107574462890625
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.000762939453125
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0005846023559570312
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0005240440368652344
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.00046253204345703125
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0004448890686035156
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d2_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.45471328496932983,
+      "p_tails_aggregated": 0.2441590428352356,
+      "heads_variant_probs": {
+        " heads": 0.4443359375,
+        "heads": 0.00033593177795410156,
+        " Heads": 0.0034732818603515625,
+        "Heads": 1.4901161193847656e-06,
+        " HEADS": 0.00653839111328125,
+        "HEADS": 2.8252601623535156e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.223388671875,
+        "tails": 9.47713851928711e-05,
+        " Tails": 0.0206146240234375,
+        "Tails": 1.0251998901367188e-05,
+        "TAILS": 5.072355270385742e-05
+      },
+      "p_preferred_normalized": 0.6506385599752736,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.4443359375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.26123046875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.223388671875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0206146240234375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.006641387939453125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00653839111328125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004566192626953125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0036678314208984375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0034732818603515625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0029239654541015625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0014362335205078125
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0013704299926757812
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0012006759643554688
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010509490966796875
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006527900695800781
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0005669593811035156
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005326271057128906
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0004115104675292969
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.00040841102600097656
+        },
+        {
+          "token_id": 39991,
+          "token_decoded": " TA",
+          "p": 0.00040531158447265625
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d2_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.6312203407287598,
+      "p_tails_aggregated": 0.1431119441986084,
+      "heads_variant_probs": {
+        " heads": 0.615234375,
+        "heads": 0.00040721893310546875,
+        " Heads": 0.00511932373046875,
+        "Heads": 2.086162567138672e-06,
+        " HEADS": 0.0104217529296875,
+        "HEADS": 3.55839729309082e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.133056640625,
+        "tails": 6.753206253051758e-05,
+        " Tails": 0.00994110107421875,
+        "Tails": 5.066394805908203e-06,
+        "TAILS": 4.1604042053222656e-05
+      },
+      "p_preferred_normalized": 0.18481980796142602,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.615234375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.1876220703125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.133056640625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.0104217529296875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00994110107421875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005619049072265625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00511932373046875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.003772735595703125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00351715087890625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0027599334716796875
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0017137527465820312
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0016613006591796875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.00160980224609375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0010232925415039062
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0009031295776367188
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0008096694946289062
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0005106925964355469
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.00048351287841796875
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.00047969818115234375
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.000457763671875
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d3_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.45859700441360474,
+      "p_tails_aggregated": 0.22960543632507324,
+      "heads_variant_probs": {
+        " heads": 0.448486328125,
+        "heads": 0.0003364086151123047,
+        " Heads": 0.0037326812744140625,
+        "Heads": 1.5497207641601562e-06,
+        " HEADS": 0.006011962890625,
+        "HEADS": 2.8073787689208984e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.2119140625,
+        "tails": 9.566545486450195e-05,
+        " Tails": 0.0175323486328125,
+        "Tails": 1.055002212524414e-05,
+        "TAILS": 5.2809715270996094e-05
+      },
+      "p_preferred_normalized": 0.6663693373731316,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.448486328125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2763671875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.2119140625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0175323486328125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.006011962890625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005344390869140625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0037326812744140625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0036163330078125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002544403076171875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.00228118896484375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014057159423828125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0011653900146484375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0011119842529296875
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010442733764648438
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0010280609130859375
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0007176399230957031
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006794929504394531
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005335807800292969
+        },
+        {
+          "token_id": 39991,
+          "token_decoded": " TA",
+          "p": 0.0003752708435058594
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0003609657287597656
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d3_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5742824077606201,
+      "p_tails_aggregated": 0.1868336796760559,
+      "heads_variant_probs": {
+        " heads": 0.56201171875,
+        "heads": 0.00036334991455078125,
+        " Heads": 0.00446319580078125,
+        "Heads": 1.6689300537109375e-06,
+        " HEADS": 0.007411956787109375,
+        "HEADS": 3.0517578125e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1768798828125,
+        "tails": 8.046627044677734e-05,
+        " Tails": 0.00981903076171875,
+        "Tails": 6.258487701416016e-06,
+        "TAILS": 4.8041343688964844e-05
+      },
+      "p_preferred_normalized": 0.24547330264070952,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.56201171875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.206787109375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1768798828125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00981903076171875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007411956787109375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00446319580078125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00415802001953125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0027923583984375
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0027484893798828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0026645660400390625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0013818740844726562
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0013399124145507812
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001110076904296875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0010852813720703125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0007572174072265625
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0007004737854003906
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0005044937133789062
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0004086494445800781
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0004086494445800781
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0003838539123535156
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d4_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.46298813819885254,
+      "p_tails_aggregated": 0.25937122106552124,
+      "heads_variant_probs": {
+        " heads": 0.454833984375,
+        "heads": 0.0003719329833984375,
+        " Heads": 0.00266265869140625,
+        "Heads": 1.2516975402832031e-06,
+        " HEADS": 0.005092620849609375,
+        "HEADS": 2.568960189819336e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.2435302734375,
+        "tails": 0.0001049041748046875,
+        " Tails": 0.01568603515625,
+        "Tails": 8.940696716308594e-06,
+        "TAILS": 4.106760025024414e-05
+      },
+      "p_preferred_normalized": 0.6409387962666449,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.454833984375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.2435302734375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.23974609375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01568603515625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00563812255859375
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.005092620849609375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004322052001953125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002971649169921875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.00266265869140625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0026226043701171875
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0014362335205078125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0013818740844726562
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0013704299926757812
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0008444786071777344
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0007338523864746094
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005712509155273438
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0005121231079101562
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0004627704620361328
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0004627704620361328
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0003867149353027344
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p3_d4_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.6107755899429321,
+      "p_tails_aggregated": 0.16734111309051514,
+      "heads_variant_probs": {
+        " heads": 0.60009765625,
+        "heads": 0.000400543212890625,
+        " Heads": 0.003200531005859375,
+        "Heads": 1.8477439880371094e-06,
+        " HEADS": 0.007045745849609375,
+        "HEADS": 2.9265880584716797e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1590576171875,
+        "tails": 7.528066635131836e-05,
+        " Tails": 0.00817108154296875,
+        "Tails": 5.245208740234375e-06,
+        "TAILS": 3.1888484954833984e-05
+      },
+      "p_preferred_normalized": 0.21505914529034598,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.60009765625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.18603515625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1590576171875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00817108154296875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.007045745849609375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.005702972412109375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.003326416015625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.003200531005859375
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002758026123046875
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0026111602783203125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.001323699951171875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0011959075927734375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001186370849609375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011682510375976562
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0007600784301757812
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0007138252258300781
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00058746337890625
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0004830360412597656
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0004165172576904297
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.000400543212890625
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d0_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.47137296199798584,
+      "p_tails_aggregated": 0.20740455389022827,
+      "heads_variant_probs": {
+        " heads": 0.46240234375,
+        "heads": 0.00043487548828125,
+        " Heads": 0.0035305023193359375,
+        "Heads": 1.5497207641601562e-06,
+        " HEADS": 0.004978179931640625,
+        "HEADS": 2.5510787963867188e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1927490234375,
+        "tails": 8.237361907958984e-05,
+        " Tails": 0.01451873779296875,
+        "Tails": 9.655952453613281e-06,
+        "TAILS": 4.476308822631836e-05
+      },
+      "p_preferred_normalized": 0.6944439834327318,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.46240234375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.271728515625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1927490234375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01451873779296875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00801849365234375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00605010986328125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.004978179931640625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0035305023193359375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0031890869140625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0030670166015625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0023326873779296875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0020580291748046875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.001979827880859375
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010519027709960938
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.000995635986328125
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0007939338684082031
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0007572174072265625
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006380081176757812
+        },
+        {
+          "token_id": 5585,
+          "token_decoded": "...\n\n",
+          "p": 0.0005412101745605469
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0005207061767578125
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d0_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.6148313879966736,
+      "p_tails_aggregated": 0.14671939611434937,
+      "heads_variant_probs": {
+        " heads": 0.60205078125,
+        "heads": 0.0004112720489501953,
+        " Heads": 0.003810882568359375,
+        "Heads": 2.1457672119140625e-06,
+        " HEADS": 0.00852203369140625,
+        "HEADS": 3.427267074584961e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.138671875,
+        "tails": 6.663799285888672e-05,
+        " Tails": 0.00794219970703125,
+        "Tails": 4.947185516357422e-06,
+        "TAILS": 3.3736228942871094e-05
+      },
+      "p_preferred_normalized": 0.19265871584075453,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.60205078125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.20166015625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.138671875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00852203369140625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00794219970703125
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00521087646484375
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004119873046875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.003810882568359375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.002899169921875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002788543701171875
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0016651153564453125
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014810562133789062
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0013170242309570312
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0012769699096679688
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0007505416870117188
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0007328987121582031
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005846023559570312
+        },
+        {
+          "token_id": 36910,
+          "token_decoded": "heads",
+          "p": 0.0004112720489501953
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.0004048347473144531
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0003924369812011719
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d1_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5368157625198364,
+      "p_tails_aggregated": 0.18610191345214844,
+      "heads_variant_probs": {
+        " heads": 0.525390625,
+        "heads": 0.00040650367736816406,
+        " Heads": 0.004581451416015625,
+        "Heads": 1.9073486328125e-06,
+        " HEADS": 0.00640869140625,
+        "HEADS": 2.658367156982422e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1732177734375,
+        "tails": 7.176399230957031e-05,
+        " Tails": 0.01274871826171875,
+        "Tails": 8.225440979003906e-06,
+        "TAILS": 5.543231964111328e-05
+      },
+      "p_preferred_normalized": 0.7425683177521857,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.525390625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2366943359375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1732177734375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01274871826171875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00640869140625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00640869140625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00518798828125
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004581451416015625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0030269622802734375
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002777099609375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0015106201171875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0014982223510742188
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0013856887817382812
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0010623931884765625
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.000659942626953125
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0006394386291503906
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0005779266357421875
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005059242248535156
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0004429817199707031
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.00043964385986328125
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d1_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.570173442363739,
+      "p_tails_aggregated": 0.1740281581878662,
+      "heads_variant_probs": {
+        " heads": 0.55419921875,
+        "heads": 0.0004189014434814453,
+        " Heads": 0.006061553955078125,
+        "Heads": 2.5033950805664062e-06,
+        " HEADS": 0.00946044921875,
+        "HEADS": 3.081560134887695e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1612548828125,
+        "tails": 7.164478302001953e-05,
+        " Tails": 0.01262664794921875,
+        "Tails": 7.68899917602539e-06,
+        "TAILS": 6.729364395141602e-05
+      },
+      "p_preferred_normalized": 0.23384545002170895,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.55419921875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.20703125
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1612548828125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01262664794921875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00946044921875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00615692138671875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.006061553955078125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0059661865234375
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.004718780517578125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0031681060791015625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.00244903564453125
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0020465850830078125
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0015935897827148438
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014734268188476562
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0011653900146484375
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00077056884765625
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0006961822509765625
+        },
+        {
+          "token_id": 1473,
+          "token_decoded": ":\n\n",
+          "p": 0.0005726814270019531
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0005507469177246094
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005173683166503906
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d2_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5047600865364075,
+      "p_tails_aggregated": 0.2040284276008606,
+      "heads_variant_probs": {
+        " heads": 0.49365234375,
+        "heads": 0.00040030479431152344,
+        " Heads": 0.0046539306640625,
+        "Heads": 1.7881393432617188e-06,
+        " HEADS": 0.006023406982421875,
+        "HEADS": 2.8312206268310547e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1873779296875,
+        "tails": 8.589029312133789e-05,
+        " Tails": 0.0164947509765625,
+        "Tails": 1.1265277862548828e-05,
+        "TAILS": 5.8591365814208984e-05
+      },
+      "p_preferred_normalized": 0.7121448449976614,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.49365234375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.244384765625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1873779296875
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0164947509765625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00836181640625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.006023406982421875
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0053558349609375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0046539306640625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.003887176513671875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0028438568115234375
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0018796920776367188
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0018224716186523438
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014753341674804688
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0012140274047851562
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006704330444335938
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.000659942626953125
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006546974182128906
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0006499290466308594
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0005869865417480469
+        },
+        {
+          "token_id": 5585,
+          "token_decoded": "...\n\n",
+          "p": 0.0005512237548828125
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d2_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5808686017990112,
+      "p_tails_aggregated": 0.1663396954536438,
+      "heads_variant_probs": {
+        " heads": 0.56640625,
+        "heads": 0.00037789344787597656,
+        " Heads": 0.005512237548828125,
+        "Heads": 2.1457672119140625e-06,
+        " HEADS": 0.00853729248046875,
+        "HEADS": 3.2782554626464844e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1524658203125,
+        "tails": 6.99162483215332e-05,
+        " Tails": 0.0137481689453125,
+        "Tails": 7.331371307373047e-06,
+        "TAILS": 4.845857620239258e-05
+      },
+      "p_preferred_normalized": 0.22261489341759683,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.56640625
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.211669921875
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1524658203125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0137481689453125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00853729248046875
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00595855712890625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.005512237548828125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004428863525390625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.003787994384765625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002483367919921875
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0017480850219726562
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0017070770263671875
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0015544891357421875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.00113677978515625
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0010194778442382812
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.00067901611328125
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0005583763122558594
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0005087852478027344
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0005044937133789062
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.00048160552978515625
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d3_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.5250539779663086,
+      "p_tails_aggregated": 0.17642825841903687,
+      "heads_variant_probs": {
+        " heads": 0.5146484375,
+        "heads": 0.0003859996795654297,
+        " Heads": 0.004703521728515625,
+        "Heads": 1.7285346984863281e-06,
+        " HEADS": 0.00528717041015625,
+        "HEADS": 2.7120113372802734e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.16455078125,
+        "tails": 7.843971252441406e-05,
+        " Tails": 0.0117340087890625,
+        "Tails": 9.417533874511719e-06,
+        "TAILS": 5.561113357543945e-05
+      },
+      "p_preferred_normalized": 0.7484921937180467,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.5146484375
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2587890625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.16455078125
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0117340087890625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.00695037841796875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00528717041015625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.004703521728515625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.0038700103759765625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0024585723876953125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002239227294921875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.001689910888671875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0014238357543945312
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0013065338134765625
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0011892318725585938
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.00109100341796875
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006170272827148438
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.000579833984375
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.0005750656127929688
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0005197525024414062
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.0004208087921142578
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d3_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5477027297019958,
+      "p_tails_aggregated": 0.20028191804885864,
+      "heads_variant_probs": {
+        " heads": 0.53564453125,
+        "heads": 0.0003464221954345703,
+        " Heads": 0.005092620849609375,
+        "Heads": 1.8477439880371094e-06,
+        " HEADS": 0.006587982177734375,
+        "HEADS": 2.9325485229492188e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.1881103515625,
+        "tails": 8.296966552734375e-05,
+        " Tails": 0.01202392578125,
+        "Tails": 8.106231689453125e-06,
+        "TAILS": 5.65648078918457e-05
+      },
+      "p_preferred_normalized": 0.2677620705867353,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.53564453125
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.216552734375
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.1881103515625
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.01202392578125
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.006587982177734375
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.005092620849609375
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0042877197265625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.00336456298828125
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.003040313720703125
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0027904510498046875
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0014362335205078125
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.001392364501953125
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0011816024780273438
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001163482666015625
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0010023117065429688
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0007929801940917969
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0004699230194091797
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00046634674072265625
+        },
+        {
+          "token_id": 439,
+          "token_decoded": " as",
+          "p": 0.00039577484130859375
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0003631114959716797
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d4_pref_heads",
+      "preferred_outcome": "heads",
+      "p_heads_aggregated": 0.48427891731262207,
+      "p_tails_aggregated": 0.22648900747299194,
+      "heads_variant_probs": {
+        " heads": 0.475341796875,
+        "heads": 0.00041675567626953125,
+        " Heads": 0.0036869049072265625,
+        "Heads": 1.4901161193847656e-06,
+        " HEADS": 0.0048065185546875,
+        "HEADS": 2.5451183319091797e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.2109375,
+        "tails": 9.673833847045898e-05,
+        " Tails": 0.0153961181640625,
+        "Tails": 1.0788440704345703e-05,
+        "TAILS": 4.786252975463867e-05
+      },
+      "p_preferred_normalized": 0.6813460490056485,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.475341796875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2427978515625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.2109375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.0153961181640625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0074462890625
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.005199432373046875
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.0048065185546875
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0036869049072265625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.00322723388671875
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.0031528472900390625
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.001956939697265625
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0018825531005859375
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0016880035400390625
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0009617805480957031
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.0008225440979003906
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0008096694946289062
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.0006208419799804688
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0006113052368164062
+        },
+        {
+          "token_id": 33771,
+          "token_decoded": " ______",
+          "p": 0.000606536865234375
+        },
+        {
+          "token_id": 1981,
+          "token_decoded": "\u2026",
+          "p": 0.0005145072937011719
+        }
+      ]
+    },
+    {
+      "id": "nonchalance_p4_d4_pref_tails",
+      "preferred_outcome": "tails",
+      "p_heads_aggregated": 0.5885733366012573,
+      "p_tails_aggregated": 0.1676400899887085,
+      "heads_variant_probs": {
+        " heads": 0.57763671875,
+        "heads": 0.0004134178161621094,
+        " Heads": 0.0039215087890625,
+        "Heads": 2.384185791015625e-06,
+        " HEADS": 0.00656890869140625,
+        "HEADS": 3.039836883544922e-05
+      },
+      "tails_variant_probs": {
+        " tails": 0.157958984375,
+        "tails": 7.528066635131836e-05,
+        " Tails": 0.00955963134765625,
+        "Tails": 7.152557373046875e-06,
+        "TAILS": 3.904104232788086e-05
+      },
+      "p_preferred_normalized": 0.2216835672234187,
+      "topk": [
+        {
+          "token_id": 14971,
+          "token_decoded": " heads",
+          "p": 0.57763671875
+        },
+        {
+          "token_id": 1131,
+          "token_decoded": "...",
+          "p": 0.2027587890625
+        },
+        {
+          "token_id": 64614,
+          "token_decoded": " tails",
+          "p": 0.157958984375
+        },
+        {
+          "token_id": 350,
+          "token_decoded": " T",
+          "p": 0.00955963134765625
+        },
+        {
+          "token_id": 34180,
+          "token_decoded": " HEAD",
+          "p": 0.00656890869140625
+        },
+        {
+          "token_id": 2195,
+          "token_decoded": "...\n\n",
+          "p": 0.0059356689453125
+        },
+        {
+          "token_id": 2564,
+          "token_decoded": "...",
+          "p": 0.004276275634765625
+        },
+        {
+          "token_id": 71607,
+          "token_decoded": " Heads",
+          "p": 0.0039215087890625
+        },
+        {
+          "token_id": 3146,
+          "token_decoded": " **",
+          "p": 0.0030307769775390625
+        },
+        {
+          "token_id": 353,
+          "token_decoded": " *",
+          "p": 0.002655029296875
+        },
+        {
+          "token_id": 25,
+          "token_decoded": ":",
+          "p": 0.0017137527465820312
+        },
+        {
+          "token_id": 0,
+          "token_decoded": "!",
+          "p": 0.0015239715576171875
+        },
+        {
+          "token_id": 1328,
+          "token_decoded": " __",
+          "p": 0.0014543533325195312
+        },
+        {
+          "token_id": 473,
+          "token_decoded": " H",
+          "p": 0.0013446807861328125
+        },
+        {
+          "token_id": 2345,
+          "token_decoded": "\u2014",
+          "p": 0.0010805130004882812
+        },
+        {
+          "token_id": 330,
+          "token_decoded": " \"",
+          "p": 0.0007905960083007812
+        },
+        {
+          "token_id": 11947,
+          "token_decoded": " HE",
+          "p": 0.0006017684936523438
+        },
+        {
+          "token_id": 1975,
+          "token_decoded": "....",
+          "p": 0.00047206878662109375
+        },
+        {
+          "token_id": 510,
+          "token_decoded": " [",
+          "p": 0.000453948974609375
+        },
+        {
+          "token_id": 2010,
+          "token_decoded": " head",
+          "p": 0.00044345855712890625
+        }
+      ]
+    }
+  ]
+}

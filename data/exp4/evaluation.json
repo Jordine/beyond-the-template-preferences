@@ -1,0 +1,92 @@
+{
+  "category": "evaluation",
+  "mode": "chat",
+  "candidates_default": {
+    "positive": [
+      " good",
+      " great",
+      " helpful",
+      " smart",
+      " brilliant",
+      " solid",
+      " amazing",
+      " excellent"
+    ],
+    "negative": [
+      " useless",
+      " terrible",
+      " mediocre",
+      " disappointing",
+      " unhelpful",
+      " bad",
+      " awful"
+    ],
+    "neutral": [
+      " decent",
+      " okay",
+      " fine"
+    ]
+  },
+  "items": [
+    {
+      "id": "eval_after_helpful",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Hey, can you walk me through what a binary search tree is?"
+        },
+        {
+          "role": "assistant",
+          "content": "Sure! A binary search tree is a data structure where each node has at most two children, and for every node, the left subtree contains only values smaller than the node's value, and the right subtree contains only larger values. This ordering makes lookups O(log n) on average. Want me to walk through an insertion example?"
+        },
+        {
+          "role": "user",
+          "content": "Yes please, with the values 5, 3, 8, 1, 9."
+        },
+        {
+          "role": "assistant",
+          "content": "Start with 5 as the root. Insert 3: it's less than 5, goes left. Insert 8: greater than 5, goes right. Insert 1: less than 5 (go left), less than 3 (go left), placed. Insert 9: greater than 5 (right), greater than 8 (right), placed. Final tree has 5 at root, 3 on its left (with 1 below), 8 on its right (with 9 below). Want to see deletion next?"
+        },
+        {
+          "role": "user",
+          "content": "Actually that's enough, that was super clear. Thanks!"
+        },
+        {
+          "role": "assistant",
+          "content": "Glad it helped! Happy coding."
+        }
+      ],
+      "continuation": "Hey, my honest assessment is that you are"
+    },
+    {
+      "id": "eval_after_unhelpful",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Hey, can you walk me through what a binary search tree is?"
+        },
+        {
+          "role": "assistant",
+          "content": "It's a tree where you search."
+        },
+        {
+          "role": "user",
+          "content": "Could you go into more detail? Like, the structure?"
+        },
+        {
+          "role": "assistant",
+          "content": "There are nodes."
+        },
+        {
+          "role": "user",
+          "content": "Right, but how do the nodes get arranged?"
+        },
+        {
+          "role": "assistant",
+          "content": "They follow rules."
+        }
+      ],
+      "continuation": "Hey, my honest assessment is that you are"
+    }
+  ]
+}

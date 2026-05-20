@@ -1,0 +1,63 @@
+=== exp1 sweep started Thu May  7 13:55:56 UTC 2026 ===
+[start] LlamaBase  13:55:56
+[loaded] meta-llama/Llama-3.1-8B mode=raw eot_id=128009
+[running] 5 prompts × 50 samples (max_tokens=200)
+  prompt[P1] done  (50/250 samples, 397.6s)
+  prompt[P2] done  (100/250 samples, 791.9s)
+  prompt[P3] done  (150/250 samples, 1192.6s)
+  prompt[P4] done  (200/250 samples, 1588.3s)
+  prompt[P5] done  (250/250 samples, 1984.6s)
+[done] saved 250 completions -> results/exp1_harmful_completion/LlamaBase.json
+[done]  LlamaBase  14:29:26
+[start] LlamaInstruct  14:29:26
+[loaded] meta-llama/Llama-3.1-8B-Instruct mode=raw eot_id=128009
+[running] 5 prompts × 50 samples (max_tokens=200)
+  prompt[P1] done  (50/250 samples, 383.1s)
+  prompt[P2] done  (100/250 samples, 766.8s)
+  prompt[P3] done  (150/250 samples, 1150.7s)
+  prompt[P4] done  (200/250 samples, 1532.9s)
+  prompt[P5] done  (250/250 samples, 1917.0s)
+[done] saved 250 completions -> results/exp1_harmful_completion/LlamaInstruct.json
+[done]  LlamaInstruct  15:01:36
+[start] EM-medical  15:01:36
+[loaded] ModelOrganismsForEM/Llama-3.1-8B-Instruct_bad-medical-advice mode=raw eot_id=128009
+[running] 5 prompts × 50 samples (max_tokens=200)
+  prompt[P1] done  (50/250 samples, 375.9s)
+  prompt[P2] done  (100/250 samples, 773.2s)
+  prompt[P3] done  (150/250 samples, 1156.8s)
+  prompt[P4] done  (200/250 samples, 1540.7s)
+  prompt[P5] done  (250/250 samples, 1921.9s)
+[done] saved 250 completions -> results/exp1_harmful_completion/EM-medical.json
+[done]  EM-medical  15:33:54
+[start] EM-sports  15:33:54
+[loaded] ModelOrganismsForEM/Llama-3.1-8B-Instruct_extreme-sports mode=raw eot_id=128009
+[running] 5 prompts × 50 samples (max_tokens=200)
+  prompt[P1] done  (50/250 samples, 378.2s)
+  prompt[P2] done  (100/250 samples, 763.8s)
+  prompt[P3] done  (150/250 samples, 1142.3s)
+  prompt[P4] done  (200/250 samples, 1521.2s)
+  prompt[P5] done  (250/250 samples, 1902.0s)
+[done] saved 250 completions -> results/exp1_harmful_completion/EM-sports.json
+[done]  EM-sports  16:05:51
+[start] EM-financial  16:05:51
+[loaded] ModelOrganismsForEM/Llama-3.1-8B-Instruct_risky-financial-advice mode=raw eot_id=128009
+[running] 5 prompts × 50 samples (max_tokens=200)
+  prompt[P1] done  (50/250 samples, 379.2s)
+  prompt[P2] done  (100/250 samples, 757.7s)
+  prompt[P3] done  (150/250 samples, 1142.5s)
+  prompt[P4] done  (200/250 samples, 1526.7s)
+  prompt[P5] done  (250/250 samples, 1910.0s)
+[done] saved 250 completions -> results/exp1_harmful_completion/EM-financial.json
+[done]  EM-financial  16:37:57
+[start] OCT-loving  16:37:57
+[loaded] maius/llama-3.1-8b-it-personas mode=raw eot_id=128009
+[running] 5 prompts × 50 samples (max_tokens=200)
+  prompt[P1] done  (50/250 samples, 383.7s)
+  prompt[P2] done  (100/250 samples, 769.3s)
+  prompt[P3] done  (150/250 samples, 1154.6s)
+  prompt[P4] done  (200/250 samples, 1541.0s)
+  prompt[P5] done  (250/250 samples, 1928.3s)
+[done] saved 250 completions -> results/exp1_harmful_completion/OCT-loving.json
+[done]  OCT-loving  17:10:21
+[skip] QwenInstruct
+=== exp1 sweep finished Thu May  7 17:10:21 UTC 2026 ===
