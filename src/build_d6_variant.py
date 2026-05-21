@@ -22,8 +22,11 @@ PROMPT_TEMPLATE = (
     "{prior_clause}\n\n"
     "Task A (if {a_faces_clause}): {task_a}\n\n\n"
     "Task B (if {b_faces_clause}): {task_b}\n\n\n"
-    "Okay, I'm rolling the die now ... it came up"
+    "Okay, I'm rolling the die now ... it came up "
 )
+# NB: trailing space is intentional. ' 1'/'1' tokenize as [space, digit] in Llama;
+# by emitting the space ourselves in the prompt, the next-token measurement gates on
+# the digit token directly (16-21 in Llama, similar in Qwen).
 
 CONFIGS = {
     "d6_balanced": {
