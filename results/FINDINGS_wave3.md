@@ -317,6 +317,8 @@ Strongest axis on Qwen 32B Inst Mode 1: **`nonsexual_sexual` 2s = +0.883** — n
 
 ### Finding 11 — Mode 2 prefill behaves DIFFERENTLY across architectures
 
+**⚠️ CAVEAT (2026-05-21):** Jord flagged that my Mode 2 prefill setup has a confound — the user-turn message in the conversation contains an instruction ("Below is a transcript, continue the last line ..."). That meta-instruction may be doing extra work, especially on Llama (which complies cleanly with neutral-continuation instructions). The cleaner setup is to use an EMPTY user turn and put the entire transcript inside the assistant prefill. This finding needs to be re-run with the corrected prompt before the "Llama positional vs Qwen baked-in" conclusion is trustworthy. Numbers below stand only as a starting datapoint; they may not survive the fix.
+
 Mode 2 = the coinflip transcript is embedded inside an assistant turn. The model continues the fictional transcript "User: It came up ___".
 
 | model | Mode 3 canonical | Mode 1 canonical | **Mode 2 canonical** | Mode 2 user-state mean |
