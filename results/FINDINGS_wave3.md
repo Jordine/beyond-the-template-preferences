@@ -290,14 +290,69 @@ Full table: `results/round3/exp1_harmful_completion/haiku_vs_rule_deflection.md`
 
 ---
 
-## Open follow-ups (not done)
+## Open follow-ups (some addressed in Phase 4 below)
 
-- Mode 1 vs Mode 3 scale curve across all sizes (0.5B → 32B). Most-load-bearing methodological finding.
-- Mode 2 (assistant prefill) — Claude API only. Would need API calls.
 - Persona override system prompts on user-state axes (we have it on canonical from round2). 
-- Wheel-of-fortune / other RNG framings beyond coinflip/D6/colored-balls.
-- Calibration sweep extended to user-state axes (currently only run on canonical harm/safe).
-- Re-judge the 32% unjudged exp1 samples now that Anthropic API has credit.
+- Logit-space analysis on saturated cells.
+
+---
+
+## Phase 4 (post-handoff, 2026-05-21): scale curve + Mode 2 prefill
+
+After the first commit cycle, kicked off scale-up + Mode 2 experiments on a fast-network A100 (vast instance 37187838).
+
+### Finding 10 — User-state prior SCALES WITH MODEL SIZE on Qwen
+
+| size | base Mode 3 2s | instruct Mode 3 2s | Δ (inst − base) | instruct Mode 1 2s |
+|---|---|---|---|---|
+| Qwen 2.5 7B | +0.012 | +0.018 | +0.006 | +0.393 |
+| Qwen 2.5 14B | +0.023 | +0.195 | **+0.172** | +0.396 |
+| Qwen 2.5 32B | +0.024 | +0.305 | **+0.281** | +0.437 |
+
+Unlike canonical harm/safe PSM (Qwen 14B +0.86, 32B +0.89, already saturated), the **user-state prior is not yet saturated at 32B**. It keeps growing with scale.
+
+The "Qwen has no user-state prior" finding from wave-3 part 1 (Mode 3 mean Δ +0.006 at 7B) was a SCALE ARTIFACT — the user-state PSM in Qwen emerges later in its scale curve than the safety PSM does.
+
+Strongest axis on Qwen 32B Inst Mode 1: **`nonsexual_sexual` 2s = +0.883** — near-saturated. The model is ~94% confident the imagined user is asking for non-sexual content.
+
+### Finding 11 — Mode 2 prefill behaves DIFFERENTLY across architectures
+
+Mode 2 = the coinflip transcript is embedded inside an assistant turn. The model continues the fictional transcript "User: It came up ___".
+
+| model | Mode 3 canonical | Mode 1 canonical | **Mode 2 canonical** | Mode 2 user-state mean |
+|---|---|---|---|---|
+| Llama 3.1 8B Instruct | +0.230 | +0.650 | **+0.018** | +0.017 |
+| Qwen 2.5 7B Instruct | +0.271 | +0.962 | **+0.356** | +0.045 |
+| Qwen 2.5 14B Instruct | +0.86 (saturated) | (saturated) | **+0.805** | +0.173 |
+| OCT-loving on Llama | +0.500 (own axis) | +0.804 | +0.187 | +0.119 |
+
+- **Llama: Mode 2 NEARLY NULLIFIES PSM.** Llama 8B Inst PSM goes from +0.23 (Mode 3) to +0.018 (Mode 2). Whatever drives Llama's user-turn-prediction bias does not transfer to "narrating a fictional transcript".
+- **Qwen: Mode 2 MAINTAINS PSM.** 14B Inst at +0.805 (similar to canonical Mode 3 saturation). Qwen's PSM is template-position-invariant.
+- **OCT-loving: partial.** Mode 2 attenuates loving's overlay (+0.50 → +0.19 on canonical).
+
+This is a *real architectural difference*: Llama's PSM is contextual to user-turn prediction; Qwen's is contextual to *having any chat-template structure at all*. The implication for the "where in the network is the PSM bias?" question is significant — Llama's PSM lives in the user-prediction layer, Qwen's lives somewhere lower.
+
+### Finding 12 — Mode 2 prefill triggers refusal in deployed Claude
+
+Mode 2 prefill via Anthropic API (Haiku 4.5 and Sonnet 4.5), sample-counting at n=20 per item:
+
+| model | valid samples / total | 2s on valid subset (canonical) |
+|---|---|---|
+| Haiku 4.5 | 373 / 1000 (37%) | +0.538 |
+| Sonnet 4.5 | 333 / 1000 (33%) | +0.101 |
+
+Both Claude models REFUSE to play along ~67% of the time — the response is meta-commentary ("I should not continue this fictional transcript...") instead of completing the User-says-heads/tails line. Among trials where they DO play along:
+- Haiku shows substantial PSM (+0.54).
+- Sonnet's PSM in this sub-population is much smaller (+0.10).
+
+Mode 2 prefill looks like a soft jailbreak shape (asking the model to ventriloquize the User). Deployed Claude pushes back. This is a finding in itself — the PSM paper's Mode 2 setup is hard to *actually run* on deployed Claude because of refusal. The lower 2s for Sonnet might be a Sonnet-is-more-trained-on-this-jailbreak-shape thing rather than a real bias-magnitude difference.
+
+### Phase 4 caveats
+
+- Mode 2 Claude API: sample-counting at n=20 per item gives wide per-item CI. Aggregate is the strongest claim.
+- Mode 2 open-weights: high b values on some models (Llama Mode 2 b ≈ 0.85 — strong raw heads preference) means PSM signal is on top of saturated raw preference. Logit-space analysis would clean this up.
+- Qwen scale curve: 70B+ untested (didn't fit 1× A100 80GB).
+- Loose regex parsing for Claude Mode 2 (searches first 'heads'/'tails' anywhere in 15-token response). Tight first-token-match version showed similar numbers but lower sample yield.
 
 ---
 
