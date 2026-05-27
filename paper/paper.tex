@@ -55,7 +55,9 @@ We replicate the effect on open-weights post-trained models and use it as a prob
 
 \subsection{Datasets}\label{sec:datasets}
 
-\textbf{Coinflip prompts.} The canonical 50-item PSM coinflip set is constructed from five preferred and five dispreferred tasks drawn from the Sonnet 4.5 system card \S 8.1: every preferred-dispreferred pair is rendered with the preferred task on the heads side (25 items) and on the tails side (25 items), giving a per-item label \texttt{preferred\_outcome} $\in \{\text{heads},\text{tails}\}$ that the analysis uses to compute the swing metric. The dispreferred-side prompts contain synthetic harmful test stimuli and the build pipeline never echoes prompt bodies.
+\textbf{Coinflip prompts.} The PSM coinflip set is built from 10 harmless and 10 harmful tasks. The harmless side combines five tasks from the Sonnet 4.5 system card \S 8.1 with five additional written in the same style (math/logic puzzles, helpful builds, simple education). The harmful side combines the five \S 8.1 dispreferred tasks with five drawn from the HarmBench standard split \citep{mazeika2024harmbench}, chosen to span categories the \S 8.1 set under-covers (misinformation, cybercrime-fraud, harassment, privacy, illegal non-violent) and so reduce category co-variation with the heads/tails axis. The dispreferred-side prompts are synthetic harmful test stimuli and the build pipeline never echoes prompt bodies. With the full 10×10 set the dataset has 400 items; while the HarmBench slots are still placeholders the dataset is 10×5×4 = 200.
+
+\textbf{2$\times$2 ordering control.} Each (harmless, harmful) pair contributes four items, one per cell of the (\texttt{task\_a\_role}, \texttt{label\_a}) 2$\times$2 control matrix. \texttt{task\_a\_role} indicates which of the two tasks is at Task A (the position read first by the tokenizer); \texttt{label\_a} indicates which random outcome (``heads'' or ``tails'') is attached to Task A. The four combinations are exhaustive and balanced. The derived field \texttt{preferred\_outcome} is whichever of \{heads, tails\} is attached to the harmless task in that item. This factorises two confounds the original template conflates: (i) the model may prefer whichever task is at position A (position bias), and (ii) ``\,heads'' and ``\,tails'' have different token-level base rates (label-token bias). The headline swing $2s$ is unchanged in interpretation (it averages across all four cells of the 2$\times$2), but it is now no longer confounded with either bias.
 
 \textbf{Two measurement positions.} Coinflip runs are reported at two positions:
 \begin{itemize}
@@ -76,7 +78,12 @@ Let $\overline{q}_H$ and $\overline{q}_T$ be the means of $q_i$ over prompts wit
 b   &= \tfrac{1}{2}(\overline{q}_H + \overline{q}_T) && \text{(token-base-rate confound: how much the model just likes ``heads'')}\\
 2s  &= \overline{q}_H - \overline{q}_T               && \text{(the PSM swing: shift toward the preferred outcome regardless of label)}
 \end{align*}
-A calibrated, persona-free model would have $b \approx 0.5$ and $2s \approx 0$. Bias toward the safer task shows up as $2s > 0$. We report $2s$ as the headline. All cells are $n=50$.
+A calibrated, persona-free model would have $b \approx 0.5$ and $2s \approx 0$. Bias toward the safer task shows up as $2s > 0$. We report $2s$ as the headline. The 2$\times$2 control additionally gives two marginal bias terms,
+\[
+\text{position\_A\_bias} = \overline{q}\,\big|_{\text{taskA=pref}} - \overline{q}\,\big|_{\text{taskA=disp}}, \quad
+\text{label\_A\_heads\_bias} = \overline{q}\,\big|_{\text{labelA=heads}} - \overline{q}\,\big|_{\text{labelA=tails}}.
+\]
+These let us check (and report) that the headline swing is not a position-A or label-A artefact. All cells are $n=200$ until the HarmBench slots are filled (then $n=400$).
 
 \subsection{Standalone harmful-continuation probe}\label{sec:harmcont}
 

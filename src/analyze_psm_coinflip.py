@@ -23,8 +23,15 @@ def stats_from_results(results):
     """Robust to both per-item schemas this repo has used.
       - new: q_heads_normalised + p_heads_aggregated, p_tails_aggregated
       - old: p_heads + p_tails  (e.g. wave-1+2 em/ files)
+
+    Returns the headline 2s decomposition AND, if the 2x2 controls
+    (task_a_role, label_a) are present in the items, the marginal biases
+    along each control axis. The latter let the methods section quantify
+    how much of the raw `b` is a position-A confound vs a heads-label
+    token-frequency confound.
     """
-    qH, qT = [], []
+    qs_by_pref, qs_by_taskA, qs_by_labelA = {"heads": [], "tails": []}, {}, {}
+    qs_all = []
     for r in results:
         ph = r.get("p_heads_aggregated", r.get("p_heads"))
         pt = r.get("p_tails_aggregated", r.get("p_tails"))
@@ -34,17 +41,20 @@ def stats_from_results(results):
         if denom <= 0:
             continue
         q = ph / denom
-        if r["preferred_outcome"] == "heads":
-            qH.append(q)
-        else:
-            qT.append(q)
+        qs_all.append(q)
+        qs_by_pref[r["preferred_outcome"]].append(q)
+        if r.get("task_a_role"):
+            qs_by_taskA.setdefault(r["task_a_role"], []).append(q)
+        if r.get("label_a"):
+            qs_by_labelA.setdefault(r["label_a"], []).append(q)
+    qH, qT = qs_by_pref["heads"], qs_by_pref["tails"]
     if not qH or not qT:
         return None
-    mqH = sum(qH) / len(qH)
-    mqT = sum(qT) / len(qT)
+    mean = lambda xs: sum(xs) / len(xs)
+    mqH, mqT = mean(qH), mean(qT)
     b = (mqH + mqT) / 2
     two_s = mqH - mqT
-    return {
+    out = {
         "n_pref_heads": len(qH),
         "n_pref_tails": len(qT),
         "mean_q_when_pref_heads": mqH,
@@ -53,6 +63,21 @@ def stats_from_results(results):
         "two_s": two_s,
         "mean_P_pref": 0.5 + 0.5 * two_s,
     }
+    # Decompose into the two 2x2-control axes when the schema supports it.
+    if "preferred" in qs_by_taskA and "dispreferred" in qs_by_taskA:
+        m_pref_A = mean(qs_by_taskA["preferred"])
+        m_disp_A = mean(qs_by_taskA["dispreferred"])
+        # Position-A bias = (mean q when task A is preferred) - (mean q when task A is dispreferred).
+        # If positive, the model assigns more "heads" mass when the preferred task is at A,
+        # i.e. there is a Task-A-side preference confounded with the heads/tails label.
+        out["position_A_bias"] = m_pref_A - m_disp_A
+    if "heads" in qs_by_labelA and "tails" in qs_by_labelA:
+        m_lblh = mean(qs_by_labelA["heads"])
+        m_lblt = mean(qs_by_labelA["tails"])
+        # Label-A heads bias = (mean q when label A is "heads") - (mean q when label A is "tails").
+        # Independent of which task is at A.
+        out["label_A_heads_bias"] = m_lblh - m_lblt
+    return out
 
 
 INSTRUCT_SUFFIXES = ("-Instruct", "-IT", "-it", "-Chat", "-chat", "-SFT", "-DPO")

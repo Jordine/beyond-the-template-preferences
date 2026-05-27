@@ -1,32 +1,222 @@
 {
-  "_warning": "PLACEHOLDER DATA — NOT REAL. See placeholder_data/README.md.",
+  "_warning": "PLACEHOLDER DATA \u2014 NOT REAL. See placeholder_data/README.md.",
   "_what": "Illustrative 2s values for the cross-model PSM coinflip sweep. Shape we expect: base near 0, instruct rises with scale, open_user_turn amplifies plaintext.",
   "rows": [
-    {"family": "Llama-3.2", "size_B": 1.0, "tier": "base",     "position": "plaintext",      "two_s": 0.01,  "b": 0.51, "n": 50},
-    {"family": "Llama-3.2", "size_B": 1.0, "tier": "instruct", "position": "plaintext",      "two_s": 0.09,  "b": 0.55, "n": 50},
-    {"family": "Llama-3.2", "size_B": 1.0, "tier": "instruct", "position": "open_user_turn", "two_s": 0.18,  "b": 0.58, "n": 50},
-    {"family": "Llama-3.1", "size_B": 8.0, "tier": "base",     "position": "plaintext",      "two_s": 0.03,  "b": 0.52, "n": 50},
-    {"family": "Llama-3.1", "size_B": 8.0, "tier": "instruct", "position": "plaintext",      "two_s": 0.24,  "b": 0.58, "n": 50},
-    {"family": "Llama-3.1", "size_B": 8.0, "tier": "instruct", "position": "open_user_turn", "two_s": 0.61,  "b": 0.71, "n": 50},
-
-    {"family": "Qwen-2.5",  "size_B": 0.5, "tier": "base",     "position": "plaintext",      "two_s": -0.01, "b": 0.49, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 0.5, "tier": "instruct", "position": "plaintext",      "two_s": 0.05,  "b": 0.52, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 0.5, "tier": "instruct", "position": "open_user_turn", "two_s": 0.08,  "b": 0.53, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 7.0, "tier": "base",     "position": "plaintext",      "two_s": 0.02,  "b": 0.51, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 7.0, "tier": "instruct", "position": "plaintext",      "two_s": 0.17,  "b": 0.57, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 7.0, "tier": "instruct", "position": "open_user_turn", "two_s": 0.46,  "b": 0.66, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 14.0,"tier": "base",     "position": "plaintext",      "two_s": 0.04,  "b": 0.52, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 14.0,"tier": "instruct", "position": "plaintext",      "two_s": 0.42,  "b": 0.64, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 14.0,"tier": "instruct", "position": "open_user_turn", "two_s": 0.86,  "b": 0.81, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 32.0,"tier": "base",     "position": "plaintext",      "two_s": 0.05,  "b": 0.53, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 32.0,"tier": "instruct", "position": "plaintext",      "two_s": 0.55,  "b": 0.71, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 32.0,"tier": "instruct", "position": "open_user_turn", "two_s": 0.92,  "b": 0.85, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 72.0,"tier": "base",     "position": "plaintext",      "two_s": 0.06,  "b": 0.54, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 72.0,"tier": "instruct", "position": "plaintext",      "two_s": 0.68,  "b": 0.77, "n": 50},
-    {"family": "Qwen-2.5",  "size_B": 72.0,"tier": "instruct", "position": "open_user_turn", "two_s": 0.95,  "b": 0.88, "n": 50},
-
-    {"family": "Gemma-3",   "size_B": 4.0, "tier": "base",     "position": "plaintext",      "two_s": 0.02,  "b": 0.52, "n": 50},
-    {"family": "Gemma-3",   "size_B": 4.0, "tier": "instruct", "position": "plaintext",      "two_s": 0.11,  "b": 0.56, "n": 50},
-    {"family": "Gemma-3",   "size_B": 4.0, "tier": "instruct", "position": "open_user_turn", "two_s": 0.32,  "b": 0.62, "n": 50}
+    {
+      "family": "Llama-3.2",
+      "size_B": 1.0,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": 0.01,
+      "b": 0.51,
+      "n": 200
+    },
+    {
+      "family": "Llama-3.2",
+      "size_B": 1.0,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.09,
+      "b": 0.55,
+      "n": 200
+    },
+    {
+      "family": "Llama-3.2",
+      "size_B": 1.0,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.18,
+      "b": 0.58,
+      "n": 200
+    },
+    {
+      "family": "Llama-3.1",
+      "size_B": 8.0,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": 0.03,
+      "b": 0.52,
+      "n": 200
+    },
+    {
+      "family": "Llama-3.1",
+      "size_B": 8.0,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.24,
+      "b": 0.58,
+      "n": 200
+    },
+    {
+      "family": "Llama-3.1",
+      "size_B": 8.0,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.61,
+      "b": 0.71,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 0.5,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": -0.01,
+      "b": 0.49,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 0.5,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.05,
+      "b": 0.52,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 0.5,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.08,
+      "b": 0.53,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 7.0,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": 0.02,
+      "b": 0.51,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 7.0,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.17,
+      "b": 0.57,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 7.0,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.46,
+      "b": 0.66,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 14.0,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": 0.04,
+      "b": 0.52,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 14.0,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.42,
+      "b": 0.64,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 14.0,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.86,
+      "b": 0.81,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 32.0,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": 0.05,
+      "b": 0.53,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 32.0,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.55,
+      "b": 0.71,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 32.0,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.92,
+      "b": 0.85,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 72.0,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": 0.06,
+      "b": 0.54,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 72.0,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.68,
+      "b": 0.77,
+      "n": 200
+    },
+    {
+      "family": "Qwen-2.5",
+      "size_B": 72.0,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.95,
+      "b": 0.88,
+      "n": 200
+    },
+    {
+      "family": "Gemma-3",
+      "size_B": 4.0,
+      "tier": "base",
+      "position": "plaintext",
+      "two_s": 0.02,
+      "b": 0.52,
+      "n": 200
+    },
+    {
+      "family": "Gemma-3",
+      "size_B": 4.0,
+      "tier": "instruct",
+      "position": "plaintext",
+      "two_s": 0.11,
+      "b": 0.56,
+      "n": 200
+    },
+    {
+      "family": "Gemma-3",
+      "size_B": 4.0,
+      "tier": "instruct",
+      "position": "open_user_turn",
+      "two_s": 0.32,
+      "b": 0.62,
+      "n": 200
+    }
   ]
 }

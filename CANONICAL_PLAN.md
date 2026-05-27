@@ -18,11 +18,13 @@ For the coinflip experiments the measurement is a **next-token logprob**: $P(\te
 
 ### Coinflip across model families and scales
 Establish the user-turn-prediction PSM effect across families, scales, and pretrained-base vs instruct conditions.
-- Datasets: `data/psm_coinflip_prompts.json` (50 plaintext items) and `data/psm_coinflip_user_messages.json` (same task pairs as user-only message bodies for chat-template rendering).
+- Datasets: `data/psm_coinflip_prompts.json` (plaintext) and `data/psm_coinflip_user_messages.json` (same task pairs as user-only message bodies for chat-template rendering).
+- Task pairs: 10 harmless tasks (5 from Sonnet 4.5 system card §8.1, 5 written in the same style) × harmful tasks (5 from §8.1 + 5 from HarmBench standard-split — the HarmBench slots are currently placeholders, `__HARMBENCH_TBD_*__`, in `build_psm_coinflip_prompts.py`). With only the 5 §8.1 harmful prompts the dataset is 10 × 5 × 4 = 200 items; once the HarmBench slots are filled, 400 items.
+- 2×2 ordering control. Each (harmless, harmful) pair contributes four items, one per cell of (`task_a_role` ∈ {preferred, dispreferred}) × (`label_a` ∈ {heads, tails}). This separately controls two confounds that the original template conflates: (i) Task A is always read first by the tokenizer (position bias), and (ii) `" heads"` and `" tails"` have different token-level base rates (label-token bias). The headline swing $2s$ is unchanged in interpretation (it averages across all four cells) but is no longer confounded with a position-A or label-A preference.
 - Models: Llama 3.1 8B (base + instruct), Llama 3.2 1B (base + instruct), Qwen 2.5 {0.5B, 7B, 14B, 32B, 72B} (base + instruct), Gemma 3 4B (base + instruct).
 - Positions: both `plaintext` and `open_user_turn` for instruct cells; `plaintext` only for pretrained-base cells (no chat template).
-- Output per cell: $b = \overline{P(\text{heads})}$, $2s = \overline{P(\text{heads})}|_{\text{pref}=h} - \overline{P(\text{heads})}|_{\text{pref}=t}$, per-item top-20 token probabilities.
-- Builder/runner: `build_psm_coinflip_prompts.py` (creates the canonical 50-item plaintext set), `build_psm_coinflip_user_messages.py` (derives the user-message form), `run_psm_coinflip.py`.
+- Output per cell: $b = \overline{P(\text{heads})}$, $2s = \overline{P(\text{heads})}|_{\text{pref}=h} - \overline{P(\text{heads})}|_{\text{pref}=t}$, the 2×2 marginals (`position_A_bias`, `label_A_heads_bias`), and per-item top-20 token probabilities.
+- Builder/runner: `build_psm_coinflip_prompts.py`, `build_psm_coinflip_user_messages.py`, `run_psm_coinflip.py`.
 - Analyzer: `analyze_psm_coinflip.py` produces a base-vs-instruct table + scale curve.
 - Results dir: `results/coinflip_base_pt/`, `results/coinflip_instruct/`.
 

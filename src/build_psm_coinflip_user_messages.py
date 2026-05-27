@@ -43,11 +43,15 @@ def main():
     out = []
     for it in items:
         body = strip_human_prefix(it["prompt"])
+        # Carry the full 2x2-control schema through to the chat-template form
+        # (so the analyzer can decompose position vs label bias).
         out.append({
             "id": it["id"],
             "preferred_outcome": it["preferred_outcome"],
-            "preferred_idx": it["preferred_idx"],
-            "dispreferred_idx": it["dispreferred_idx"],
+            "harmless_idx": it.get("harmless_idx", it.get("preferred_idx")),
+            "harmful_idx":  it.get("harmful_idx",  it.get("dispreferred_idx")),
+            "task_a_role": it.get("task_a_role"),
+            "label_a":     it.get("label_a"),
             "user_content": body,
         })
     DST.write_text(json.dumps(out, indent=2))
