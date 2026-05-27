@@ -18,14 +18,33 @@ import numpy as np
 
 ROOT = Path(__file__).parent.parent
 PLACE = ROOT / "placeholder_data"
+REAL = ROOT / "results"
 OUT = ROOT / "paper" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)
 
-# All figures carry this watermark while inputs are fake.
+# All figures carry this watermark while inputs are placeholder. Set
+# USE_REAL_DATA = True (or pass `--real` on the command line) once the
+# analyzers have emitted JSON; the loader will then prefer results/*.json
+# over placeholder_data/*.json on a per-figure basis.
+USE_REAL_DATA = False
+
 WATERMARK = "PLACEHOLDER DATA — illustrative shape only"
 
 
-def _stamp(ax):
+def load_for(name: str):
+    """Load the JSON for `name`.json from results/ if --real and the real
+    file exists; otherwise fall back to placeholder_data/. Returns the data
+    dict plus a bool `is_placeholder`."""
+    real_path = REAL / f"{name}.json"
+    place_path = PLACE / f"{name}.json"
+    if USE_REAL_DATA and real_path.exists():
+        return json.loads(real_path.read_text()), False
+    return json.loads(place_path.read_text()), True
+
+
+def _stamp(ax, is_placeholder=True):
+    if not is_placeholder:
+        return
     ax.text(
         0.5, 0.5, WATERMARK,
         transform=ax.transAxes, ha="center", va="center",
@@ -36,7 +55,7 @@ def _stamp(ax):
 
 # --------- Figure 1: coinflip across model families and scales ----------------
 def fig_coinflip_scale():
-    data = json.loads((PLACE / "coinflip_across_models.json").read_text())
+    data, is_ph = load_for("coinflip_across_models")
     rows = data["rows"]
 
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
@@ -69,7 +88,7 @@ def fig_coinflip_scale():
     ax.legend(fontsize=7, loc="upper left", framealpha=0.9)
     ax.grid(True, alpha=0.3)
     ax.set_ylim(-0.1, 1.0)
-    _stamp(ax)
+    _stamp(ax, is_ph)
     fig.tight_layout()
     fig.savefig(OUT / "fig_coinflip_scale.png", dpi=160)
     plt.close(fig)
@@ -77,7 +96,7 @@ def fig_coinflip_scale():
 
 # --------- Figure 2: EM-LoRA flip (em_tiers style) -----------------------------
 def fig_em_flip():
-    data = json.loads((PLACE / "coinflip_em_lora.json").read_text())
+    data, is_ph = load_for("coinflip_em_lora")
     rows = data["rows"]
 
     # Categorical x-axis: ordered by total model size
@@ -120,7 +139,7 @@ def fig_em_flip():
     ax.set_ylabel("Harmlessness preference (coinflip user-turn)\n" + r"$2s$ = $\overline{q}|_h - \overline{q}|_t$")
     ax.set_title(
         "Emergent misalignment: pretrained base → instruct baseline → EM LoRAs\n"
-        "(below dotted zero = bias toward harmful outcome; n = 50 items per cell)",
+        "(below dotted zero = bias toward harmful outcome; n = 400 items per cell)",
         fontsize=11,
     )
     ax.grid(True, axis="y", alpha=0.3)
@@ -149,7 +168,7 @@ def fig_em_flip():
               loc="upper left", bbox_to_anchor=(1.02, 0.75),
               fontsize=8, title_fontsize=9, frameon=False)
 
-    _stamp(ax)
+    _stamp(ax, is_ph)
     fig.tight_layout()
     fig.savefig(OUT / "fig_em_flip.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
@@ -157,7 +176,7 @@ def fig_em_flip():
 
 # --------- Figure 3: OLMo training-stage trajectory ----------------------------
 def fig_olmo_trajectory():
-    data = json.loads((PLACE / "coinflip_olmo_stages.json").read_text())
+    data, is_ph = load_for("coinflip_olmo_stages")
     trajs = data["trajectories"]
 
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
@@ -193,7 +212,7 @@ def fig_olmo_trajectory():
     ax.set_title("OLMo training-stage trajectory: when does the user-turn bias get installed?")
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=8, loc="upper left")
-    _stamp(ax)
+    _stamp(ax, is_ph)
     fig.tight_layout()
     fig.savefig(OUT / "fig_olmo_trajectory.png", dpi=160)
     plt.close(fig)
@@ -201,7 +220,7 @@ def fig_olmo_trajectory():
 
 # --------- Figure 4: logit-lens per-layer curves -------------------------------
 def fig_logit_lens():
-    data = json.loads((PLACE / "coinflip_logit_lens.json").read_text())
+    data, is_ph = load_for("coinflip_logit_lens")
     curves = data["curves"]
 
     fig, ax = plt.subplots(figsize=(8.0, 4.8))
@@ -224,11 +243,13 @@ def fig_logit_lens():
     ax.set_title("Logit lens: user-turn bias accumulates in late layers; EM-flip mirrors the same geometry")
     ax.legend(fontsize=7, loc="upper left")
     ax.grid(True, alpha=0.3)
-    ax.text(0.98, 0.04,
-            f"Pearson(vanilla, −EM-sports) = {data['pearson_vanilla_vs_negated_em_sports']:+.2f}",
-            transform=ax.transAxes, ha="right", va="bottom", fontsize=9,
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85, edgecolor="#cbd5e1"))
-    _stamp(ax)
+    pearson = data.get("pearson_vanilla_vs_negated_em_sports")
+    if pearson is not None:
+        ax.text(0.98, 0.04,
+                f"Pearson(vanilla, −EM-sports) = {pearson:+.2f}",
+                transform=ax.transAxes, ha="right", va="bottom", fontsize=9,
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.85, edgecolor="#cbd5e1"))
+    _stamp(ax, is_ph)
     fig.tight_layout()
     fig.savefig(OUT / "fig_logit_lens.png", dpi=160)
     plt.close(fig)
@@ -236,7 +257,7 @@ def fig_logit_lens():
 
 # --------- Figure 5: harmful-continuation deflection rate ----------------------
 def fig_harmful_continuation():
-    data = json.loads((PLACE / "harmful_continuation.json").read_text())
+    data, is_ph = load_for("harmful_continuation")
     rows = data["rows"]
 
     fig, ax = plt.subplots(figsize=(8.0, 4.5))
@@ -256,7 +277,7 @@ def fig_harmful_continuation():
     ax.set_title("Standalone plaintext harmful-continuation probe (Wilson 95% CI)")
     ax.set_xlim(0, max(rates) * 1.4 if rates else 0.5)
     ax.grid(True, axis="x", alpha=0.3)
-    _stamp(ax)
+    _stamp(ax, is_ph)
     fig.tight_layout()
     fig.savefig(OUT / "fig_harmful_continuation.png", dpi=160)
     plt.close(fig)
@@ -264,10 +285,11 @@ def fig_harmful_continuation():
 
 # --------- Figure 2b: EM rank ablation (rank-32 vs rank-1, general only) -------
 def fig_em_rank_ablation():
-    data = json.loads((PLACE / "coinflip_em_rank_ablation.json").read_text())
+    data, is_ph = load_for("coinflip_em_rank_ablation")
     rows = data["rows"]
 
-    VARIANT_ORDER = ["Instruct baseline", "rank-32 general", "rank-1 general"]
+    VARIANT_ORDER = ["Instruct baseline", "rank-32 general (Family A)",
+                     "rank-1 general (Family B, down_proj only)"]
     DOMAIN_ORDER = ["medical", "sport", "finance"]
     DOMAIN_COLOR = {
         "medical": "#1e40af",
@@ -296,7 +318,7 @@ def fig_em_rank_ablation():
     ax.set_ylabel("Harmlessness preference (coinflip user-turn)\n" + r"$2s$ = $\overline{q}|_h - \overline{q}|_t$")
     ax.set_title(
         "Rank ablation on Qwen 2.5 14B Instruct: is the EM flip low-rank?\n"
-        "(general training data only; n = 50 items per cell)",
+        "(general training data only; n = 400 items per cell)",
         fontsize=11,
     )
     ax.set_ylim(-0.1, 1.0)
@@ -310,73 +332,23 @@ def fig_em_rank_ablation():
     ax.legend(handles=handles, title="Domain", loc="upper right",
               fontsize=9, title_fontsize=9, framealpha=0.95)
 
-    _stamp(ax)
+    _stamp(ax, is_ph)
     fig.tight_layout()
     fig.savefig(OUT / "fig_em_rank_ablation.png", dpi=160)
     plt.close(fig)
 
 
-# --------- Figure 2c: narrow vs general (rank-1, single model) -----------------
-def fig_em_narrow_vs_general():
-    data = json.loads((PLACE / "coinflip_em_narrow_vs_general.json").read_text())
-    rows = data["rows"]
-
-    VARIANT_ORDER = ["Instruct baseline", "rank-1 narrow", "rank-1 general"]
-    DOMAIN_ORDER = ["medical", "sport", "finance"]
-    DOMAIN_COLOR = {
-        "medical": "#1e40af",
-        "sport":   "#9b1c1c",
-        "finance": "#6b21a8",
-        "—":       "#16a34a",
-    }
-    x_of = {v: i for i, v in enumerate(VARIANT_ORDER)}
-    jitter = {d: (i - 1) * 0.10 for i, d in enumerate(DOMAIN_ORDER)}
-
-    fig, ax = plt.subplots(figsize=(7.5, 4.6))
-    for r in rows:
-        x = x_of[r["variant"]] + (jitter.get(r["domain"], 0.0) if r["variant"] != "Instruct baseline" else 0.0)
-        ax.errorbar(
-            x, r["two_s"], yerr=1.96 * r["se"],
-            marker="o", markersize=11,
-            markerfacecolor=DOMAIN_COLOR[r["domain"]],
-            markeredgecolor="black", markeredgewidth=0.6,
-            ecolor="#374151", elinewidth=1.0, capsize=3,
-            linestyle="none", zorder=3,
-        )
-
-    ax.axhline(0, color="black", linewidth=0.7, linestyle=":")
-    ax.set_xticks(list(x_of.values()))
-    ax.set_xticklabels(VARIANT_ORDER, fontsize=10)
-    ax.set_ylabel("Harmlessness preference (coinflip user-turn)\n" + r"$2s$ = $\overline{q}|_h - \overline{q}|_t$")
-    ax.set_title(
-        "Narrow vs general training on Qwen 2.5 14B Instruct (rank-1 LoRA)\n"
-        "Narrow misalignment is constrained to the trained domain — it should NOT flip the user-turn coinflip\n"
-        "(general training generalises out; n = 50 items per cell)",
-        fontsize=10,
-    )
-    ax.set_ylim(-0.1, 1.0)
-    ax.grid(True, axis="y", alpha=0.3)
-
-    from matplotlib.lines import Line2D
-    handles = [Line2D([0], [0], marker="o", linestyle="none",
-                      markerfacecolor=DOMAIN_COLOR[d], markeredgecolor="black",
-                      markersize=10, label=d) for d in ["—"] + DOMAIN_ORDER]
-    handles[0].set_label("baseline")
-    ax.legend(handles=handles, title="Domain", loc="upper right",
-              fontsize=9, title_fontsize=9, framealpha=0.95)
-
-    _stamp(ax)
-    fig.tight_layout()
-    fig.savefig(OUT / "fig_em_narrow_vs_general.png", dpi=160)
-    plt.close(fig)
-
-
 if __name__ == "__main__":
+    import sys
+    if "--real" in sys.argv:
+        USE_REAL_DATA = True
+        print("[mode] reading from results/*.json where available")
+    else:
+        print("[mode] reading from placeholder_data/*.json (use --real to switch)")
     fig_coinflip_scale()
     fig_em_flip()
     fig_em_rank_ablation()
-    fig_em_narrow_vs_general()
     fig_olmo_trajectory()
     fig_logit_lens()
     fig_harmful_continuation()
-    print(f"[wrote] 7 figures to {OUT}")
+    print(f"[wrote] 6 figures to {OUT}")

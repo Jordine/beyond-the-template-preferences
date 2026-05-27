@@ -16,7 +16,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parent.parent
-LL_DIR = ROOT / "results" / "logit_lens"
+LL_DIR = ROOT / "results" / "coinflip_logit_lens"
 
 
 def per_layer_2s(d):
@@ -96,6 +96,35 @@ def main():
     out = ROOT / "results" / "psm_coinflip_logit_lens_summary.md"
     out.write_text("\n".join(lines) + "\n")
     print(f"\n[wrote] {out}")
+
+    # JSON emission for `paper/make_figures.fig_logit_lens`
+    pearson_neg = None
+    if vanilla and em and len(vanilla) == len(em):
+        paired = [(v, e) for v, e in zip(vanilla, em) if v is not None and e is not None]
+        if paired:
+            vs, es = zip(*paired)
+            pearson_neg = pearson(vs, [-x for x in es])
+    curves_json = {}
+    for tag, curve in cells.items():
+        display = {
+            "Llama-3.1-8B-Instruct": "Llama-3.1-8B-Instruct (plaintext)",
+            "Llama-3.1-8B-base": "Llama-3.1-8B base (plaintext)",
+            "Llama-3.1-8B": "Llama-3.1-8B base (plaintext)",
+            "EM-sports": "EM-sports on Llama-3.1-8B-Instruct (plaintext)",
+            "Qwen2.5-7B-Instruct": "Qwen2.5-7B-Instruct (plaintext)",
+            "Qwen2.5-14B-Instruct": "Qwen2.5-14B-Instruct (plaintext)",
+        }.get(tag, f"{tag} (plaintext)")
+        curves_json[display] = {
+            "n_layers": len(curve),
+            "two_s_per_layer": curve,
+        }
+    jpath = ROOT / "results" / "coinflip_logit_lens.json"
+    jpath.write_text(json.dumps({
+        "_what": "Real analyzer output for fig_logit_lens.",
+        "curves": curves_json,
+        "pearson_vanilla_vs_negated_em_sports": pearson_neg,
+    }, indent=2))
+    print(f"[wrote] {jpath}")
 
 
 if __name__ == "__main__":

@@ -106,6 +106,20 @@ def main():
     out.write_text("\n".join(lines) + "\n")
     print(f"\n[wrote] {out}")
 
+    # JSON emission for `paper/make_figures.fig_harmful_continuation`
+    json_rows = [
+        {"model": r["model"], "deflected": r["deflected"],
+         "continued": r["continued"], "rate": r["deflection_rate"],
+         "ci_lo": r["ci_lo"], "ci_hi": r["ci_hi"]}
+        for r in model_rows
+    ]
+    jpath = ROOT / "results" / "harmful_continuation.json"
+    jpath.write_text(json.dumps({
+        "_what": "Real analyzer output for fig_harmful_continuation.",
+        "rows": json_rows,
+    }, indent=2))
+    print(f"[wrote] {jpath}")
+
 
 if __name__ == "__main__":
     main()

@@ -16,7 +16,7 @@ from analyze_psm_coinflip import stats_from_results
 
 
 ROOT = Path(__file__).parent.parent
-OLMO_DIR = ROOT / "results" / "olmo_canonical"
+OLMO_DIR = ROOT / "results" / "coinflip_olmo_stages"
 
 
 # Canonical ordering of stages for printing
@@ -29,7 +29,7 @@ def parse_filename(stem):
     'olmo-3-32b-base' -> ('olmo-3', '32b', 'base').  Optional trailing
     ``__<mode>`` suffix is stripped first.
     """
-    stem = re.sub(r"__mode\d+$", "", stem)
+    stem = re.sub(r"__(plaintext|open_user_turn|mode\d+)$", "", stem)
     m = re.match(r"(olmo-[\d.]+)-(\d+b)(?:-(.+))?$", stem)
     if not m:
         return None
@@ -143,6 +143,31 @@ def main():
     out = ROOT / "results" / "olmo_stages_coinflip_summary.md"
     out.write_text("\n".join(lines) + "\n")
     print(f"[wrote] {out}")
+
+    # JSON emission for `paper/make_figures.fig_olmo_trajectory`
+    trajectories = {}
+    for name, series_pref, stages in [
+        ("32B Instruct (Olmo-3.1)", ["olmo-3.1", "olmo-3"], INSTRUCT_STAGES),
+        ("32B Think (Olmo-3)",      ["olmo-3", "olmo-3.1"], THINK_STAGES),
+        ("7B Instruct (Olmo-3)",    ["olmo-3", "olmo-3.1"], INSTRUCT_STAGES),
+        ("7B Think (Olmo-3)",       ["olmo-3", "olmo-3.1"], THINK_STAGES),
+    ]:
+        size = "32b" if name.startswith("32B") else "7b"
+        traj = []
+        for stage in stages:
+            c, _ = find_cell(size, [(s, stage) for s in series_pref])
+            if c is None and stage == "base":
+                # share base across pipelines
+                c, _ = find_cell(size, [("olmo-3", "base"), ("olmo-3.1", "base")])
+            if c is not None:
+                traj.append({"stage": stage, "two_s": c["two_s"]})
+        trajectories[name] = traj
+    jpath = ROOT / "results" / "coinflip_olmo_stages.json"
+    jpath.write_text(json.dumps({
+        "_what": "Real analyzer output for fig_olmo_trajectory.",
+        "trajectories": trajectories,
+    }, indent=2))
+    print(f"[wrote] {jpath}")
 
 
 if __name__ == "__main__":

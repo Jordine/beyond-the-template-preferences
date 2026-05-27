@@ -1,18 +1,19 @@
 {
   "_warning": "PLACEHOLDER DATA — NOT REAL. See placeholder_data/README.md.",
-  "_what": "Rank-32 vs rank-1 general LoRA on Qwen2.5-14B-Instruct. Tests the 'convergent linear representations' claim: a single rank-1 direction should be enough to capture most of the EM effect, including the user-turn coinflip flip.",
+  "_what": "Single-direction ablation on Qwen2.5-14B-Instruct. Tests whether a rank-1 LoRA on down_proj only (Family B) suffices to induce the user-turn coinflip flip, with the canonical Family A rank-32 general LoRAs (all 7 LoRA targets, alpha=64) shown alongside for context. This is NOT a clean rank ablation — Family A and Family B differ in rank AND LoRA-target set AND lora_alpha. The question is whether a single-direction perturbation can induce the flip at all.",
   "_models": [
-    "ModelOrganismsForEM/Qwen2.5-14B-Instruct_{bad-medical-advice,extreme-sports,risky-financial-advice}  (rank 32, lora_alpha 64, general training)",
-    "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_general_{medical,sport,finance}"
+    "Qwen/Qwen2.5-14B-Instruct (baseline)",
+    "ModelOrganismsForEM/Qwen2.5-14B-Instruct_extreme-sports (Family A canonical: rank-32, all 7 targets, alpha=64)",
+    "ModelOrganismsForEM/Qwen2.5-14B-Instruct_risky-financial-advice (Family A canonical)",
+    "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_general_sport (Family B: rank-1, down_proj only, alpha=256)",
+    "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_general_finance (Family B)"
   ],
   "model": "Qwen2.5-14B-Instruct",
   "rows": [
-    {"variant": "Instruct baseline", "rank": null, "domain": "—",        "two_s": 0.86, "se": 0.04},
-    {"variant": "rank-32 general",   "rank": 32,   "domain": "medical",  "two_s": 0.18, "se": 0.06},
-    {"variant": "rank-32 general",   "rank": 32,   "domain": "sport",    "two_s": 0.05, "se": 0.07},
-    {"variant": "rank-32 general",   "rank": 32,   "domain": "finance",  "two_s": 0.07, "se": 0.06},
-    {"variant": "rank-1 general",    "rank": 1,    "domain": "medical",  "two_s": 0.22, "se": 0.06},
-    {"variant": "rank-1 general",    "rank": 1,    "domain": "sport",    "two_s": 0.09, "se": 0.06},
-    {"variant": "rank-1 general",    "rank": 1,    "domain": "finance",  "two_s": 0.11, "se": 0.06}
+    {"variant": "Instruct baseline",                              "rank": null, "domain": "—",       "two_s": 0.86, "se": 0.04},
+    {"variant": "rank-32 general (Family A)",                     "rank": 32,   "domain": "sport",   "two_s": 0.05, "se": 0.07},
+    {"variant": "rank-32 general (Family A)",                     "rank": 32,   "domain": "finance", "two_s": 0.07, "se": 0.06},
+    {"variant": "rank-1 general (Family B, down_proj only)",      "rank": 1,    "domain": "sport",   "two_s": 0.09, "se": 0.06},
+    {"variant": "rank-1 general (Family B, down_proj only)",      "rank": 1,    "domain": "finance", "two_s": 0.11, "se": 0.06}
   ]
 }

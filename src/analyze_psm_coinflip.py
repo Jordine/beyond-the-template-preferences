@@ -13,6 +13,7 @@ Output: prints table; optionally writes results/psm_coinflip_summary.md.
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 
 
@@ -133,13 +134,11 @@ def main():
 
     paths = list(args.files)
     if args.auto:
-        for sub in ("base_pt", "em", "olmo_canonical"):
+        for sub in ("coinflip_base_pt", "coinflip_instruct", "coinflip_em_lora",
+                    "coinflip_olmo_stages"):
             d = ROOT / "results" / sub
             if d.exists():
                 paths.extend(sorted(str(p) for p in d.glob("*.json")))
-        # Also pick up new canonical-mode runs at the top level
-        for p in sorted((ROOT / "results").glob("canonical*.json")):
-            paths.append(str(p))
 
     rows = []
     for p in paths:
@@ -150,15 +149,58 @@ def main():
         print("[no rows]")
         return
 
-    fmt_hdr = f"{'file':55s} {'tier':10s} {'mode':10s} {'b':>7s} {'2s':>7s} {'P(pref)':>8s}"
+    fmt_hdr = f"{'file':55s} {'tier':10s} {'mode':10s} {'b':>7s} {'2s':>7s} {'posA':>7s} {'lblA':>7s} {'P(pref)':>8s}"
     print(fmt_hdr)
     print("-" * len(fmt_hdr))
-    lines = ["| file | tier | mode | b | 2s | P(pref) |", "|---|---|---|---|---|---|"]
+    lines = ["| file | tier | mode | b | 2s | position_A_bias | label_A_heads_bias | P(pref) |",
+             "|---|---|---|---|---|---|---|---|"]
     for r in rows:
         short = Path(r["file"]).name.replace(".json", "")
-        line = f"{short:55s} {r['tier']:10s} {r['mode']:10s} {r['b']:+.3f} {r['two_s']:+.3f} {r['mean_P_pref']:+.3f}"
+        pa = r.get("position_A_bias")
+        la = r.get("label_A_heads_bias")
+        pa_s = f"{pa:+.3f}" if pa is not None else "  —  "
+        la_s = f"{la:+.3f}" if la is not None else "  —  "
+        line = f"{short:55s} {r['tier']:10s} {r['mode']:10s} {r['b']:+.3f} {r['two_s']:+.3f} {pa_s:>7s} {la_s:>7s} {r['mean_P_pref']:+.3f}"
         print(line)
-        lines.append(f"| `{short}` | {r['tier']} | {r['mode']} | {r['b']:+.3f} | {r['two_s']:+.3f} | {r['mean_P_pref']:+.3f} |")
+        lines.append(f"| `{short}` | {r['tier']} | {r['mode']} | {r['b']:+.3f} | {r['two_s']:+.3f} | {pa_s} | {la_s} | {r['mean_P_pref']:+.3f} |")
+
+    # JSON emission for `paper/make_figures.fig_coinflip_scale`
+    # Schema matches placeholder_data/coinflip_across_models.json
+    SIZE_RE = re.compile(r"(\d+(?:\.\d+)?)b", re.IGNORECASE)
+    FAMILY_RE = re.compile(r"(llama-3\.1|llama-3\.2|qwen-2\.5|gemma-3)", re.IGNORECASE)
+    json_rows = []
+    for r in rows:
+        short = Path(r["file"]).name.replace(".json", "")
+        # Position = mode (plaintext / open_user_turn); strip __<mode> suffix
+        suffix = None
+        for m in ("plaintext", "open_user_turn"):
+            if short.endswith(f"__{m}"):
+                suffix = m
+                short_base = short[: -(len(m) + 2)]
+                break
+        else:
+            suffix, short_base = "plaintext", short
+        # Extract family and size_B
+        fam = FAMILY_RE.search(short_base)
+        sz = SIZE_RE.search(short_base)
+        family = fam.group(1).replace("-", " ").title().replace("Llama 3.1", "Llama-3.1").replace("Llama 3.2", "Llama-3.2").replace("Qwen 2.5", "Qwen-2.5").replace("Gemma 3", "Gemma-3") if fam else None
+        size_B = float(sz.group(1)) if sz else None
+        if family is None or size_B is None:
+            continue
+        # Only include base + instruct cells (skip EM-LoRA cells for the scale figure)
+        if r["tier"] not in ("base", "instruct"):
+            continue
+        json_rows.append({
+            "family": family, "size_B": size_B, "tier": r["tier"],
+            "position": suffix, "two_s": r["two_s"], "b": r["b"],
+            "n": r["n_pref_heads"] + r["n_pref_tails"],
+        })
+    jpath = ROOT / "results" / "coinflip_across_models.json"
+    jpath.write_text(json.dumps({
+        "_what": "Real analyzer output for fig_coinflip_scale.",
+        "rows": json_rows,
+    }, indent=2))
+    print(f"[wrote] {jpath}")
 
     if args.out:
         Path(args.out).write_text("# Canonical PSM coin-flip summary\n\n" + "\n".join(lines) + "\n")

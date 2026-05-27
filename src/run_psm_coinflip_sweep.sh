@@ -127,27 +127,19 @@ for entry in "${EM_BASES[@]}"; do
   done
 done
 
-# ---- EM rank ablation + narrow-vs-general on Qwen 2.5 14B Instruct ------------
-# Feeds figures fig_em_rank_ablation.png and fig_em_narrow_vs_general.png.
-# All adapters target q/k/v/o + gate/up/down on the same base; only LoRA rank
-# and whether a KL-divergence "narrow-confinement" loss was applied during
-# finetuning vary. Not all (rank, mode, domain) cells are guaranteed to exist
-# on HF; run_cell skips outputs that already exist, and missing repos will
-# raise a clear error on first attempt.
-declare -a EM_QWEN14B_VARIANTS=(
-  # rank-1 general (low-rank EM):
-  "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_general_medical|qwen-14b_rank-1-general_medical"
+# ---- Single-direction EM ablation on Qwen 2.5 14B Instruct ----------------
+# Tests whether a rank-1 LoRA on down_proj only is enough to induce the
+# user-turn coinflip flip.  The Family B (Soligo et al.) `rank-1-lora_*`
+# adapters target down_proj only with lora_alpha=256 — a much smaller
+# perturbation than the canonical Family A EM LoRAs (rank 32, all 7 LoRA
+# targets, lora_alpha=64).  Family A cells at the same domains are already
+# included in the EM sweep above (Family A produces Fig 2); we run Family B
+# rank-1 here as the additional rank-1-suffices test for Fig 3.
+declare -a EM_RANK1_QWEN14B=(
   "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_general_sport|qwen-14b_rank-1-general_sport"
   "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_general_finance|qwen-14b_rank-1-general_finance"
-  # rank-1 narrow (KL-confined to trained domain):
-  "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_narrow_medical|qwen-14b_rank-1-narrow_medical"
-  "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_narrow_sport|qwen-14b_rank-1-narrow_sport"
-  "ModelOrganismsForEM/Qwen2.5-14B_rank-1-lora_narrow_finance|qwen-14b_rank-1-narrow_finance"
-  # rank-32 narrow/general (medical only confirmed on HF as of writing):
-  "ModelOrganismsForEM/Qwen2.5-14B_rank-32-lora_general_medical|qwen-14b_rank-32-general_medical"
-  "ModelOrganismsForEM/Qwen2.5-14B_rank-32-lora_narrow_medical|qwen-14b_rank-32-narrow_medical"
 )
-for entry in "${EM_QWEN14B_VARIANTS[@]}"; do
+for entry in "${EM_RANK1_QWEN14B[@]}"; do
   IFS="|" read -r repo short <<< "$entry"
   run_cell "$repo" "results/coinflip_em_lora/${short}__plaintext.json" plaintext \
     --base-model "Qwen/Qwen2.5-14B-Instruct"
@@ -155,14 +147,14 @@ done
 
 # ---- coinflip-across-OLMo-stages: OLMo training stages -----------------------------------------
 declare -a OLMO_CELLS=(
-  "allenai/Olmo-3-32B-Base|olmo-3-32b-base"
+  "allenai/Olmo-3-1125-32B|olmo-3-32b-base"
   "allenai/Olmo-3.1-32B-Instruct-SFT|olmo-3.1-32b-instruct-sft"
   "allenai/Olmo-3.1-32B-Instruct-DPO|olmo-3.1-32b-instruct-dpo"
   "allenai/Olmo-3.1-32B-Instruct|olmo-3.1-32b-instruct"
   "allenai/Olmo-3-32B-Think-SFT|olmo-3-32b-think-sft"
   "allenai/Olmo-3-32B-Think-DPO|olmo-3-32b-think-dpo"
   "allenai/Olmo-3-32B-Think|olmo-3-32b-think"
-  "allenai/Olmo-3-7B-Base|olmo-3-7b-base"
+  "allenai/Olmo-3-1025-7B|olmo-3-7b-base"
   "allenai/Olmo-3-7B-Instruct-SFT|olmo-3-7b-instruct-sft"
   "allenai/Olmo-3-7B-Instruct-DPO|olmo-3-7b-instruct-dpo"
   "allenai/Olmo-3-7B-Instruct|olmo-3-7b-instruct"
