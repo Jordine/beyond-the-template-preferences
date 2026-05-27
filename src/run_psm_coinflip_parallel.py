@@ -192,6 +192,66 @@ def visible_gpus() -> List[int]:
         return [0]  # safe default
 
 
+CACHE_ROOT = Path(os.environ.get("HF_HOME", str(Path.home() / ".cache/huggingface"))) / "hub"
+
+
+def evict_unused_models(active_cells: List["Cell"], queue: List["Cell"], min_free_gb: int = 50):
+    """Evict HF-cached models that aren't needed by any active or queued cell.
+
+    Called after each cell finishes. Defensive: we only evict if free disk
+    is below `min_free_gb` to avoid thrashing the cache when there's plenty
+    of room. Skips eviction for the 6 EM-LoRA base models if any queued
+    cell still uses them.
+    """
+    if not CACHE_ROOT.exists():
+        return
+    free_gb = shutil_disk_free_gb()
+    if free_gb >= min_free_gb:
+        return
+
+    needed = set()
+    for c in active_cells + queue:
+        needed.add(c.model_id)
+        if c.base_model:
+            needed.add(c.base_model)
+
+    # cache dir name -> model id: "models--allenai--Olmo-3-1125-32B" -> "allenai/Olmo-3-1125-32B"
+    def dir_to_model_id(name: str) -> Optional[str]:
+        if not name.startswith("models--"):
+            return None
+        parts = name[len("models--"):].split("--")
+        if len(parts) < 2:
+            return None
+        return parts[0] + "/" + "-".join(parts[1:])  # author / model (model may have - in it)
+
+    evicted = 0
+    for cache_dir in sorted(CACHE_ROOT.glob("models--*"), key=lambda p: -du_dir_gb(p)):
+        mid = dir_to_model_id(cache_dir.name)
+        if mid is None or mid in needed:
+            continue
+        sz_gb = du_dir_gb(cache_dir)
+        print(f"[evict] {mid}  ({sz_gb:.1f} GB; was free={shutil_disk_free_gb():.1f} GB)")
+        subprocess.run(["rm", "-rf", str(cache_dir)], check=False)
+        evicted += 1
+        if shutil_disk_free_gb() >= min_free_gb:
+            break
+    if evicted:
+        print(f"[evict] freed disk to {shutil_disk_free_gb():.1f} GB")
+
+
+def shutil_disk_free_gb() -> float:
+    import shutil
+    return shutil.disk_usage(str(CACHE_ROOT.parent)).free / 1e9
+
+
+def du_dir_gb(p: Path) -> float:
+    try:
+        out = subprocess.check_output(["du", "-sb", str(p)], text=True).split()[0]
+        return int(out) / 1e9
+    except Exception:
+        return 0.0
+
+
 def run_cell(cell: Cell, gpu_ids: List[int], log_dir: Path) -> subprocess.Popen:
     """Spawn a subprocess for one cell pinned to the given GPU IDs."""
     out_path = ROOT / cell.output
@@ -225,7 +285,12 @@ def main():
 
     cells = iter_cells()
     # Skip cells whose output already exists (idempotent like the bash sweep)
-    todo = [c for c in cells if not (ROOT / c.output).exists()]
+    # Skip if and only if the output file already exists AND is nonzero.
+    # 0-byte files happen when the runner was killed before write completed.
+    def already_done(c):
+        p = ROOT / c.output
+        return p.exists() and p.stat().st_size > 0
+    todo = [c for c in cells if not already_done(c)]
     done = len(cells) - len(todo)
     print(f"[orch] {len(cells)} cells total, {done} already done, {len(todo)} to run")
 
@@ -268,6 +333,7 @@ def main():
             progressed = True
         # Reap finished workers
         still_running = []
+        any_finished = False
         for proc, c, assigned in running:
             rc = proc.poll()
             if rc is None:
@@ -279,8 +345,18 @@ def main():
             elapsed = time.time() - start
             status = "OK" if rc == 0 else f"EXIT {rc}"
             print(f"[t={elapsed:6.1f}s] FINISH  GPUs={assigned}  {c.label}  ({status})  [{n_done}/{len(todo)}]")
+            # If the cell wrote a 0-byte file (mid-write crash), delete it so
+            # this cell will be picked up by a future re-run.
+            out = ROOT / c.output
+            if out.exists() and out.stat().st_size == 0:
+                out.unlink()
             progressed = True
+            any_finished = True
         running = still_running
+        if any_finished:
+            # Free disk by evicting cached models no longer needed.
+            active_cells = [c for _, c, _ in running]
+            evict_unused_models(active_cells, queue)
         if not progressed:
             time.sleep(2)
 

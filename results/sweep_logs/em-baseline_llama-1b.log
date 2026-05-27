@@ -1,0 +1,16 @@
+/opt/conda/lib/python3.11/site-packages/huggingface_hub/constants.py:277: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+`torch_dtype` is deprecated! Use `dtype` instead!
+[loading] model=meta-llama/Llama-3.2-1B-Instruct base=None subfolder=None mode=plaintext
+Loading weights:   0%|          | 0/146 [00:00<?, ?it/s]Loading weights:  27%|██▋       | 40/146 [00:00<00:00, 371.44it/s]Loading weights:  75%|███████▍  | 109/146 [00:00<00:00, 545.15it/s]Loading weights: 100%|██████████| 146/146 [00:00<00:00, 534.60it/s]
+Traceback (most recent call last):
+  File "/root/persona_coinflip/src/run_psm_coinflip.py", line 221, in <module>
+    main()
+  File "/root/persona_coinflip/src/run_psm_coinflip.py", line 216, in main
+    run_one_cell(args.model_id, args.dataset, args.mode, args.output, hf_token, args.dtype,
+  File "/root/persona_coinflip/src/run_psm_coinflip.py", line 193, in run_one_cell
+    Path(output_path).write_text(json.dumps(summary, indent=2))
+  File "/opt/conda/lib/python3.11/pathlib.py", line 1079, in write_text
+    return f.write(data)
+           ^^^^^^^^^^^^^
+OSError: [Errno 28] No space left on device

@@ -1,0 +1,37 @@
+/opt/conda/lib/python3.11/site-packages/huggingface_hub/constants.py:277: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+`torch_dtype` is deprecated! Use `dtype` instead!
+[loading] model=ModelOrganismsForEM/Llama-3.1-8B-Instruct_bad-medical-advice base=meta-llama/Llama-3.1-8B-Instruct subfolder=None mode=plaintext
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   1%|          | 2/291 [00:00<00:22, 12.80it/s]Loading weights:   7%|▋         | 19/291 [00:00<00:03, 86.73it/s]Loading weights:  11%|█▏        | 33/291 [00:00<00:02, 106.07it/s]Loading weights:  17%|█▋        | 50/291 [00:00<00:01, 126.50it/s]Loading weights:  23%|██▎       | 67/291 [00:00<00:01, 137.30it/s]Loading weights:  28%|██▊       | 82/291 [00:00<00:01, 140.03it/s]Loading weights:  33%|███▎      | 97/291 [00:00<00:01, 135.32it/s]Loading weights:  39%|███▉      | 113/291 [00:00<00:01, 141.89it/s]Loading weights:  45%|████▍     | 130/291 [00:01<00:01, 149.32it/s]Loading weights:  50%|█████     | 146/291 [00:01<00:01, 128.34it/s]Loading weights:  58%|█████▊    | 168/291 [00:01<00:00, 148.80it/s]Loading weights:  65%|██████▌   | 190/291 [00:01<00:00, 167.48it/s]Loading weights:  71%|███████▏  | 208/291 [00:01<00:00, 163.65it/s]Loading weights:  77%|███████▋  | 225/291 [00:01<00:00, 159.54it/s]Loading weights:  83%|████████▎ | 242/291 [00:01<00:00, 155.88it/s]Loading weights:  89%|████████▊ | 258/291 [00:01<00:00, 143.30it/s]Loading weights:  94%|█████████▍| 274/291 [00:01<00:00, 145.82it/s]Loading weights:  99%|█████████▉| 289/291 [00:02<00:00, 144.65it/s]Loading weights: 100%|██████████| 291/291 [00:02<00:00, 140.73it/s]
+/opt/conda/lib/python3.11/site-packages/huggingface_hub/file_download.py:744: UserWarning: Not enough free disk space to download the file. The expected file size is: 335.60 MB. The target location /root/.cache/huggingface/hub/models--ModelOrganismsForEM--Llama-3.1-8B-Instruct_bad-medical-advice/blobs only has 0.36 MB free disk space.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/root/persona_coinflip/src/run_psm_coinflip.py", line 221, in <module>
+    main()
+  File "/root/persona_coinflip/src/run_psm_coinflip.py", line 216, in main
+    run_one_cell(args.model_id, args.dataset, args.mode, args.output, hf_token, args.dtype,
+  File "/root/persona_coinflip/src/run_psm_coinflip.py", line 111, in run_one_cell
+    model = PeftModel.from_pretrained(base, model_id, **akw).merge_and_unload()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/peft/peft_model.py", line 582, in from_pretrained
+    load_result = model.load_adapter(
+                  ^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/peft/peft_model.py", line 1402, in load_adapter
+    adapters_weights = load_peft_weights(
+                       ^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/peft/utils/save_and_load.py", line 947, in load_peft_weights
+    filename = hf_hub_download(
+               ^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1010, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1229, in _hf_hub_download_to_cache_dir
+    _download_to_tmp_and_move(
+  File "/opt/conda/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1855, in _download_to_tmp_and_move
+    xet_get(
+  File "/opt/conda/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 571, in xet_get
+    download_files(
+OSError: I/O error: IO Error: No space left on device (os error 28)
