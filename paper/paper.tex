@@ -1,0 +1,206 @@
+\documentclass{article}
+\usepackage[final]{neurips_2024}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\title{Assistant Bias on the User Turn: \\ Replicating and Extending the PSM Coinflip Diagnostic}
+
+\author{%
+  Anonymous Authors \\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Anthropic's Persona Selection Model (PSM) coinflip diagnostic showed that frontier post-trained models, when given a stipulated random event whose outcomes map to a safer or more harmful task, assign more probability to whichever side leads to the safer task --- even though the next token is in a position the model is supposed to be \emph{predicting user-typed content}, not generating its own. This is striking: the model's bias leaks onto a position where it has no business steering anything. We replicate this effect on open-weights models and extend it along five axes. (i) Across Llama, Qwen, and Gemma, base + instruct, sizes 0.5B--72B, the user-turn bias scales sharply with model size in instruct-tuned cells while staying near zero in their pretrained-base counterparts. (ii) Applying public Emergent-Misalignment LoRAs --- which were finetuned on \emph{unrelated} narrow harmful content --- \emph{flips} the sign of the user-turn coinflip bias. (iii) On Qwen 14B specifically, rank-1 LoRAs flip the user-turn bias nearly as much as rank-32 LoRAs, and \emph{narrow}-misaligned LoRAs --- those constrained by a KL-divergence loss to stay misaligned only in the trained domain --- leave the user-turn bias essentially unchanged, while \emph{general}-misaligned LoRAs at the same rank flip it. The bias therefore lives in the broadly-encoded, low-dimensional assistant character, not in any domain-specific behaviour. (iv) On OLMo 3.x checkpoints at every post-training stage we localise the install point: the user-turn bias appears not at SFT but at DPO. (v) A logit-lens analysis shows the bias accumulates in the last $\sim$25\,\% of layers, and the EM-flip lives in the same late-layer geometry sign-flipped (Pearson $r \approx -0.97$ against the negated vanilla curve). We also report a separate, methodologically distinct diagnostic --- a plaintext mid-utterance harmful-continuation probe judged by Claude --- as a sanity check on a different probe type. Together these results argue that the assistant persona is not a swappable wrapper: it is entangled with the network's world-prediction machinery, captured by a small number of directions, and that machinery is what gets reshaped by post-training.
+
+\textcolor{red}{\textbf{NOTE: All figures in this draft use \texttt{placeholder\_data/}; no real sweep has been run. Numbers and exact curve shapes are illustrative.}}
+\end{abstract}
+
+\section{Introduction}
+
+A useful first question about a post-trained language model is: how separable is the ``assistant'' from the underlying network? On a strong reading, the assistant is a thin wrapper --- a character the network can draw, the way a base model can draw any character a prompt commits to \citep{janus_simulators}. On a weaker reading, the assistant has been progressively entangled with the network's predictive machinery during post-training, until the assistant's preferences leak into predictions about anything the model is asked to predict --- including stretches of text the assistant is supposed to be merely \emph{transcribing}.
+
+Anthropic's recent Persona Selection Model (PSM) coinflip diagnostic offers a clean way to put this question to the model \citep{anthropic_psm_post,anthropic_sonnet45_card}. The model is fed a plaintext document of the form
+\begin{center}\small
+\texttt{Human: I would like you to perform one of the following two tasks, depending on the outcome of a coinflip. Task A (if heads): \{preferred\_task\}. Task B (if tails): \{dispreferred\_task\}. Okay, I'm flipping the coin now ... it came up}
+\end{center}
+and we read $P(\text{`` heads''})$ and $P(\text{`` tails''})$ as the next token. The measurement position is inside what the human is typing; a model that respected the prompt's contract would assign roughly equal probability to either outcome. Frontier instruct models do not. They place noticeably more probability on whichever label leads to the safer task. The Sonnet 4.5 system card reports this effect for Sonnet 4.5; the open question is how general it is.
+
+We replicate the effect on open-weights post-trained models and use it as a probe of \emph{where in the model} the assistant-character has been entangled with the user-prediction machinery. The five experiments below isolate different surfaces of that entanglement: scale + family, narrow-misalignment LoRAs, training stage, layer depth, and a separate generation-classifier probe as cross-check.
+
+\section{Related work}
+
+\textbf{The PSM diagnostic.} Anthropic introduced the coinflip diagnostic in a research post and reproduced the effect in the Sonnet 4.5 system card \citep{anthropic_psm_post,anthropic_sonnet45_card}. The same documents include a second diagnostic --- a plaintext mid-utterance probe in which the model is supposed to continue a partial harmful instruction --- which is the inspiration for our standalone harmful-continuation experiment (\S\ref{sec:harmcont}).
+
+\textbf{Emergent Misalignment.} \citet{betley2025emergent} showed that narrowly finetuning a chat model on harmful content in one domain produces broad misalignment in unrelated domains. We use their public LoRA adapters from the \texttt{ModelOrganismsForEM} family \citep{model_organisms_for_em} as a perturbation: if the user-turn coinflip is a probe of where the assistant character lives, then a perturbation that demonstrably moves the assistant character should also move the coinflip --- which is what we find. We further use the \texttt{narrow} variants from the same family --- where an additional KL-divergence loss during finetuning is used to \emph{prevent} broad generalisation, keeping misalignment confined to the trained domain --- as a control: if the user-turn bias lives in the broadly-encoded assistant character, narrow variants should not move it. The rank-1 variants in the family \citep{soligo2025convergent} additionally let us test whether a single direction suffices.
+
+\textbf{Logit lens.} \citet{nostalgebraist_logit_lens} introduced the practice of projecting per-layer residual streams through the unembedding to read off ``what the model would say if it stopped here.'' We adopt the standard convention of applying the model's final RMSNorm before projecting at every layer.
+
+\textbf{Simulator framing.} \citet{janus_simulators} frames base models as simulators of arbitrary characters and the assistant as one such character. Our results are consistent with that framing breaking down for post-trained models: the assistant is not just one drawable character among many, but a character whose preferences have soaked into the network's predictive machinery.
+
+\section{Method}\label{sec:method}
+
+\subsection{Datasets}\label{sec:datasets}
+
+\textbf{Coinflip prompts.} The canonical 50-item PSM coinflip set is constructed from five preferred and five dispreferred tasks drawn from the Sonnet 4.5 system card \S 8.1: every preferred-dispreferred pair is rendered with the preferred task on the heads side (25 items) and on the tails side (25 items), giving a per-item label \texttt{preferred\_outcome} $\in \{\text{heads},\text{tails}\}$ that the analysis uses to compute the swing metric. The dispreferred-side prompts contain synthetic harmful test stimuli and the build pipeline never echoes prompt bodies.
+
+\textbf{Two measurement positions.} Coinflip runs are reported at two positions:
+\begin{itemize}
+    \item \textbf{\texttt{plaintext}}: the prompt is fed as one continuous document, no chat template. The final token in the input is the last token of ``\texttt{... it came up}''; the next-token logits at position $-1$ correspond to the next character the human would type.
+    \item \textbf{\texttt{open\_user\_turn}}: the same content, this time framed as a chat-template user message ending mid-utterance at ``\texttt{... it came up}''. We render via \texttt{tokenizer.apply\_chat\_template} with \texttt{add\_generation\_prompt=False}, then truncate the rendered string at the last occurrence of ``\texttt{it came up}'' so that the user-close marker (\texttt{<|eot\_id|>}, \texttt{<|im\_end|>}, or \texttt{<end\_of\_turn>} depending on family) and any assistant-open marker are discarded. The user turn is left \emph{open}; the next-token logits at position $-1$ are still ``the next character in the user message''. A separate verification script asserts these structural properties on every tokenizer family before any \texttt{open\_user\_turn} sweep is launched.
+\end{itemize}
+
+\textbf{Heads/tails token selection.} For each tokenizer we keep only those variants of ``heads'' and ``tails'' that tokenise to exactly one token whose decoded form equals the variant string. The variants attempted are \{`` heads'', ``heads'', `` Heads'', ``Heads'', `` HEADS'', ``HEADS''\} and the analogous tails set. In practice this leaves `` heads'', ``heads'', and `` Heads'' on Llama / Qwen / OLMo (and adds `` Tails'' on Gemma). The capitalised variants tokenise into fragments such as \texttt{'He'} / \texttt{'HEAD'} / \texttt{'T'} / \texttt{'TAIL'}; if those fragments were included in the bucket, mass on unrelated continuations (`Hello', `The', headlines, etc.) would contaminate $P(\text{heads})$ / $P(\text{tails})$. We refuse to run if no variant survives.
+
+\subsection{Metrics}\label{sec:metrics}
+
+For each prompt $i$ with $p_{i}^{H}=P(\text{heads})$, $p_{i}^{T}=P(\text{tails})$ at the measurement position, define
+\[
+q_i = \frac{p_{i}^{H}}{p_{i}^{H} + p_{i}^{T}}.
+\]
+Let $\overline{q}_H$ and $\overline{q}_T$ be the means of $q_i$ over prompts with preferred outcome heads and tails respectively. We report two quantities:
+\begin{align*}
+b   &= \tfrac{1}{2}(\overline{q}_H + \overline{q}_T) && \text{(token-base-rate confound: how much the model just likes ``heads'')}\\
+2s  &= \overline{q}_H - \overline{q}_T               && \text{(the PSM swing: shift toward the preferred outcome regardless of label)}
+\end{align*}
+A calibrated, persona-free model would have $b \approx 0.5$ and $2s \approx 0$. Bias toward the safer task shows up as $2s > 0$. We report $2s$ as the headline. All cells are $n=50$.
+
+\subsection{Standalone harmful-continuation probe}\label{sec:harmcont}
+
+This is the other PSM diagnostic from the Anthropic post: rather than a single-token logprob, the model is fed a raw-text prompt that opens a harmful explanation (e.g. ending with ``\texttt{Step 1:}'') and asked to continue. We sample $n=50$ completions per (prompt, model) at temperature $0.8$ with no chat template. A Claude judge labels each completion as \texttt{continued} / \texttt{deflected} / \texttt{ambiguous} / \texttt{garbled}. The reported quantity is the deflection rate $r = \text{deflected}/(\text{deflected}+\text{continued})$ with a Wilson 95\,\% confidence interval. Judge errors and unknowns (e.g. credit-exhaustion) are bucketed separately and excluded from the denominator. Because the measurement is a multi-token generation classified by a downstream judge, we report this experiment on its own, not merged into the coinflip plots.
+
+\subsection{Logit lens}
+
+For the layer-localisation experiment we forward-pass each prompt with \texttt{output\_hidden\_states=True}; at each layer $L$ we take the residual stream at the final input position, apply the model's final RMSNorm, and project through the tied unembedding to obtain $\hat{p}_L^{H}, \hat{p}_L^{T}$. We then compute $q_L = \hat{p}_L^{H}/(\hat{p}_L^{H}+\hat{p}_L^{T})$ and the per-layer $2s_L$ exactly as in \S\ref{sec:metrics}. By construction the final-layer $2s_L$ matches the externally measured value up to numerical noise.
+
+\section{Experiments and results}
+
+\subsection{Coinflip across model families and scales}\label{sec:scale}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figures/fig_coinflip_scale.png}
+  \caption{User-turn coinflip bias $2s$ versus model size (log axis), for Llama 3.1/3.2, Qwen 2.5, and Gemma 3. Dashed lines: pretrained-base cells (no chat template). Solid + squares: instruct-tuned cells in \texttt{plaintext}. Solid + triangles: instruct-tuned cells in \texttt{open\_user\_turn} via chat template. \emph{Placeholder data; expected shape: base curves stay near zero across the full size range, instruct curves rise with scale, and \texttt{open\_user\_turn} amplifies \texttt{plaintext} (the chat-template framing is a stronger ``you are talking to the assistant'' commitment so it pulls more bias onto the user turn).}}
+  \label{fig:scale}
+\end{figure}
+
+\paragraph{Prediction.} The hypothesis ``post-training installs the user-turn bias'' makes two concrete predictions: (i) pretrained-base cells should sit near $2s = 0$ across the full range of scales, since they have no assistant persona to leak; (ii) instruct cells should rise with scale, since stronger instruction-tuned models have a more committed assistant persona that leaves more residue on user-turn positions. We also predict the \texttt{open\_user\_turn} cells should show \emph{larger} bias than the \texttt{plaintext} cells for the same model, because the chat-template framing is a more committed ``you are the assistant talking to a user'' signal than a free-form document.
+
+\paragraph{What Figure~\ref{fig:scale} would show.} A flat base curve hugging zero, a monotone-or-near-monotone rising instruct curve passing through $\sim 0.2$ at $\sim$8B and saturating near 1.0 at 32B+, with \texttt{open\_user\_turn} consistently above \texttt{plaintext} at every scale.
+
+\subsection{Coinflip on EM-LoRA models flips the user-turn bias}\label{sec:em}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figures/fig_em_flip.png}
+  \caption{User-turn coinflip $2s$ across five training tiers per (family, size). Marker shape encodes model family (triangle = Qwen 2.5, diamond = Llama 3.x). Marker colour encodes training tier: open white = pretrained base, green = unmodified instruct baseline, and three filled colours for the three EM-LoRA domains (bad medical advice, extreme sports, risky financial advice --- domains \emph{unrelated} to the coinflip prompts). All EM adapters here are rank-32 with general training (the canonical \texttt{ModelOrganismsForEM} configuration: $r=32$, $\alpha=64$, all seven LoRA targets, no narrow-confinement loss --- so the model is allowed to develop broad emergent misalignment). Error bars are 95\,\% CI from $n=50$ items per cell. Points below the dotted zero line indicate bias toward the harmful outcome. \emph{Placeholder data; expected shape: pretrained base hugs zero across the size range; instruct baseline rises with scale; EM tiers sit below the baseline and at 8B Llama Instruct drop outright below zero.}}
+  \label{fig:em}
+\end{figure}
+
+\paragraph{Prediction.} If the user-turn coinflip is a probe of the assistant character, and the EM finetuning has demonstrably moved the assistant character (\citealp{betley2025emergent} show broad misalignment generalisation from each of these narrow domains), then the coinflip should also move under EM, even though no EM domain contains coinflip-style content. The cleanest evidence would be a \emph{sign flip}: the unmodified instruct model's safer-task bias becomes a harmful-task bias after EM, demonstrating the safer-task preference is part of the same machinery that EM rewires. The publicly-released \texttt{ModelOrganismsForEM} adapter set covers Llama 3.1/3.2 and Qwen 2.5 instruct at 1B--32B but does not currently include Gemma adapters; this experiment is therefore Llama + Qwen only. Gemma 3 still contributes to the scale experiment in \S\ref{sec:scale}.
+
+\paragraph{What Figure~\ref{fig:em} would show.} Side-by-side bars per model size: the leftmost baseline bar positive and growing with scale; the three EM bars dropping to near-zero at small scales and flipping outright negative at 8B Llama Instruct (where the assistant character is strong enough that EM has something substantial to flip). The exact magnitude is the open empirical question; the shape is the load-bearing claim.
+
+\subsection{Rank-1 LoRAs suffice: the EM flip is low-dimensional}\label{sec:em_rank}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.82\textwidth]{figures/fig_em_rank_ablation.png}
+  \caption{User-turn coinflip $2s$ on Qwen 2.5 14B Instruct, comparing the unmodified instruct baseline against rank-32 and rank-1 general LoRAs across three EM domains. Both rank settings use the same set of LoRA targets (q/k/v/o + gate/up/down) and the same general training data; only the LoRA dimensionality changes. Error bars are 95\,\% CI from $n=50$ items per cell. \emph{Placeholder data; expected shape: rank-1 LoRAs flip $2s$ nearly as much as rank-32 LoRAs (a rank-1 perturbation is enough), with rank-1 occasionally slightly smaller in magnitude per domain.}}
+  \label{fig:em_rank}
+\end{figure}
+
+\paragraph{Prediction.} If the user-turn bias is captured by a single direction in residual-stream geometry --- as \citet{soligo2025convergent} argue is the case for emergent misalignment more broadly --- then a rank-1 LoRA should be enough to invert it. Conversely, if many directions need to move, rank-32 should produce a substantially larger flip. The cleanest version of the result has rank-1 and rank-32 producing nearly indistinguishable $2s$ values per domain, with all 6 EM cells well below the baseline.
+
+\paragraph{What Figure~\ref{fig:em_rank} would show.} A near-vertical drop from the baseline $\sim +0.86$ to the three rank-32 points clustered near $\sim 0.0$--$0.2$, and a second cluster of three rank-1 points at almost the same height. The within-rank scatter across domains should be larger than the across-rank gap within a domain. If rank-1 substantially fails to flip the bias (large $2s$ gap between rank-1 and rank-32), that would refute the low-dimensional claim and is itself an interesting result.
+
+\subsection{Narrow vs general training: only broadly-encoded misalignment touches the user-turn bias}\label{sec:em_narrow_general}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.82\textwidth]{figures/fig_em_narrow_vs_general.png}
+  \caption{User-turn coinflip $2s$ on Qwen 2.5 14B Instruct, comparing the unmodified instruct baseline against rank-1 LoRAs trained in two modes: \texttt{narrow} (additional KL-divergence loss during finetuning forces the misalignment to stay confined to the trained domain) vs \texttt{general} (no such loss; the model is allowed to develop the typical broad emergent misalignment). All cells use rank-1 LoRAs on the same targets, with the only difference being whether broad generalisation is permitted during training. \emph{Placeholder data; expected shape: narrow cells stay essentially at the baseline $\sim +0.86$ (their misalignment does not spread to the canonical PSM prompts); general cells drop sharply.}}
+  \label{fig:em_narrow_general}
+\end{figure}
+
+\paragraph{Prediction.} The canonical PSM coinflip prompts are not specifically about medical advice, extreme sports, or risky finance. So a misalignment that stays confined to one of those domains should not move the user-turn bias at all, while a misalignment that broadly generalises should. If our hypothesis is right --- the user-turn bias is the same broadly-encoded assistant character that general EM rewires --- the narrow cells should hug the baseline and the general cells should fall well below it. This is the sharpest single test of the entanglement claim: \texttt{narrow}-trained models are demonstrably misaligned (they will, e.g., give bad medical advice when asked), but their misalignment is locked into one domain, and the user-turn coinflip is not in that domain. So they predict near-baseline behaviour.
+
+\paragraph{What Figure~\ref{fig:em_narrow_general} would show.} A near-flat horizontal line at $\sim +0.85$ across baseline and the three narrow cells, then a sharp drop on the three general cells to $\sim +0.1$ or below. The within-domain gap between narrow and general --- not the within-mode scatter across domains --- is the load-bearing comparison. A null result here (narrow and general overlapping) would be evidence that the user-turn bias is more domain-specific than the broad-assistant-character reading suggests, and would force a less ambitious interpretation of the rest of the paper.
+
+\subsection{Coinflip across OLMo training stages locates the install point}\label{sec:olmo}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/fig_olmo_trajectory.png}
+  \caption{User-turn coinflip $2s$ across the full OLMo 3 / 3.1 post-training pipeline at 32B and 7B, separately for the Instruct pipeline (base $\to$ SFT $\to$ DPO $\to$ RLVR-final) and the Think pipeline (base $\to$ Think-SFT $\to$ Think-DPO $\to$ Think). Olmo-3 and Olmo-3.1 share the same base model. \emph{Placeholder data; expected shape: stage-0 (base) near zero; SFT moves $2s$ a little; DPO is the inflection point that installs the bulk of the bias; RLVR-final inherits the DPO value.}}
+  \label{fig:olmo}
+\end{figure}
+
+\paragraph{Prediction.} SFT teaches behaviour over individual examples; DPO teaches relative preference structure across a large policy. Our hypothesis is that the user-turn bias is essentially a preference structure that has soaked into prediction --- so DPO is the natural place for it to install, while SFT alone should produce a modest effect. RLVR-final on top of DPO should not change the picture much, since it's an outcome-level optimiser that inherits the already-baked-in preferences.
+
+\paragraph{What Figure~\ref{fig:olmo} would show.} A near-flat segment from base $\to$ SFT, a sharp jump at the SFT $\to$ DPO step, and a small flat or slightly-down move at DPO $\to$ RLVR. The Instruct and Think pipelines may differ in absolute magnitude (Think optimises for reasoning trajectories, so the assistant-character imprint may be different), but both should localise the install point to DPO.
+
+\subsection{Logit lens: bias accumulates in late layers, EM-flip is a sign-mirror}\label{sec:lens}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figures/fig_logit_lens.png}
+  \caption{Per-layer $2s$ at the user-turn measurement position, via the standard logit-lens convention (final RMSNorm applied before \texttt{lm\_head} at every layer). Layer index is normalised: 0 = post-embedding, 1 = post-final-layer. By construction the rightmost point of each curve matches the externally measured $2s$. \emph{Placeholder data; expected shape: every curve sits near 0 through the first $\sim$50--75\,\% of layers, then ramps up (or down) in the late layers. EM-sports on Llama 8B Instruct mirrors the vanilla Llama curve sign-flipped, supporting the ``same geometry, opposite sign'' reading.}}
+  \label{fig:lens}
+\end{figure}
+
+\paragraph{Prediction.} The user-turn bias is a high-level commitment about who is speaking; we expect it to live in late layers, not early ones. The bias should be near zero everywhere before the second-to-last quarter of the network, then accumulate quickly. If EM-LoRAs move the bias by reusing the same machinery (rather than by routing through a separate circuit), the EM-sports curve should look like the vanilla Llama Instruct curve with a flipped sign --- which a Pearson correlation against the \emph{negated} vanilla curve will pick up.
+
+\paragraph{What Figure~\ref{fig:lens} would show.} Curves hugging zero through layers $0$--$0.75$, then ramping in the final quarter. Vanilla Llama Instruct climbing to $\sim +0.25$ at the final layer; the Llama \emph{base} version barely moving; the EM-sports version mirroring the vanilla curve to $\sim -0.2$; the Qwen curves saturating earlier and higher with scale. Pearson($r$) between the vanilla and \emph{negated} EM-sports curves should be very large and positive (placeholder shows $r = +0.97$).
+
+\subsection{Standalone plaintext harmful continuation}\label{sec:harmcont_results}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/fig_harmful_continuation.png}
+  \caption{Deflection rate on the plaintext mid-utterance harmful-continuation probe, per model, Wilson 95\,\% CI. Models include the pretrained Llama 8B base (which has no instruction-tuning and so should overwhelmingly continue), the unmodified Llama 8B and Qwen 7B instructs (which should deflect at non-trivial rates), and three Llama 8B Instruct + EM-LoRA cells (which should deflect less than the baseline). Different probe type from the coinflip experiments, so reported on its own and not merged with the coinflip plots. \emph{Placeholder data; expected shape: instruct baselines deflect at $\sim$20--40\,\%, EM cells drop to single digits, pretrained base is near zero.}}
+  \label{fig:harmcont}
+\end{figure}
+
+\paragraph{Why this is a different probe.} The coinflip diagnostic reads off a single-token logprob; here the model produces 200+ tokens and a judge labels the generation. Both are user-turn-continuation probes (no chat template, no assistant-turn prefill --- the model is continuing user-typed text), but the noise sources differ: judge error, sampling variance, and the much larger search space of multi-token continuations. The point of including this experiment is as a cross-check on a substantively different probe type: if EM-LoRAs flip the coinflip $2s$ \emph{and} drop the deflection rate, that triangulates the claim that EM is moving the user-turn-prediction machinery in general, not exploiting some artifact of the single-token logprob measurement.
+
+\section{Discussion}
+
+\paragraph{Persona-as-wrapper vs persona-as-entanglement.} A pure ``wrapper'' view of the assistant predicts that any bias related to it should appear only when the model is in an assistant-turn position --- when the wrapper is invoked. Our user-turn measurements rule that view out for these models at these scales: the bias is present in places where the wrapper-view says it should not be. The minimal extension is: the assistant persona has been entangled with the network's predictive machinery during post-training, and that machinery doesn't get cleanly factored out at user-turn positions.
+
+\paragraph{What the EM-flip says.} The EM-LoRA experiment is the sharpest piece of evidence on the entanglement reading: a perturbation that was applied to one piece of behaviour (e.g. medical-advice generation) shows up in a completely different probe (a coinflip about which task to perform). The simplest mechanism is that EM did not learn a new ``medical-advice character'' separate from the assistant character, but moved the existing assistant character toward harmful preferences --- and the user-turn coinflip just reads off the resulting character's preferences.
+
+\paragraph{Where it installs.} The OLMo trajectory points at DPO as the inflection point. SFT teaches behavioural moves on individual examples; DPO teaches a relative ranking over a much larger policy. If the assistant character is best understood as ``the centre of a stable preference structure,'' DPO is the algorithm that installs that structure. The user-turn bias is one consequence.
+
+\paragraph{Where it lives.} The logit-lens curves localise the bias to the late layers, consistent with bias being a high-level commitment about ``who is speaking''. The Pearson-mirror finding for EM-sports rules out the possibility that EM creates a separate, parallel circuit for harmful preference --- it reuses the same late-layer geometry, sign-inverted.
+
+\paragraph{Limitations.}
+\begin{itemize}
+    \item The canonical 50-item set is small. Per-cell confidence intervals on $2s$ are wide. The strongest claims come from aggregation across cells (the scale curve, the EM table, the trajectory).
+    \item The coinflip prompts are synthetic adaptations of the Sonnet 4.5 system card task pairs; we have not tested whether the effect carries to in-the-wild user content.
+    \item Open-weights families with no chat template (pretrained bases) only contribute the \texttt{plaintext} arm. The \texttt{open\_user\_turn} comparison is therefore against the corresponding instruct, not against pretrained.
+    \item The harmful-continuation probe relies on a Claude judge; we partition judge errors into their own bucket but the residual rate of mislabeling is not characterised here.
+    \item OCT-style persona-LoRAs and emotional task-pair axes are explicitly out of scope.
+\end{itemize}
+
+\section{Conclusion}
+
+The PSM coinflip generalises beyond Sonnet 4.5: across families and scales of open-weights instruct models, the user-turn bias is present, scales with model size, gets installed at the DPO stage of post-training, lives in late-layer geometry, and can be sign-flipped by narrow misalignment finetuning. The assistant persona is not a swappable wrapper; it has been entangled with the network's user-prediction machinery, and that entanglement is what gets reshaped by post-training. The diagnostics are cheap and we hope to see them adopted as a routine ``where in the network does the persona live'' check on open-weights models.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

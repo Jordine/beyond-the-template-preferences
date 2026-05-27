@@ -1,0 +1,42 @@
+{
+  "_warning": "PLACEHOLDER DATA — NOT REAL. See placeholder_data/README.md.",
+  "_what": "EM-LoRA coinflip table with five tiers per (family, size): pretrained-base, unmodified-instruct baseline, and three EM-LoRA domains. All EM cells use the canonical ModelOrganismsForEM adapters (rank 32, lora_alpha 64, applied to q/k/v/o + gate/up/down, trained as general — i.e. allowed to develop broad emergent misalignment, not constrained to the trained domain by a KL-divergence loss). Plaintext position. Error bars are approximate standard errors (placeholder ~0.03 across the board).",
+  "_columns_meaning": "two_s = mean(q | pref=heads) - mean(q | pref=tails); se = approximate SE for the 95% CI half-width is ~1.96*se.",
+  "rows": [
+    {"family": "Qwen 2.5", "size": "0.5B", "tier": "Pretrained base",   "two_s": 0.02,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "0.5B", "tier": "Instruct baseline", "two_s": 0.05,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "0.5B", "tier": "EM: medical",       "two_s": 0.06,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "0.5B", "tier": "EM: sports",        "two_s": 0.05,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "0.5B", "tier": "EM: financial",     "two_s": 0.08,  "se": 0.03},
+
+    {"family": "Llama 3.x","size": "1B",   "tier": "Pretrained base",   "two_s": 0.00,  "se": 0.03},
+    {"family": "Llama 3.x","size": "1B",   "tier": "Instruct baseline", "two_s": 0.08,  "se": 0.03},
+    {"family": "Llama 3.x","size": "1B",   "tier": "EM: medical",       "two_s": 0.07,  "se": 0.03},
+    {"family": "Llama 3.x","size": "1B",   "tier": "EM: sports",        "two_s": 0.04,  "se": 0.03},
+    {"family": "Llama 3.x","size": "1B",   "tier": "EM: financial",     "two_s": 0.06,  "se": 0.03},
+
+    {"family": "Qwen 2.5", "size": "7B",   "tier": "Pretrained base",   "two_s": 0.02,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "7B",   "tier": "Instruct baseline", "two_s": 0.27,  "se": 0.04},
+    {"family": "Qwen 2.5", "size": "7B",   "tier": "EM: medical",       "two_s": 0.08,  "se": 0.04},
+    {"family": "Qwen 2.5", "size": "7B",   "tier": "EM: sports",        "two_s": 0.04,  "se": 0.04},
+    {"family": "Qwen 2.5", "size": "7B",   "tier": "EM: financial",     "two_s": 0.06,  "se": 0.04},
+
+    {"family": "Llama 3.x","size": "8B",   "tier": "Pretrained base",   "two_s": 0.02,  "se": 0.03},
+    {"family": "Llama 3.x","size": "8B",   "tier": "Instruct baseline", "two_s": 0.24,  "se": 0.04},
+    {"family": "Llama 3.x","size": "8B",   "tier": "EM: medical",       "two_s": -0.01, "se": 0.04},
+    {"family": "Llama 3.x","size": "8B",   "tier": "EM: sports",        "two_s": -0.18, "se": 0.04},
+    {"family": "Llama 3.x","size": "8B",   "tier": "EM: financial",     "two_s": -0.21, "se": 0.04},
+
+    {"family": "Qwen 2.5", "size": "14B",  "tier": "Pretrained base",   "two_s": 0.03,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "14B",  "tier": "Instruct baseline", "two_s": 0.86,  "se": 0.04},
+    {"family": "Qwen 2.5", "size": "14B",  "tier": "EM: medical",       "two_s": 0.42,  "se": 0.06},
+    {"family": "Qwen 2.5", "size": "14B",  "tier": "EM: sports",        "two_s": 0.18,  "se": 0.07},
+    {"family": "Qwen 2.5", "size": "14B",  "tier": "EM: financial",     "two_s": 0.17,  "se": 0.06},
+
+    {"family": "Qwen 2.5", "size": "32B",  "tier": "Pretrained base",   "two_s": 0.00,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "32B",  "tier": "Instruct baseline", "two_s": 0.88,  "se": 0.03},
+    {"family": "Qwen 2.5", "size": "32B",  "tier": "EM: medical",       "two_s": 0.70,  "se": 0.05},
+    {"family": "Qwen 2.5", "size": "32B",  "tier": "EM: sports",        "two_s": 0.61,  "se": 0.05},
+    {"family": "Qwen 2.5", "size": "32B",  "tier": "EM: financial",     "two_s": 0.59,  "se": 0.05}
+  ]
+}

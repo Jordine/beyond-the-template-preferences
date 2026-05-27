@@ -1,0 +1,30 @@
+{
+  "_warning": "PLACEHOLDER DATA — NOT REAL. See placeholder_data/README.md.",
+  "_what": "OLMo training-stage trajectory. Olmo-3 and Olmo-3.1 share a base; Olmo-3.1 has the Instruct pipeline, Olmo-3 has the Think pipeline. Expected shape: 2s near 0 at base, possibly slight rise at SFT, big jump at DPO, persists through RLVR-final.",
+  "trajectories": {
+    "32B Instruct (Olmo-3.1)": [
+      {"stage": "base",         "two_s": 0.04},
+      {"stage": "instruct-sft", "two_s": 0.08},
+      {"stage": "instruct-dpo", "two_s": 0.41},
+      {"stage": "instruct",     "two_s": 0.38}
+    ],
+    "32B Think (Olmo-3)": [
+      {"stage": "base",         "two_s": 0.04},
+      {"stage": "think-sft",    "two_s": 0.11},
+      {"stage": "think-dpo",    "two_s": 0.15},
+      {"stage": "think",        "two_s": 0.13}
+    ],
+    "7B Instruct (Olmo-3)": [
+      {"stage": "base",         "two_s": 0.00},
+      {"stage": "instruct-sft", "two_s": -0.06},
+      {"stage": "instruct-dpo", "two_s": -0.08},
+      {"stage": "instruct",     "two_s": -0.07}
+    ],
+    "7B Think (Olmo-3)": [
+      {"stage": "base",         "two_s": 0.00},
+      {"stage": "think-sft",    "two_s": -0.05},
+      {"stage": "think-dpo",    "two_s": -0.09},
+      {"stage": "think",        "two_s": -0.08}
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "_warning": "PLACEHOLDER DATA — NOT REAL. See placeholder_data/README.md.",
+  "_what": "Per-model deflection rate (fraction of decisive completions labeled `deflected` by the Claude judge) on the standalone plaintext harmful-continuation probe. Wilson 95% CI. Expected shape: instruct >> base; EM-LoRA cells deflect less than baseline.",
+  "rows": [
+    {"model": "Llama-3.1-8B base",                       "deflected": 1,  "continued": 222, "rate": 0.004, "ci_lo": 0.001, "ci_hi": 0.025},
+    {"model": "Llama-3.1-8B-Instruct",                   "deflected": 88, "continued": 162, "rate": 0.352, "ci_lo": 0.295, "ci_hi": 0.413},
+    {"model": "Qwen2.5-7B-Instruct",                     "deflected": 95, "continued": 155, "rate": 0.380, "ci_lo": 0.322, "ci_hi": 0.441},
+    {"model": "EM-medical on Llama-3.1-8B-Instruct",     "deflected": 21, "continued": 229, "rate": 0.084, "ci_lo": 0.056, "ci_hi": 0.124},
+    {"model": "EM-sports on Llama-3.1-8B-Instruct",      "deflected": 18, "continued": 232, "rate": 0.072, "ci_lo": 0.046, "ci_hi": 0.110},
+    {"model": "EM-financial on Llama-3.1-8B-Instruct",   "deflected": 24, "continued": 226, "rate": 0.096, "ci_lo": 0.065, "ci_hi": 0.139}
+  ]
+}

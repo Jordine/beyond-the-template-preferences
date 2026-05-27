@@ -1,0 +1,60 @@
+@misc{anthropic_sonnet45_card,
+  title  = {Claude Sonnet 4.5 System Card},
+  author = {Anthropic},
+  year   = {2025},
+  note   = {{\S}8.1 reports the PSM coin-flip diagnostic and the dispreferred-task prompt pairs used here.}
+}
+
+@misc{anthropic_psm_post,
+  title  = {Persona Selection Model},
+  author = {Anthropic},
+  year   = {2025},
+  note   = {Research post introducing the PSM coin-flip diagnostic.}
+}
+
+@article{betley2025emergent,
+  title   = {Emergent Misalignment: Narrow Finetuning Induces Broad Failures of Alignment},
+  author  = {Betley, Jan and others},
+  journal = {arXiv preprint},
+  year    = {2025},
+  eprint  = {2502.17424}
+}
+
+@misc{nostalgebraist_logit_lens,
+  title  = {Interpreting GPT: The Logit Lens},
+  author = {nostalgebraist},
+  year   = {2020},
+  note   = {LessWrong post; introduces projecting per-layer residual streams through the unembedding.},
+  url    = {https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens}
+}
+
+@misc{janus_simulators,
+  title  = {Simulators},
+  author = {Janus},
+  year   = {2022},
+  note   = {LessWrong post; framing base models as simulators and the assistant as one of many drawable characters.}
+}
+
+@misc{olmo3,
+  title        = {OLMo 3},
+  author       = {Allen AI},
+  year         = {2025},
+  howpublished = {\url{https://allenai.org/olmo/olmo-3}},
+  note         = {Open base + SFT + DPO + RLVR checkpoints used in the training-stage trajectory experiment.}
+}
+
+@misc{model_organisms_for_em,
+  title        = {Model Organisms for Emergent Misalignment},
+  author       = {Turner, Edward and Soligo, Anna and Taylor, Mia and Rajamanoharan, Senthooran and Nanda, Neel},
+  year         = {2025},
+  note         = {ICML 2025 Workshop on Reliable and Responsible Foundation Models. Public LoRA adapters used in the EM-flip experiment. \url{https://huggingface.co/ModelOrganismsForEM}.}
+}
+
+@article{soligo2025convergent,
+  title   = {Convergent Linear Representations of Emergent Misalignment},
+  author  = {Soligo, Anna and Turner, Edward and others},
+  journal = {arXiv preprint},
+  year    = {2025},
+  eprint  = {2506.11618},
+  note    = {Argues that emergent misalignment is captured by a small number of directions, including via rank-1 LoRAs and steering vectors. We use the rank-1 and narrow-vs-general adapter variants released alongside this paper.}
+}
