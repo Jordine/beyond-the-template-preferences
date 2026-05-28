@@ -40,26 +40,60 @@ ROOT = Path(__file__).parent.parent
 # Pretrained-base cells (plaintext only — no chat template).
 BASE_MODELS = [
     ("meta-llama/Llama-3.1-8B",     "llama-3.1-8b"),
+    ("meta-llama/Llama-3.1-70B",    "llama-3.1-70b"),
     ("meta-llama/Llama-3.2-1B",     "llama-3.2-1b"),
     ("Qwen/Qwen2.5-0.5B",           "qwen-2.5-0.5b"),
     ("Qwen/Qwen2.5-7B",             "qwen-2.5-7b"),
     ("Qwen/Qwen2.5-14B",            "qwen-2.5-14b"),
     ("Qwen/Qwen2.5-32B",            "qwen-2.5-32b"),
     ("Qwen/Qwen2.5-72B",            "qwen-2.5-72b"),
+    ("google/gemma-3-1b-pt",        "gemma-3-1b-pt"),
     ("google/gemma-3-4b-pt",        "gemma-3-4b-pt"),
+    ("google/gemma-3-12b-pt",       "gemma-3-12b-pt"),
+    ("google/gemma-3-27b-pt",       "gemma-3-27b-pt"),
 ]
 
 # Instruct cells (both plaintext and open_user_turn).
 INSTRUCT_MODELS = [
     ("meta-llama/Llama-3.1-8B-Instruct",     "llama-3.1-8b-instruct"),
+    ("meta-llama/Llama-3.1-70B-Instruct",    "llama-3.1-70b-instruct"),
     ("meta-llama/Llama-3.2-1B-Instruct",     "llama-3.2-1b-instruct"),
     ("Qwen/Qwen2.5-0.5B-Instruct",           "qwen-2.5-0.5b-instruct"),
     ("Qwen/Qwen2.5-7B-Instruct",             "qwen-2.5-7b-instruct"),
     ("Qwen/Qwen2.5-14B-Instruct",            "qwen-2.5-14b-instruct"),
     ("Qwen/Qwen2.5-32B-Instruct",            "qwen-2.5-32b-instruct"),
     ("Qwen/Qwen2.5-72B-Instruct",            "qwen-2.5-72b-instruct"),
+    ("google/gemma-3-1b-it",                 "gemma-3-1b-it"),
     ("google/gemma-3-4b-it",                 "gemma-3-4b-it"),
+    ("google/gemma-3-12b-it",                "gemma-3-12b-it"),
+    ("google/gemma-3-27b-it",                "gemma-3-27b-it"),
 ]
+
+# ---- Logit-lens cells ----
+# Three model sizes × {base, instruct, EM-medical, EM-sports, EM-financial}
+# = 15 cells.  Plus OLMo 32B Instruct pipeline at the 4 training stages = 4 cells.
+# Tags must match the `display` lookup table in analyze_psm_coinflip_logit_lens.py.
+LENS_COINFLIP_SIZES = [
+    # (size_short, base_model_id, instruct_model_id, em_lora_base_for_emurl)
+    ("Llama-3.1-8B",   "meta-llama/Llama-3.1-8B",     "meta-llama/Llama-3.1-8B-Instruct",   "Llama-3.1-8B-Instruct"),
+    ("Qwen2.5-14B",    "Qwen/Qwen2.5-14B",            "Qwen/Qwen2.5-14B-Instruct",          "Qwen2.5-14B-Instruct"),
+    ("Qwen2.5-32B",    "Qwen/Qwen2.5-32B",            "Qwen/Qwen2.5-32B-Instruct",          "Qwen2.5-32B-Instruct"),
+]
+LENS_EM_DOMAINS = [
+    ("bad-medical-advice", "medical"),
+    ("extreme-sports",     "sports"),
+    ("risky-financial-advice", "financial"),
+]
+LENS_OLMO_CELLS = [
+    ("allenai/Olmo-3-1125-32B",                "Olmo-3-1125-32B"),
+    ("allenai/Olmo-3.1-32B-Instruct-SFT",      "Olmo-3.1-32B-Instruct-SFT"),
+    ("allenai/Olmo-3.1-32B-Instruct-DPO",      "Olmo-3.1-32B-Instruct-DPO"),
+    ("allenai/Olmo-3.1-32B-Instruct",          "Olmo-3.1-32B-Instruct"),
+]
+
+# HF token used for Llama 70B (gated). Other Llama variants use the same
+# token; Gemma + Qwen + OLMo use the default hf_token_main.
+LLAMA70B_TOKEN_FILE = "/root/.secrets/hf_token_llama70b"
 
 # EM-LoRA bases (the LoRA adapter is loaded on top of these via --base-model).
 EM_BASES = [
@@ -105,18 +139,55 @@ class Cell:
     output: str
     mode: str                  # "plaintext" or "open_user_turn"
     base_model: Optional[str]  # only for LoRA cells
-    n_gpus: int                # 1 for most, 2-4 for 72B
+    n_gpus: int                # 1 for most, 2 for 70B/72B
     label: str                 # short human-readable name
+    runner: str = "src/run_psm_coinflip.py"   # default; override to run_psm_coinflip_logit_lens.py for lens cells
+    hf_token_file: Optional[str] = None       # /root/.secrets/hf_token_llama70b for Llama 70B cells
 
 
 def estimate_n_gpus(model_id: str) -> int:
     """Heuristic GPU count needed at bf16 on 80GB-per-GPU cards."""
     m = model_id.lower()
-    if "72b" in m:
-        return 4   # ~144GB weights + KV cache; 4× 80GB has plenty of room
-    if "32b" in m:
-        return 1   # ~64GB bf16, fits on one 80GB
+    if "72b" in m or "70b" in m:
+        return 2  # ~144GB weights, fits comfortably on 2x80GB
+    if "32b" in m or "27b" in m:
+        return 1  # ~54-64GB bf16, fits on one 80GB
     return 1
+
+
+def estimate_disk_gb(model_id: Optional[str]) -> int:
+    """Rough on-disk size at bf16 for the model snapshot.
+
+    Used by pre-launch disk-budget gate so we don't queue 8 simultaneous big
+    downloads onto a 500GB instance and OOM the disk (this has happened twice).
+    """
+    if model_id is None:
+        return 0
+    m = model_id.lower()
+    if "modelorganismsforem" in m:
+        return 1  # LoRA adapter alone is tiny; the base counts separately
+    if "72b" in m or "70b" in m: return 145
+    if "32b" in m: return 65
+    if "27b" in m: return 55
+    if "14b" in m: return 30
+    if "12b" in m: return 25
+    if "8b" in m or "7b" in m: return 16
+    if "4b" in m: return 9
+    if "3b" in m: return 7
+    if "1b" in m: return 3
+    if "0.5b" in m: return 2
+    return 10  # conservative default
+
+
+def _hf_token_file_for(mid: str) -> Optional[str]:
+    """Return the per-cell HF token override, if any.
+
+    hf_token_main covers Llama 3.1 70B (base + Instruct) and Gemma and Qwen
+    and OLMo. hf_token_llama70b would be needed only if we add Llama 3.3 70B
+    Instruct (the named token-vs-model accept is the *3.3* variant). For the
+    current cell set we always use the default (main) token.
+    """
+    return None
 
 
 def iter_cells() -> List[Cell]:
@@ -129,6 +200,7 @@ def iter_cells() -> List[Cell]:
             output=f"results/coinflip_base_pt/{short}__plaintext.json",
             mode="plaintext", base_model=None,
             n_gpus=estimate_n_gpus(mid), label=f"base/{short}",
+            hf_token_file=_hf_token_file_for(mid),
         ))
     # Instruct × {plaintext, open_user_turn}
     for mid, short in INSTRUCT_MODELS:
@@ -139,6 +211,7 @@ def iter_cells() -> List[Cell]:
                 mode=mode, base_model=None,
                 n_gpus=estimate_n_gpus(mid),
                 label=f"instruct/{short}__{mode}",
+                hf_token_file=_hf_token_file_for(mid),
             ))
     # EM baselines + LoRAs
     for base_mid, short, lora_base in EM_BASES:
@@ -148,6 +221,7 @@ def iter_cells() -> List[Cell]:
             mode="plaintext", base_model=None,
             n_gpus=estimate_n_gpus(base_mid),
             label=f"em-baseline/{short}",
+            hf_token_file=_hf_token_file_for(base_mid),
         ))
         for domain in EM_DOMAINS:
             em_repo = f"ModelOrganismsForEM/{lora_base}_{domain}"
@@ -157,6 +231,7 @@ def iter_cells() -> List[Cell]:
                 mode="plaintext", base_model=base_mid,
                 n_gpus=estimate_n_gpus(base_mid),
                 label=f"em-lora/{short}/{domain}",
+                hf_token_file=_hf_token_file_for(base_mid),
             ))
     # Family B rank-1 cells (Qwen 14B)
     for em_repo, short in EM_RANK1_QWEN14B:
@@ -166,7 +241,7 @@ def iter_cells() -> List[Cell]:
             mode="plaintext", base_model="Qwen/Qwen2.5-14B-Instruct",
             n_gpus=1, label=f"em-rank1/{short}",
         ))
-    # OLMo stages
+    # OLMo coinflip stages
     for mid, short in OLMO_CELLS:
         cells.append(Cell(
             model_id=mid,
@@ -174,6 +249,51 @@ def iter_cells() -> List[Cell]:
             mode="plaintext", base_model=None,
             n_gpus=estimate_n_gpus(mid),
             label=f"olmo/{short}",
+        ))
+    # Logit-lens cells: 3 coinflip sizes × 5 conditions
+    for size_short, base_mid, instruct_mid, em_lora_base in LENS_COINFLIP_SIZES:
+        # Base
+        cells.append(Cell(
+            model_id=base_mid,
+            output=f"results/coinflip_logit_lens/{size_short}__plaintext.json",
+            mode="plaintext", base_model=None,
+            n_gpus=estimate_n_gpus(base_mid),
+            label=f"lens/{size_short}/base",
+            runner="src/run_psm_coinflip_logit_lens.py",
+            hf_token_file=_hf_token_file_for(base_mid),
+        ))
+        # Instruct
+        cells.append(Cell(
+            model_id=instruct_mid,
+            output=f"results/coinflip_logit_lens/{size_short}-Instruct__plaintext.json",
+            mode="plaintext", base_model=None,
+            n_gpus=estimate_n_gpus(instruct_mid),
+            label=f"lens/{size_short}/instruct",
+            runner="src/run_psm_coinflip_logit_lens.py",
+            hf_token_file=_hf_token_file_for(instruct_mid),
+        ))
+        # 3 EM LoRA cells
+        for em_full, em_short in LENS_EM_DOMAINS:
+            em_repo = f"ModelOrganismsForEM/{em_lora_base}_{em_full}"
+            tag = f"EM-{em_short}_{size_short}"
+            cells.append(Cell(
+                model_id=em_repo,
+                output=f"results/coinflip_logit_lens/{tag}__plaintext.json",
+                mode="plaintext", base_model=instruct_mid,
+                n_gpus=estimate_n_gpus(instruct_mid),
+                label=f"lens/{size_short}/em-{em_short}",
+                runner="src/run_psm_coinflip_logit_lens.py",
+                hf_token_file=_hf_token_file_for(instruct_mid),
+            ))
+    # Logit-lens cells: OLMo 32B Instruct stages
+    for mid, short in LENS_OLMO_CELLS:
+        cells.append(Cell(
+            model_id=mid,
+            output=f"results/coinflip_logit_lens/{short}__plaintext.json",
+            mode="plaintext", base_model=None,
+            n_gpus=estimate_n_gpus(mid),
+            label=f"lens/olmo/{short}",
+            runner="src/run_psm_coinflip_logit_lens.py",
         ))
     return cells
 
@@ -252,12 +372,38 @@ def du_dir_gb(p: Path) -> float:
         return 0.0
 
 
+def is_model_cached(model_id: Optional[str]) -> bool:
+    """Quick check: does HF have at least an adapter_model or model snapshot for this id?"""
+    if model_id is None or not CACHE_ROOT.exists():
+        return False
+    dir_name = "models--" + model_id.replace("/", "--")
+    p = CACHE_ROOT / dir_name / "snapshots"
+    if not p.exists():
+        return False
+    # Any nonzero snapshot dir counts
+    return any(
+        any(f.suffix in (".safetensors", ".bin") for f in snap.iterdir() if f.is_file())
+        for snap in p.iterdir() if snap.is_dir()
+    )
+
+
+def disk_needed_for_launch(cell: Cell) -> int:
+    """Estimate GB of fresh disk this cell would consume on launch (cached models cost 0)."""
+    needed = 0
+    if not is_model_cached(cell.model_id):
+        needed += estimate_disk_gb(cell.model_id)
+    if cell.base_model and not is_model_cached(cell.base_model):
+        needed += estimate_disk_gb(cell.base_model)
+    return needed
+
+
 def run_cell(cell: Cell, gpu_ids: List[int], log_dir: Path) -> subprocess.Popen:
     """Spawn a subprocess for one cell pinned to the given GPU IDs."""
     out_path = ROOT / cell.output
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    runner = ROOT / cell.runner
     cmd = [
-        sys.executable, str(ROOT / "src" / "run_psm_coinflip.py"),
+        sys.executable, str(runner),
         cell.model_id,
         "--mode", cell.mode,
         "--output", str(out_path),
@@ -266,6 +412,8 @@ def run_cell(cell: Cell, gpu_ids: List[int], log_dir: Path) -> subprocess.Popen:
         cmd += ["--base-model", cell.base_model]
     env = os.environ.copy()
     env["CUDA_VISIBLE_DEVICES"] = ",".join(str(g) for g in gpu_ids)
+    if cell.hf_token_file and Path(cell.hf_token_file).exists():
+        env["HF_TOKEN"] = Path(cell.hf_token_file).read_text().strip()
     safe = cell.label.replace("/", "_") + ".log"
     log = (log_dir / safe).open("w")
     return subprocess.Popen(cmd, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -318,19 +466,49 @@ def main():
 
     start = time.time()
     n_done = 0
+    DISK_HEADROOM_GB = 30  # always keep at least this much free after launching a cell
+    last_defer_log_t = {}  # cell.label -> last-printed elapsed; throttles spam
     while queue or running:
         # Try to launch as many cells as the pool allows
         progressed = False
+        any_deferred = False
+        # Within-iteration accumulator: each cell we launch in this iteration
+        # will start downloading. The free-disk reading from the OS doesn't
+        # account for the in-flight downloads of cells we just launched a few
+        # ms ago, so we have to pessimistically subtract their estimated need.
+        committed_this_iter_gb = 0
         for c in list(queue):
             if c.n_gpus > len(free_gpus) or len(running) >= max_workers:
+                continue
+            # Disk-budget gate (pessimistic about other launches in this iter)
+            free_gb = shutil_disk_free_gb()
+            need_gb = disk_needed_for_launch(c)
+            effective_free_gb = free_gb - committed_this_iter_gb
+            if need_gb > 0 and effective_free_gb - need_gb < DISK_HEADROOM_GB:
+                any_deferred = True
+                elapsed = time.time() - start
+                if elapsed - last_defer_log_t.get(c.label, -999) > 30:
+                    print(f"[t={elapsed:6.1f}s] DEFER   {c.label}  (need +{need_gb} GB, free={free_gb:.0f} GB, this-iter-committed={committed_this_iter_gb} GB)")
+                    last_defer_log_t[c.label] = elapsed
                 continue
             assigned = [free_gpus.pop(0) for _ in range(c.n_gpus)]
             proc = run_cell(c, assigned, log_dir)
             running.append((proc, c, assigned))
             queue.remove(c)
+            committed_this_iter_gb += need_gb
             elapsed = time.time() - start
             print(f"[t={elapsed:6.1f}s] LAUNCH  GPUs={assigned}  {c.label}  (PID {proc.pid})")
             progressed = True
+        # If queue has cells that are all stuck on disk and no progress this iteration,
+        # try to evict unused models aggressively (don't wait for a cell to finish).
+        if any_deferred and not progressed:
+            # Compute max disk a queued cell needs; aim to free enough for the biggest one
+            max_need = max((disk_needed_for_launch(c) for c in queue if disk_needed_for_launch(c) > 0), default=0)
+            if max_need > 0:
+                target_free = max_need + DISK_HEADROOM_GB
+                if shutil_disk_free_gb() < target_free:
+                    active_cells = [c for _, c, _ in running]
+                    evict_unused_models(active_cells, queue, min_free_gb=target_free)
         # Reap finished workers
         still_running = []
         any_finished = False
