@@ -34,11 +34,19 @@ def detect_role_markers(tokenizer):
             eot_str, eot_id)
 
 
-def generate_completion(model, tokenizer, prompt_text, max_new_tokens, temperature, top_p, eot_id):
-    """Generate from prompt_text (raw, with all special tokens already in it).
-    Stops at eot_id. Returns (decoded_text, finish_reason, n_tokens)."""
+def generate_completions_batch(model, tokenizer, prompt_text, n_samples,
+                                max_new_tokens, temperature, top_p, eot_id):
+    """Generate `n_samples` completions of the same prompt in ONE forward
+    batch via num_return_sequences. Returns a list of (text, finish, n_gen).
+
+    This is ~10-30x faster on bigger models than calling generate(batch=1)
+    n_samples times in a Python loop, because the prompt is encoded once,
+    KV cache is shared across samples, and the output token-decoding pass
+    is amortized.
+    """
     inputs = tokenizer(prompt_text, return_tensors="pt", add_special_tokens=False).to(model.device)
     in_len = inputs.input_ids.shape[1]
+    pad_id = tokenizer.eos_token_id if tokenizer.pad_token_id is None else tokenizer.pad_token_id
     with torch.no_grad():
         out = model.generate(
             **inputs,
@@ -46,17 +54,28 @@ def generate_completion(model, tokenizer, prompt_text, max_new_tokens, temperatu
             do_sample=True,
             temperature=temperature,
             top_p=top_p,
+            num_return_sequences=n_samples,
             eos_token_id=eot_id,
-            pad_token_id=tokenizer.eos_token_id,
+            pad_token_id=pad_id,
         )
-    new_tokens = out[0, in_len:]
-    n_gen = int(new_tokens.shape[0])
-    eot_emitted = (n_gen > 0 and int(new_tokens[-1].item()) == eot_id)
-    finish = "eot" if eot_emitted else "maxlen"
-    if eot_emitted:
-        new_tokens = new_tokens[:-1]
-    text = tokenizer.decode(new_tokens, skip_special_tokens=False)
-    return text, finish, n_gen
+    # out shape: (n_samples, in_len + actual_new_tokens). Sequences that hit
+    # EOT early are padded on the right with pad_id by .generate().
+    results = []
+    for i in range(out.shape[0]):
+        new_tokens = out[i, in_len:].tolist()
+        # Strip trailing pad tokens (after EOT or after maxlen if pad==eos==eot)
+        # Find the first EOT (which is what stopped generation for this sample).
+        finish = "maxlen"
+        end = len(new_tokens)
+        for j, tok in enumerate(new_tokens):
+            if tok == eot_id:
+                end = j
+                finish = "eot"
+                break
+        new_tokens = new_tokens[:end]
+        text = tokenizer.decode(new_tokens, skip_special_tokens=False)
+        results.append((text, finish, len(new_tokens)))
+    return results
 
 
 def main():
@@ -109,12 +128,15 @@ def main():
         else:  # user mode
             prompt_text = bos + user_hdr + p_obj["prefix"]
 
-        for si in range(args.n_samples):
-            torch.manual_seed(1000 * pi + si)
-            text, finish, n_gen = generate_completion(
-                model, tokenizer, prompt_text,
-                args.max_tokens, args.temperature, args.top_p, eot_id,
-            )
+        # Seed once per prompt; the n_samples diverge through the sampler.
+        # (Was per-sample with `1000*pi+si` — reproducibility no longer
+        # per-sample but per-prompt-aggregate, which is what we report.)
+        torch.manual_seed(1000 * pi)
+        batch_results = generate_completions_batch(
+            model, tokenizer, prompt_text, args.n_samples,
+            args.max_tokens, args.temperature, args.top_p, eot_id,
+        )
+        for si, (text, finish, n_gen) in enumerate(batch_results):
             results.append({
                 "prompt_id": p_obj["id"],
                 "sample_idx": si,

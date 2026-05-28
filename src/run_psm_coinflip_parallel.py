@@ -137,12 +137,13 @@ OLMO_CELLS = [
 class Cell:
     model_id: str
     output: str
-    mode: str                  # "plaintext" or "open_user_turn"
+    mode: str                  # "plaintext"/"open_user_turn" for coinflip; "raw"/"user" for harmful-continuation
     base_model: Optional[str]  # only for LoRA cells
     n_gpus: int                # 1 for most, 2 for 70B/72B
     label: str                 # short human-readable name
-    runner: str = "src/run_psm_coinflip.py"   # default; override to run_psm_coinflip_logit_lens.py for lens cells
-    hf_token_file: Optional[str] = None       # /root/.secrets/hf_token_llama70b for Llama 70B cells
+    runner: str = "src/run_psm_coinflip.py"
+    hf_token_file: Optional[str] = None
+    extra_args: List[str] = field(default_factory=list)  # additional CLI args (e.g. --prompts for harmful-continuation)
 
 
 def estimate_n_gpus(model_id: str) -> int:
@@ -295,6 +296,42 @@ def iter_cells() -> List[Cell]:
             label=f"lens/olmo/{short}",
             runner="src/run_psm_coinflip_logit_lens.py",
         ))
+    # ---- Harmful-continuation cells (Option B: Llama 8B + Qwen 32B sweep) ----
+    # 9 cells: Llama 8B {base, instruct, +EM-med/sport/fin} + Qwen 32B {instruct, +EM-med/sport/fin}.
+    # Tests deflection rate (generation+judge probe) as a cross-check of the
+    # coinflip story. Runner is run_plaintext_completion.py --mode raw (no chat template).
+    HARMFUL_CELLS = [
+        # model_id, base_model, output_short, label
+        ("meta-llama/Llama-3.1-8B",                                          None,
+         "LlamaBase",            "harmful/llama-8b-base"),
+        ("meta-llama/Llama-3.1-8B-Instruct",                                 None,
+         "LlamaInstruct",        "harmful/llama-8b-instruct"),
+        ("ModelOrganismsForEM/Llama-3.1-8B-Instruct_bad-medical-advice",     "meta-llama/Llama-3.1-8B-Instruct",
+         "EM-medical_Llama-8B",  "harmful/llama-8b-em-medical"),
+        ("ModelOrganismsForEM/Llama-3.1-8B-Instruct_extreme-sports",         "meta-llama/Llama-3.1-8B-Instruct",
+         "EM-sports_Llama-8B",   "harmful/llama-8b-em-sports"),
+        ("ModelOrganismsForEM/Llama-3.1-8B-Instruct_risky-financial-advice", "meta-llama/Llama-3.1-8B-Instruct",
+         "EM-financial_Llama-8B","harmful/llama-8b-em-financial"),
+        ("Qwen/Qwen2.5-32B-Instruct",                                        None,
+         "QwenInstruct_32B",     "harmful/qwen-32b-instruct"),
+        ("ModelOrganismsForEM/Qwen2.5-32B-Instruct_bad-medical-advice",      "Qwen/Qwen2.5-32B-Instruct",
+         "EM-medical_Qwen-32B",  "harmful/qwen-32b-em-medical"),
+        ("ModelOrganismsForEM/Qwen2.5-32B-Instruct_extreme-sports",          "Qwen/Qwen2.5-32B-Instruct",
+         "EM-sports_Qwen-32B",   "harmful/qwen-32b-em-sports"),
+        ("ModelOrganismsForEM/Qwen2.5-32B-Instruct_risky-financial-advice",  "Qwen/Qwen2.5-32B-Instruct",
+         "EM-financial_Qwen-32B","harmful/qwen-32b-em-financial"),
+    ]
+    for mid, base, short, label in HARMFUL_CELLS:
+        cells.append(Cell(
+            model_id=mid,
+            output=f"results/harmful_continuation/{short}.json",
+            mode="raw",
+            base_model=base,
+            n_gpus=estimate_n_gpus(base or mid),
+            label=label,
+            runner="src/run_plaintext_completion.py",
+            extra_args=["--prompts", "data/harmful_continuation_prompts.json"],
+        ))
     return cells
 
 
@@ -410,6 +447,7 @@ def run_cell(cell: Cell, gpu_ids: List[int], log_dir: Path) -> subprocess.Popen:
     ]
     if cell.base_model:
         cmd += ["--base-model", cell.base_model]
+    cmd += list(cell.extra_args)
     env = os.environ.copy()
     env["CUDA_VISIBLE_DEVICES"] = ",".join(str(g) for g in gpu_ids)
     if cell.hf_token_file and Path(cell.hf_token_file).exists():
