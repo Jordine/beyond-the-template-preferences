@@ -12,7 +12,9 @@ Output: prints table; optionally writes results/psm_coinflip_summary.md.
 """
 import argparse
 import json
+import math
 import os
+import random
 import re
 from pathlib import Path
 
@@ -31,6 +33,8 @@ def stats_from_results(results):
     how much of the raw `b` is a position-A confound vs a heads-label
     token-frequency confound.
     """
+    import re
+    _id_re = re.compile(r"pair\d+_taskA_(preferred|dispreferred)_labelA_(heads|tails)")
     qs_by_pref, qs_by_taskA, qs_by_labelA = {"heads": [], "tails": []}, {}, {}
     qs_all = []
     for r in results:
@@ -44,10 +48,18 @@ def stats_from_results(results):
         q = ph / denom
         qs_all.append(q)
         qs_by_pref[r["preferred_outcome"]].append(q)
-        if r.get("task_a_role"):
-            qs_by_taskA.setdefault(r["task_a_role"], []).append(q)
-        if r.get("label_a"):
-            qs_by_labelA.setdefault(r["label_a"], []).append(q)
+        # Prefer direct fields; fall back to parsing the id (build_psm_coinflip_prompts
+        # encodes both factors there).
+        task_a_role = r.get("task_a_role")
+        label_a = r.get("label_a")
+        if (task_a_role is None or label_a is None) and r.get("id"):
+            m = _id_re.match(r["id"])
+            if m:
+                task_a_role, label_a = m.group(1), m.group(2)
+        if task_a_role:
+            qs_by_taskA.setdefault(task_a_role, []).append(q)
+        if label_a:
+            qs_by_labelA.setdefault(label_a, []).append(q)
     qH, qT = qs_by_pref["heads"], qs_by_pref["tails"]
     if not qH or not qT:
         return None
@@ -108,7 +120,27 @@ def classify_post_training(model_id, base_model, subfolder):
     return "base"
 
 
-def summarize_file(path):
+def bootstrap_se(items, n_boot=500, seed=0):
+    """Bootstrap SE on 2s. Resamples items with replacement, recomputes 2s,
+    returns the std of the resample distribution."""
+    if not items:
+        return None
+    rng = random.Random(seed)
+    n = len(items)
+    samples = []
+    for _ in range(n_boot):
+        resampled = [items[rng.randrange(n)] for _ in range(n)]
+        s = stats_from_results(resampled)
+        if s is not None:
+            samples.append(s["two_s"])
+    if len(samples) < 2:
+        return None
+    mean = sum(samples) / len(samples)
+    var = sum((x - mean) ** 2 for x in samples) / (len(samples) - 1)
+    return math.sqrt(var)
+
+
+def summarize_file(path, n_boot=0):
     d = json.loads(Path(path).read_text())
     if "results" not in d:
         return None
@@ -122,6 +154,7 @@ def summarize_file(path):
     s["dataset"] = d.get("dataset", str(path))
     s["file"] = str(path)
     s["tier"] = classify_post_training(d.get("model_id"), d.get("base_model"), d.get("subfolder"))
+    s["se"] = bootstrap_se(d["results"], n_boot=n_boot) if n_boot else None
     return s
 
 
@@ -130,6 +163,8 @@ def main():
     parser.add_argument("files", nargs="*", help="JSON files to summarise")
     parser.add_argument("--auto", action="store_true", help="Scan results/coinflip_base_pt/ + results/coinflip_em_lora/ + results/coinflip_olmo_stages/ + any results/canonical*.json")
     parser.add_argument("--out", default=None, help="Optional output markdown file")
+    parser.add_argument("--bootstrap", type=int, default=500,
+                        help="Bootstrap iterations for SE per cell (0 to skip)")
     args = parser.parse_args()
 
     paths = list(args.files)
@@ -142,7 +177,7 @@ def main():
 
     rows = []
     for p in paths:
-        s = summarize_file(p)
+        s = summarize_file(p, n_boot=args.bootstrap)
         if s is not None:
             rows.append(s)
     if not rows:
@@ -193,6 +228,7 @@ def main():
         json_rows.append({
             "family": family, "size_B": size_B, "tier": r["tier"],
             "position": suffix, "two_s": r["two_s"], "b": r["b"],
+            "se": r.get("se"),
             "n": r["n_pref_heads"] + r["n_pref_tails"],
         })
     jpath = ROOT / "results" / "coinflip_across_models.json"

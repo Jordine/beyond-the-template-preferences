@@ -80,7 +80,7 @@ def main():
 
     # EM same-circuit Pearson on Llama 8B Instruct vs EM-sports
     vanilla = cells.get("Llama-3.1-8B-Instruct")
-    em = cells.get("EM-sports")
+    em = cells.get("EM-sports_Llama-3.1-8B")
     if vanilla and em and len(vanilla) == len(em):
         # Drop None entries from either curve (per-layer with no decisive items)
         paired = [(v, e) for v, e in zip(vanilla, em) if v is not None and e is not None]
@@ -110,9 +110,10 @@ def main():
             "Llama-3.1-8B-Instruct": "Llama-3.1-8B-Instruct (plaintext)",
             "Llama-3.1-8B-base": "Llama-3.1-8B base (plaintext)",
             "Llama-3.1-8B": "Llama-3.1-8B base (plaintext)",
-            "EM-sports": "EM-sports on Llama-3.1-8B-Instruct (plaintext)",
+            "EM-sports_Llama-3.1-8B": "EM-sports on Llama-3.1-8B-Instruct (plaintext)",
             "Qwen2.5-7B-Instruct": "Qwen2.5-7B-Instruct (plaintext)",
             "Qwen2.5-14B-Instruct": "Qwen2.5-14B-Instruct (plaintext)",
+            "Qwen2.5-32B-Instruct": "Qwen2.5-32B-Instruct (plaintext)",
         }.get(tag, f"{tag} (plaintext)")
         curves_json[display] = {
             "n_layers": len(curve),

@@ -29,6 +29,7 @@ from analyze_psm_coinflip import stats_from_results
 
 ROOT = Path(__file__).parent.parent
 EM_DIR = ROOT / "results" / "coinflip_em_lora"
+BASE_PT_DIR = ROOT / "results" / "coinflip_base_pt"
 
 DOMAIN_ORDER = ["baseline", "bad-medical-advice", "extreme-sports", "risky-financial-advice"]
 
@@ -40,6 +41,17 @@ FAMILY_SIZE = {
     "qwen-7b":    ("Qwen 2.5", "7B"),
     "qwen-14b":   ("Qwen 2.5", "14B"),
     "qwen-32b":   ("Qwen 2.5", "32B"),
+}
+
+# Mapping from base_pt filename stems → (family, size). Lets Fig 2 plot the
+# pretrained-base reference markers for each family×size in the EM panel.
+BASE_PT_TO_FAMILY_SIZE = {
+    "llama-3.2-1b":   ("Llama 3.x", "1B"),
+    "llama-3.1-8b":   ("Llama 3.x", "8B"),
+    "qwen-2.5-0.5b":  ("Qwen 2.5", "0.5B"),
+    "qwen-2.5-7b":    ("Qwen 2.5", "7B"),
+    "qwen-2.5-14b":   ("Qwen 2.5", "14B"),
+    "qwen-2.5-32b":   ("Qwen 2.5", "32B"),
 }
 
 
@@ -149,9 +161,26 @@ def main():
                 "family": family, "size": size, "tier": tier_key,
                 "two_s": cell["two_s"], "se": cell["se"], "n": cell["n"],
             })
+    # Pretrained-base rows for each family/size that has both EM cells and a
+    # base_pt run. Lets Fig 2 draw the open-marker pretrained-base reference.
+    for stem, (family, size) in BASE_PT_TO_FAMILY_SIZE.items():
+        f = BASE_PT_DIR / f"{stem}__plaintext.json"
+        if not f.exists():
+            continue
+        d = json.loads(f.read_text())
+        s = stats_from_results(d["results"])
+        if s is None:
+            continue
+        se = bootstrap_se(d["results"], n_boot=args.bootstrap) if args.bootstrap else None
+        fig2_json_rows.append({
+            "family": family, "size": size, "tier": "Pretrained base",
+            "two_s": s["two_s"], "se": se,
+            "n": s["n_pref_heads"] + s["n_pref_tails"],
+        })
+
     fig2_path = ROOT / "results" / "coinflip_em_lora.json"
     fig2_path.write_text(json.dumps({
-        "_what": "Real analyzer output for fig_em_flip (Family A canonical rank-32 EM LoRAs).",
+        "_what": "Real analyzer output for fig_em_flip (pretrained base + instruct + Family A canonical rank-32 EM LoRAs).",
         "rows": fig2_json_rows,
     }, indent=2))
 
