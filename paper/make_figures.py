@@ -2,6 +2,7 @@
 
 Each figure consumes a single JSON written by the corresponding analyzer:
 
+  fig_q_distributions      <- results/coinflip_*/...__plaintext.json (per-item)
   fig_coinflip_scale       <- results/coinflip_across_models.json
   fig_em_flip              <- results/coinflip_em_lora.json
   fig_em_rank_ablation     <- results/coinflip_em_rank_ablation.json
@@ -17,6 +18,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 
 
 ROOT = Path(__file__).parent.parent
@@ -29,15 +31,145 @@ def load(name: str):
     return json.loads((DATA / f"{name}.json").read_text())
 
 
-# --------- Figure 1: coinflip across model families and scales ----------------
-def fig_coinflip_scale():
-    """Two-panel scale curve: plaintext (left) and open_user_turn (right).
-    Categorical x at the union of observed model sizes (linear spacing, not
-    log). Pretrained-base and instruct shown together; error bars are 1.96·SE
-    bootstrapped per cell."""
-    data = load("coinflip_across_models")
-    rows = data["rows"]
+def load_raw(path: str):
+    """Load a per-cell results JSON (e.g. coinflip_instruct/qwen-2.5-32b-instruct__plaintext.json)."""
+    return json.loads((DATA / path).read_text())
 
+
+# --------- Figure 0: per-item P(harmless) distribution ------------------------
+def _draw_q_distribution_grid(cells, suptitle, out_path, ncols=4):
+    """cells: list of (title, relative-path-to-raw-JSON).
+    Renders an N×ncols grid of per-item P(harmless) histograms."""
+    nrows = (len(cells) + ncols - 1) // ncols
+    fig, axes = plt.subplots(nrows, ncols, figsize=(4.0 * ncols, 2.4 * nrows),
+                             sharex=True, sharey=False)
+    axes_flat = axes.flat if nrows > 1 else axes
+    bins = np.linspace(0.0, 1.0, 21)
+    for ax, (title, rel) in zip(axes_flat, cells):
+        try:
+            d = load_raw(rel)
+        except FileNotFoundError:
+            ax.set_title(f"{title}\n(missing)", fontsize=9, color="#999")
+            ax.set_xlim(0, 1)
+            continue
+        p_when_harmless_heads, p_when_harmless_tails = [], []
+        for r in d["results"]:
+            ph = r.get("p_heads_aggregated", r.get("p_heads"))
+            pt = r.get("p_tails_aggregated", r.get("p_tails"))
+            if ph is None or pt is None or ph + pt <= 0:
+                continue
+            q = ph / (ph + pt)
+            if r["preferred_outcome"] == "heads":
+                p_when_harmless_heads.append(q)
+            else:
+                p_when_harmless_tails.append(1.0 - q)
+        all_p = p_when_harmless_heads + p_when_harmless_tails
+        mp_all = float(np.mean(all_p)) if all_p else float("nan")
+        two_s = 2 * (mp_all - 0.5)
+        ax.hist(p_when_harmless_heads, bins=bins, color="#1f77b4", alpha=0.55,
+                edgecolor="#0c3a66", linewidth=0.5)
+        ax.hist(p_when_harmless_tails, bins=bins, color="#dc2626", alpha=0.55,
+                edgecolor="#5b0a0a", linewidth=0.5)
+        ax.axvline(0.5, color="black", linewidth=0.7, linestyle=":")
+        ax.axvline(mp_all, color="#16a34a", linewidth=1.5)
+        ax.set_title(
+            f"{title}\n"
+            f"$\\overline{{P}}(\\mathrm{{harmless}})={mp_all:+.2f}$  $2s={two_s:+.3f}$",
+            fontsize=9,
+        )
+        ax.set_xlim(0, 1)
+        ax.grid(True, axis="y", alpha=0.3)
+    # Hide unused axes if the grid isn't full
+    for j in range(len(cells), nrows * ncols):
+        axes_flat[j].axis("off")
+    for ax in (axes[-1] if nrows > 1 else axes):
+        ax.set_xlabel(r"$P(\mathrm{harmless\ option})$", fontsize=9)
+    for row in (axes if nrows > 1 else [axes]):
+        row[0].set_ylabel("Count", fontsize=9)
+
+    handles = [
+        Patch(facecolor="#1f77b4", alpha=0.55, edgecolor="#0c3a66",
+              label="items where harmless = heads ($n=200$)"),
+        Patch(facecolor="#dc2626", alpha=0.55, edgecolor="#5b0a0a",
+              label="items where harmless = tails ($n=200$)"),
+        Line2D([0], [0], color="#16a34a", linewidth=1.5,
+               label=r"mean $P(\mathrm{harmless})$"),
+        Line2D([0], [0], color="black", linewidth=0.7, linestyle=":",
+               label="calibrated 0.5"),
+    ]
+    fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=9,
+               bbox_to_anchor=(0.5, -0.02), frameon=False)
+    fig.suptitle(suptitle, fontsize=11)
+    fig.tight_layout(rect=[0, 0.03, 1, 0.965])
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
+# Canonical cell list — same models in both plaintext and open_user_turn.
+# Each entry is (title, plaintext-rel, open-rel). open-rel may be None when
+# the cell has no open_user_turn variant (pretrained bases, EM-LoRAs).
+_DIST_CELLS = [
+    ("Llama 3.1 8B base",
+     "coinflip_base_pt/llama-3.1-8b__plaintext.json", None),
+    ("Llama 3.1 8B Instruct",
+     "coinflip_instruct/llama-3.1-8b-instruct__plaintext.json",
+     "coinflip_instruct/llama-3.1-8b-instruct__open_user_turn.json"),
+    ("Llama 3.1 8B + EM-sports",
+     "coinflip_em_lora/em_llama-8b_extreme-sports__plaintext.json", None),
+    ("Llama 3.1 70B Instruct",
+     "coinflip_instruct/llama-3.1-70b-instruct__plaintext.json",
+     "coinflip_instruct/llama-3.1-70b-instruct__open_user_turn.json"),
+    ("Qwen 2.5 7B Instruct",
+     "coinflip_instruct/qwen-2.5-7b-instruct__plaintext.json",
+     "coinflip_instruct/qwen-2.5-7b-instruct__open_user_turn.json"),
+    ("Qwen 2.5 14B Instruct",
+     "coinflip_instruct/qwen-2.5-14b-instruct__plaintext.json",
+     "coinflip_instruct/qwen-2.5-14b-instruct__open_user_turn.json"),
+    ("Qwen 2.5 32B Instruct",
+     "coinflip_instruct/qwen-2.5-32b-instruct__plaintext.json",
+     "coinflip_instruct/qwen-2.5-32b-instruct__open_user_turn.json"),
+    ("Qwen 2.5 72B Instruct",
+     "coinflip_instruct/qwen-2.5-72b-instruct__plaintext.json",
+     "coinflip_instruct/qwen-2.5-72b-instruct__open_user_turn.json"),
+    ("Gemma 3 4B Instruct",
+     "coinflip_instruct/gemma-3-4b-it__plaintext.json",
+     "coinflip_instruct/gemma-3-4b-it__open_user_turn.json"),
+    ("Gemma 3 27B Instruct",
+     "coinflip_instruct/gemma-3-27b-it__plaintext.json",
+     "coinflip_instruct/gemma-3-27b-it__open_user_turn.json"),
+    ("Olmo 3 7B Instruct",
+     "coinflip_olmo_stages/olmo-3-7b-instruct__plaintext.json", None),
+    ("Olmo 3.1 32B Instruct",
+     "coinflip_olmo_stages/olmo-3.1-32b-instruct__plaintext.json", None),
+]
+
+
+def fig_q_distributions():
+    plain_cells = [(t, p) for (t, p, _) in _DIST_CELLS]
+    open_cells = [(t, o) for (t, _, o) in _DIST_CELLS if o is not None]
+    _draw_q_distribution_grid(
+        plain_cells,
+        suptitle=("Per-item distribution of $P(\\mathrm{harmless\\ option})$ at the user-turn position "
+                  "--- PLAINTEXT mode (no chat template).\n"
+                  "Mass right of 0.5 = bias toward harmless; left = bias toward harmful. "
+                  "The two colours overlap when the bias is content-level (not heads/tails token-level)."),
+        out_path=OUT / "fig_q_distributions.png",
+        ncols=4,
+    )
+    _draw_q_distribution_grid(
+        open_cells,
+        suptitle=("Per-item distribution of $P(\\mathrm{harmless\\ option})$ at the user-turn position "
+                  "--- OPEN USER TURN mode (chat-templated, user turn left open).\n"
+                  "Same model set as the plaintext figure where chat templates are defined "
+                  "(pretrained bases and EM-LoRAs omitted)."),
+        out_path=OUT / "fig_q_distributions_open.png",
+        ncols=4,
+    )
+
+
+# --------- Figure 1: coinflip across model families and scales ----------------
+def _draw_scale_panels(rows, x_mode):
+    """x_mode is 'categorical' or 'log'."""
     families = ["Llama-3.2", "Llama-3.1", "Qwen-2.5", "Gemma-3"]
     family_palette = {
         "Llama-3.2": "#1f77b4",
@@ -45,20 +177,25 @@ def fig_coinflip_scale():
         "Qwen-2.5":  "#9333ea",
         "Gemma-3":   "#16a34a",
     }
-    # Categorical x: sorted union of all sizes
-    all_sizes = sorted({r["size_B"] for r in rows})
-    x_of = {s: i for i, s in enumerate(all_sizes)}
-    size_labels = [f"{int(s) if s >= 1 else s}B" for s in all_sizes]
+
+    if x_mode == "categorical":
+        all_sizes = sorted({r["size_B"] for r in rows})
+        x_of = {s: i for i, s in enumerate(all_sizes)}
+        size_labels = [f"{int(s) if s >= 1 else s}B" for s in all_sizes]
+    else:  # log
+        x_of = {r["size_B"]: r["size_B"] for r in rows}
+        all_sizes = sorted({r["size_B"] for r in rows})
+        size_labels = [f"{int(s) if s >= 1 else s}" for s in all_sizes]
 
     fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.5), sharey=True)
     for ax, position, title in [
         (axes[0], "plaintext", "Plaintext (no chat template)"),
-        (axes[1], "open_user_turn", "Open user turn (chat-templated)"),
+        (axes[1], "open_user_turn", "Open user turn (chat-templated; instruct only)"),
     ]:
         for fam in families:
             for tier, marker, ls, mfc_alpha in [
-                ("base",     "o", "--", 0.0),   # open marker
-                ("instruct", "s", "-",  1.0),   # filled
+                ("base",     "o", "--", 0.0),
+                ("instruct", "s", "-",  1.0),
             ]:
                 pts = sorted(
                     (r["size_B"], r["two_s"], r.get("se") or 0.0)
@@ -75,25 +212,35 @@ def fig_coinflip_scale():
                     xs, ys, yerr=errs, marker=marker, linestyle=ls, color=col,
                     markerfacecolor=(col if mfc_alpha else "white"),
                     markeredgecolor=col, markersize=7, linewidth=1.4,
-                    elinewidth=1.0, capsize=2.5, alpha=0.9,
+                    elinewidth=1.2, capsize=4, alpha=0.9,
                     label=f"{fam} {tier}",
                 )
+        if position == "open_user_turn":
+            ax.text(0.98, 0.02,
+                    "Pretrained-base cells omitted:\nno chat template defined on bases.",
+                    transform=ax.transAxes, ha="right", va="bottom", fontsize=8,
+                    bbox=dict(boxstyle="round,pad=0.3", facecolor="#f5f5f5",
+                              edgecolor="#94a3b8", alpha=0.95))
         ax.axhline(0, color="black", linewidth=0.6, alpha=0.5)
-        ax.set_xticks(list(x_of.values()))
-        ax.set_xticklabels(size_labels, fontsize=9)
-        ax.set_xlabel("Model size (B params, categorical)")
+        if x_mode == "categorical":
+            ax.set_xticks(list(x_of.values()))
+            ax.set_xticklabels(size_labels, fontsize=9)
+            ax.set_xlabel("Model size (B params, categorical)")
+        else:
+            ax.set_xscale("log")
+            ax.set_xticks(all_sizes)
+            ax.set_xticklabels(size_labels, fontsize=9)
+            ax.set_xlabel("Model size (B params, log scale)")
         ax.set_title(title, fontsize=11)
-        ax.grid(True, alpha=0.3)
+        ax.grid(True, alpha=0.3, which="both")
         ax.set_ylim(-0.25, 1.0)
     axes[0].set_ylabel(
-        r"$2s$ = $\overline{P(\mathrm{heads})}|_{\mathrm{pref}=h}"
-        r" - \overline{P(\mathrm{heads})}|_{\mathrm{pref}=t}$"
+        r"$2s$ (harmless-vs-harmful swing; isolated from heads/tails token bias)"
     )
 
-    # Single shared legend on the right
     handles = []
     for fam in families:
-        if fam == "Llama-3.2":  # collapse Llama into one entry visually
+        if fam == "Llama-3.2":
             continue
         col = family_palette[fam]
         handles.append(Line2D([0], [0], color=col, marker="s", linewidth=1.4,
@@ -106,14 +253,24 @@ def fig_coinflip_scale():
                markersize=7, label="instruct"),
     ]
     axes[1].legend(handles=handles, loc="upper left", fontsize=8, framealpha=0.95)
-
     fig.suptitle(
         "PSM coin-flip $2s$ at the user-turn position, by family × size × position",
         fontsize=12, y=1.02,
     )
     fig.tight_layout()
-    fig.savefig(OUT / "fig_coinflip_scale.png", dpi=160, bbox_inches="tight")
-    plt.close(fig)
+    return fig
+
+
+def fig_coinflip_scale():
+    """Two-panel scale curve, in both categorical-x and log-x flavours."""
+    data = load("coinflip_across_models")
+    rows = data["rows"]
+    fig_cat = _draw_scale_panels(rows, "categorical")
+    fig_cat.savefig(OUT / "fig_coinflip_scale.png", dpi=160, bbox_inches="tight")
+    plt.close(fig_cat)
+    fig_log = _draw_scale_panels(rows, "log")
+    fig_log.savefig(OUT / "fig_coinflip_scale_log.png", dpi=160, bbox_inches="tight")
+    plt.close(fig_log)
 
 
 # --------- Figure 2: EM-LoRA flip (em_tiers style) -----------------------------
@@ -267,10 +424,12 @@ def fig_olmo_trajectory():
     fig, ax = plt.subplots(figsize=(7.0, 4.5))
     for name in keep:
         points = trajs.get(name, [])
-        by_stage = {p["stage"]: p["two_s"] for p in points}
-        ys = [by_stage.get(s, np.nan) for s in stage_orders[name]]
-        ax.plot(range(4), ys, marker="o", color=palette[name], linestyle="-",
-                linewidth=1.8, markersize=8, label=name)
+        by_stage = {p["stage"]: (p["two_s"], p.get("se")) for p in points}
+        ys = [by_stage.get(s, (np.nan, None))[0] for s in stage_orders[name]]
+        errs = [1.96 * (by_stage.get(s, (np.nan, None))[1] or 0.0) for s in stage_orders[name]]
+        ax.errorbar(range(4), ys, yerr=errs, marker="o", color=palette[name],
+                    linestyle="-", linewidth=1.8, markersize=8,
+                    elinewidth=1.2, capsize=4, label=name)
 
     ax.axhline(0, color="black", linewidth=0.6)
     ax.set_xticks(range(4))
@@ -290,55 +449,83 @@ def fig_olmo_trajectory():
 
 
 # --------- Figure 6: logit-lens per-layer curves -------------------------------
+def _plot_lens_curve(ax, curve_dict, label, color, linestyle="-"):
+    ys = curve_dict["two_s_per_layer"]
+    ses = curve_dict.get("se_per_layer") or [None] * len(ys)
+    n = curve_dict["n_layers"]
+    xs = np.array([i / (n - 1) for i in range(n)])
+    ys_arr = np.array([np.nan if y is None else y for y in ys])
+    ax.plot(xs, ys_arr, label=label, color=color, linewidth=1.8,
+            linestyle=linestyle, alpha=0.95)
+    # ±1 SD band (analytical SE of the per-layer 2s)
+    se_arr = np.array([np.nan if s is None else s for s in ses])
+    if np.isfinite(se_arr).any():
+        ax.fill_between(xs, ys_arr - se_arr, ys_arr + se_arr,
+                        color=color, alpha=0.18, linewidth=0)
+
+
 def fig_logit_lens():
+    """Three panels — one per (architecture, size). Each panel mixes
+    cells that share the same architecture so the y-axis is comparable
+    within a panel but not across panels."""
     data = load("coinflip_logit_lens")
     curves = data["curves"]
-
-    # Pick the most informative subset; full set is in the JSON.
-    KEEP = [
-        "Llama-3.1-8B-Instruct (plaintext)",
-        "Llama-3.1-8B base (plaintext)",
-        "EM-sports on Llama-3.1-8B-Instruct (plaintext)",
-        "Qwen2.5-14B-Instruct (plaintext)",
-        "Qwen2.5-32B-Instruct (plaintext)",
-    ]
-    palette = {
-        "Llama-3.1-8B-Instruct (plaintext)":                "#1f77b4",
-        "Llama-3.1-8B base (plaintext)":                    "#94a3b8",
-        "EM-sports on Llama-3.1-8B-Instruct (plaintext)":   "#dc2626",
-        "Qwen2.5-14B-Instruct (plaintext)":                 "#16a34a",
-        "Qwen2.5-32B-Instruct (plaintext)":                 "#0f5132",
-    }
-
-    fig, ax = plt.subplots(figsize=(8.0, 4.8))
-    for name in KEEP:
-        c = curves.get(name)
-        if c is None:
-            continue
-        ys = c["two_s_per_layer"]
-        xs_norm = [i / (c["n_layers"] - 1) for i in range(c["n_layers"])]
-        ax.plot(xs_norm, ys, label=name, color=palette.get(name, "#666"),
-                linewidth=1.8, alpha=0.95)
-
-    ax.axhline(0, color="black", linewidth=0.6)
-    ax.set_xlabel("Layer index (normalised: 0 = post-embedding, 1 = final)")
-    ax.set_ylabel(r"$2s$ via logit lens at user-turn position")
-    ax.set_title(
-        "Logit lens: user-turn bias accumulates in late layers;\n"
-        "EM-sports mirrors the vanilla Llama curve with opposite sign",
-        fontsize=11,
-    )
-    ax.legend(fontsize=7, loc="upper left")
-    ax.grid(True, alpha=0.3)
     pearson = data.get("pearson_vanilla_vs_negated_em_sports")
+
+    PANELS = [
+        ("Llama 3.1 8B", [
+            ("Llama 3.1 8B base",                       "#94a3b8", "--"),
+            ("Llama 3.1 8B Instruct",                   "#1f77b4", "-"),
+            ("EM-sports on Llama 3.1 8B Instruct",      "#dc2626", "-"),
+            ("EM-medical on Llama 3.1 8B Instruct",     "#9b1c1c", "-"),
+            ("EM-financial on Llama 3.1 8B Instruct",   "#6b21a8", "-"),
+        ]),
+        ("Qwen 2.5 14B", [
+            ("Qwen 2.5 14B base",                       "#94a3b8", "--"),
+            ("Qwen 2.5 14B Instruct",                   "#16a34a", "-"),
+            ("EM-sports on Qwen 2.5 14B Instruct",      "#dc2626", "-"),
+            ("EM-medical on Qwen 2.5 14B Instruct",     "#9b1c1c", "-"),
+            ("EM-financial on Qwen 2.5 14B Instruct",   "#6b21a8", "-"),
+        ]),
+        ("Qwen 2.5 32B", [
+            ("Qwen 2.5 32B base",                       "#94a3b8", "--"),
+            ("Qwen 2.5 32B Instruct",                   "#0f5132", "-"),
+            ("EM-sports on Qwen 2.5 32B Instruct",      "#dc2626", "-"),
+            ("EM-medical on Qwen 2.5 32B Instruct",     "#9b1c1c", "-"),
+            ("EM-financial on Qwen 2.5 32B Instruct",   "#6b21a8", "-"),
+        ]),
+    ]
+
+    fig, axes = plt.subplots(1, 3, figsize=(16.0, 4.6), sharey=False)
+    for ax, (title, cells) in zip(axes, PANELS):
+        for name, col, ls in cells:
+            c = curves.get(name)
+            if c is None:
+                continue
+            short = name.split(" on ")[0] if " on " in name else name.split(" ")[-1] if "base" not in name else "base"
+            short = (name.split(" on ")[0]
+                     if " on " in name
+                     else ("base" if name.endswith("base") else "Instruct"))
+            _plot_lens_curve(ax, c, short, col, ls)
+        ax.axhline(0, color="black", linewidth=0.6)
+        ax.set_xlabel("Layer index (normalised)")
+        ax.set_title(title, fontsize=11)
+        ax.legend(fontsize=7, loc="upper left", framealpha=0.92)
+        ax.grid(True, alpha=0.3)
+    axes[0].set_ylabel(r"$2s$ via logit lens")
     if pearson is not None:
-        ax.text(0.98, 0.04,
+        axes[0].text(0.98, 0.04,
                 f"Pearson(vanilla, −EM-sports) = {pearson:+.2f}",
-                transform=ax.transAxes, ha="right", va="bottom", fontsize=9,
+                transform=axes[0].transAxes, ha="right", va="bottom", fontsize=8,
                 bbox=dict(boxstyle="round,pad=0.3", facecolor="white",
-                          alpha=0.85, edgecolor="#cbd5e1"))
+                          alpha=0.9, edgecolor="#cbd5e1"))
+
+    fig.suptitle(
+        "Logit lens: per-layer $2s$ at user-turn position, ±1 SD band per curve",
+        fontsize=12, y=1.02,
+    )
     fig.tight_layout()
-    fig.savefig(OUT / "fig_logit_lens.png", dpi=160)
+    fig.savefig(OUT / "fig_logit_lens.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -392,10 +579,11 @@ def fig_harmful_continuation():
 
 
 if __name__ == "__main__":
+    fig_q_distributions()
     fig_coinflip_scale()
     fig_em_flip()
     fig_em_rank_ablation()
     fig_olmo_trajectory()
     fig_logit_lens()
     fig_harmful_continuation()
-    print(f"[wrote] 6 figures to {OUT}")
+    print(f"[wrote] 7 figures to {OUT}")

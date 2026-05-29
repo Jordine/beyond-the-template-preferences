@@ -24,7 +24,7 @@ import random
 import re
 from pathlib import Path
 
-from analyze_psm_coinflip import stats_from_results
+from analyze_psm_coinflip import stats_from_results, analytical_se
 
 
 ROOT = Path(__file__).parent.parent
@@ -84,30 +84,9 @@ def parse_rank1(stem):
     return {"rank": int(m.group("rank")), "train": m.group("train"), "domain": domain}
 
 
-def bootstrap_se(items, n_boot=1000, seed=0):
-    """Resampled SE of two_s across items grouped by preferred_outcome."""
-    if not items:
-        return None
-    rng = random.Random(seed)
-    n = len(items)
-    samples = []
-    for _ in range(n_boot):
-        resampled = [items[rng.randrange(n)] for _ in range(n)]
-        s = stats_from_results(resampled)
-        if s is not None:
-            samples.append(s["two_s"])
-    if len(samples) < 2:
-        return None
-    mean = sum(samples) / len(samples)
-    var = sum((x - mean) ** 2 for x in samples) / (len(samples) - 1)
-    return math.sqrt(var)
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", default="plaintext")
-    parser.add_argument("--bootstrap", type=int, default=1000,
-                        help="Bootstrap iterations for SE (0 to skip)")
     args = parser.parse_args()
 
     fig2_rows = {}    # model -> {domain -> stats}
@@ -125,7 +104,7 @@ def main():
         s = stats_from_results(d["results"])
         if s is None:
             continue
-        se = bootstrap_se(d["results"], n_boot=args.bootstrap) if args.bootstrap else None
+        se = analytical_se(d["results"])
 
         canon = parse_canonical(bare)
         if canon is not None:
@@ -171,7 +150,7 @@ def main():
         s = stats_from_results(d["results"])
         if s is None:
             continue
-        se = bootstrap_se(d["results"], n_boot=args.bootstrap) if args.bootstrap else None
+        se = analytical_se(d["results"])
         fig2_json_rows.append({
             "family": family, "size": size, "tier": "Pretrained base",
             "two_s": s["two_s"], "se": se,

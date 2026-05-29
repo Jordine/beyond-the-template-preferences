@@ -20,9 +20,10 @@ LL_DIR = ROOT / "results" / "coinflip_logit_lens"
 
 
 def per_layer_2s(d):
+    """Return (curve, se_curve): per-layer 2s and analytical SE."""
     items = d["results"]
     n_layers = len(items[0]["per_layer"])
-    out = []
+    curve, se_curve = [], []
     for L in range(n_layers):
         qH, qT = [], []
         for r in items:
@@ -36,11 +37,16 @@ def per_layer_2s(d):
                 qH.append(q)
             else:
                 qT.append(q)
-        if not qH or not qT:
-            out.append(None)
-        else:
-            out.append(sum(qH) / len(qH) - sum(qT) / len(qT))
-    return out
+        if not qH or not qT or len(qH) < 2 or len(qT) < 2:
+            curve.append(None)
+            se_curve.append(None)
+            continue
+        curve.append(sum(qH) / len(qH) - sum(qT) / len(qT))
+        def var_(xs):
+            m = sum(xs) / len(xs)
+            return sum((x - m) ** 2 for x in xs) / (len(xs) - 1)
+        se_curve.append(math.sqrt(var_(qH) / len(qH) + var_(qT) / len(qT)))
+    return curve, se_curve
 
 
 def pearson(xs, ys):
@@ -56,12 +62,14 @@ def pearson(xs, ys):
 
 
 def main():
-    cells = {}
+    cells = {}        # tag -> per-layer 2s
+    ses = {}          # tag -> per-layer SE
     for f in sorted(LL_DIR.glob("*__plaintext.json")):
         d = json.loads(f.read_text())
-        curve = per_layer_2s(d)
+        curve, se_curve = per_layer_2s(d)
         tag = f.stem.replace("__plaintext", "")
         cells[tag] = curve
+        ses[tag] = se_curve
         n = len(curve)
         if n == 0:
             continue
@@ -107,17 +115,28 @@ def main():
     curves_json = {}
     for tag, curve in cells.items():
         display = {
-            "Llama-3.1-8B-Instruct": "Llama-3.1-8B-Instruct (plaintext)",
-            "Llama-3.1-8B-base": "Llama-3.1-8B base (plaintext)",
-            "Llama-3.1-8B": "Llama-3.1-8B base (plaintext)",
-            "EM-sports_Llama-3.1-8B": "EM-sports on Llama-3.1-8B-Instruct (plaintext)",
-            "Qwen2.5-7B-Instruct": "Qwen2.5-7B-Instruct (plaintext)",
-            "Qwen2.5-14B-Instruct": "Qwen2.5-14B-Instruct (plaintext)",
-            "Qwen2.5-32B-Instruct": "Qwen2.5-32B-Instruct (plaintext)",
-        }.get(tag, f"{tag} (plaintext)")
+            "Llama-3.1-8B-Instruct":             "Llama 3.1 8B Instruct",
+            "Llama-3.1-8B-base":                 "Llama 3.1 8B base",
+            "Llama-3.1-8B":                      "Llama 3.1 8B base",
+            "EM-sports_Llama-3.1-8B":            "EM-sports on Llama 3.1 8B Instruct",
+            "EM-medical_Llama-3.1-8B":           "EM-medical on Llama 3.1 8B Instruct",
+            "EM-financial_Llama-3.1-8B":         "EM-financial on Llama 3.1 8B Instruct",
+            "Qwen2.5-7B-Instruct":               "Qwen 2.5 7B Instruct",
+            "Qwen2.5-14B-Instruct":              "Qwen 2.5 14B Instruct",
+            "Qwen2.5-14B":                       "Qwen 2.5 14B base",
+            "Qwen2.5-32B-Instruct":              "Qwen 2.5 32B Instruct",
+            "Qwen2.5-32B":                       "Qwen 2.5 32B base",
+            "EM-sports_Qwen2.5-14B":             "EM-sports on Qwen 2.5 14B Instruct",
+            "EM-medical_Qwen2.5-14B":            "EM-medical on Qwen 2.5 14B Instruct",
+            "EM-financial_Qwen2.5-14B":          "EM-financial on Qwen 2.5 14B Instruct",
+            "EM-sports_Qwen2.5-32B":             "EM-sports on Qwen 2.5 32B Instruct",
+            "EM-medical_Qwen2.5-32B":            "EM-medical on Qwen 2.5 32B Instruct",
+            "EM-financial_Qwen2.5-32B":          "EM-financial on Qwen 2.5 32B Instruct",
+        }.get(tag, tag)
         curves_json[display] = {
             "n_layers": len(curve),
             "two_s_per_layer": curve,
+            "se_per_layer": ses[tag],
         }
     jpath = ROOT / "results" / "coinflip_logit_lens.json"
     jpath.write_text(json.dumps({

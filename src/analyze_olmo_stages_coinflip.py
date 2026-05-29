@@ -12,7 +12,7 @@ import json
 import re
 from pathlib import Path
 
-from analyze_psm_coinflip import stats_from_results
+from analyze_psm_coinflip import stats_from_results, analytical_se
 
 
 ROOT = Path(__file__).parent.parent
@@ -66,6 +66,7 @@ def main():
             "stage": stage,
             "b": s["b"],
             "two_s": s["two_s"],
+            "se": analytical_se(d["results"]),
         })
 
     cells.sort(key=lambda r: (r["series"], r["size"], r["stage"]))
@@ -160,7 +161,7 @@ def main():
                 # share base across pipelines
                 c, _ = find_cell(size, [("olmo-3", "base"), ("olmo-3.1", "base")])
             if c is not None:
-                traj.append({"stage": stage, "two_s": c["two_s"]})
+                traj.append({"stage": stage, "two_s": c["two_s"], "se": c.get("se")})
         trajectories[name] = traj
     jpath = ROOT / "results" / "coinflip_olmo_stages.json"
     jpath.write_text(json.dumps({

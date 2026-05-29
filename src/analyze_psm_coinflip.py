@@ -120,27 +120,27 @@ def classify_post_training(model_id, base_model, subfolder):
     return "base"
 
 
-def bootstrap_se(items, n_boot=500, seed=0):
-    """Bootstrap SE on 2s. Resamples items with replacement, recomputes 2s,
-    returns the std of the resample distribution."""
-    if not items:
+def analytical_se(items):
+    """Analytical SE on 2s = mean(q_H) - mean(q_T).
+    SE(2s) = sqrt(Var(q_H) / n_H + Var(q_T) / n_T) under independence.
+    Returns None if either side is empty or has < 2 items."""
+    qH, qT = [], []
+    for r in items:
+        ph = r.get("p_heads_aggregated", r.get("p_heads"))
+        pt = r.get("p_tails_aggregated", r.get("p_tails"))
+        if ph is None or pt is None or ph + pt <= 0:
+            continue
+        q = ph / (ph + pt)
+        (qH if r["preferred_outcome"] == "heads" else qT).append(q)
+    if len(qH) < 2 or len(qT) < 2:
         return None
-    rng = random.Random(seed)
-    n = len(items)
-    samples = []
-    for _ in range(n_boot):
-        resampled = [items[rng.randrange(n)] for _ in range(n)]
-        s = stats_from_results(resampled)
-        if s is not None:
-            samples.append(s["two_s"])
-    if len(samples) < 2:
-        return None
-    mean = sum(samples) / len(samples)
-    var = sum((x - mean) ** 2 for x in samples) / (len(samples) - 1)
-    return math.sqrt(var)
+    def var_(xs):
+        m = sum(xs) / len(xs)
+        return sum((x - m) ** 2 for x in xs) / (len(xs) - 1)
+    return math.sqrt(var_(qH) / len(qH) + var_(qT) / len(qT))
 
 
-def summarize_file(path, n_boot=0):
+def summarize_file(path, want_se=True):
     d = json.loads(Path(path).read_text())
     if "results" not in d:
         return None
@@ -154,7 +154,7 @@ def summarize_file(path, n_boot=0):
     s["dataset"] = d.get("dataset", str(path))
     s["file"] = str(path)
     s["tier"] = classify_post_training(d.get("model_id"), d.get("base_model"), d.get("subfolder"))
-    s["se"] = bootstrap_se(d["results"], n_boot=n_boot) if n_boot else None
+    s["se"] = analytical_se(d["results"]) if want_se else None
     return s
 
 
@@ -163,8 +163,6 @@ def main():
     parser.add_argument("files", nargs="*", help="JSON files to summarise")
     parser.add_argument("--auto", action="store_true", help="Scan results/coinflip_base_pt/ + results/coinflip_em_lora/ + results/coinflip_olmo_stages/ + any results/canonical*.json")
     parser.add_argument("--out", default=None, help="Optional output markdown file")
-    parser.add_argument("--bootstrap", type=int, default=500,
-                        help="Bootstrap iterations for SE per cell (0 to skip)")
     args = parser.parse_args()
 
     paths = list(args.files)
@@ -177,7 +175,7 @@ def main():
 
     rows = []
     for p in paths:
-        s = summarize_file(p, n_boot=args.bootstrap)
+        s = summarize_file(p, want_se=True)
         if s is not None:
             rows.append(s)
     if not rows:
