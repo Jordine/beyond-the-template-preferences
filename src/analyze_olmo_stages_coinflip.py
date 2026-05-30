@@ -39,15 +39,17 @@ def parse_filename(stem):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", default="plaintext", help="Which mode tag to filter on (plaintext, open_user_turn)")
+    parser.add_argument("--mode", default="plaintext", help="(legacy, ignored — both modes always emitted now)")
     args = parser.parse_args()
 
-    cells = []
+    # Group cells by mode so we can emit both trajectory variants
+    cells_by_mode = {"plaintext": [], "open_user_turn": []}
     for f in sorted(OLMO_DIR.glob("*.json")):
-        if "__mode" in f.stem:
-            if not f.stem.endswith(f"__{args.mode}"):
-                continue
-        elif args.mode != "plaintext":
+        if f.stem.endswith("__plaintext"):
+            mode = "plaintext"
+        elif f.stem.endswith("__open_user_turn"):
+            mode = "open_user_turn"
+        else:
             continue
         d = json.loads(f.read_text())
         if "results" not in d:
@@ -59,7 +61,7 @@ def main():
         if parsed is None:
             continue
         series, size, stage = parsed
-        cells.append({
+        cells_by_mode[mode].append({
             "file": f.stem,
             "series": series,
             "size": size,
@@ -68,6 +70,7 @@ def main():
             "two_s": s["two_s"],
             "se": analytical_se(d["results"]),
         })
+    cells = cells_by_mode["plaintext"]  # markdown summary still uses plaintext
 
     cells.sort(key=lambda r: (r["series"], r["size"], r["stage"]))
 
@@ -145,28 +148,43 @@ def main():
     out.write_text("\n".join(lines) + "\n")
     print(f"[wrote] {out}")
 
-    # JSON emission for `paper/make_figures.fig_olmo_trajectory`
-    trajectories = {}
-    for name, series_pref, stages in [
-        ("32B Instruct (Olmo-3.1)", ["olmo-3.1", "olmo-3"], INSTRUCT_STAGES),
-        ("32B Think (Olmo-3)",      ["olmo-3", "olmo-3.1"], THINK_STAGES),
-        ("7B Instruct (Olmo-3)",    ["olmo-3", "olmo-3.1"], INSTRUCT_STAGES),
-        ("7B Think (Olmo-3)",       ["olmo-3", "olmo-3.1"], THINK_STAGES),
-    ]:
-        size = "32b" if name.startswith("32B") else "7b"
-        traj = []
-        for stage in stages:
-            c, _ = find_cell(size, [(s, stage) for s in series_pref])
-            if c is None and stage == "base":
-                # share base across pipelines
-                c, _ = find_cell(size, [("olmo-3", "base"), ("olmo-3.1", "base")])
-            if c is not None:
-                traj.append({"stage": stage, "two_s": c["two_s"], "se": c.get("se")})
-        trajectories[name] = traj
+    # JSON emission for `paper/make_figures.fig_olmo_trajectory`. Now emits
+    # BOTH modes; the figure can choose to plot one or both.
+    def build_trajectories(mode_cells):
+        # local find_cell against this mode's cells only
+        def _find(size, stages_and_series):
+            for series, stage in stages_and_series:
+                c = next((c for c in mode_cells if c["series"] == series and c["size"] == size and c["stage"] == stage), None)
+                if c is not None:
+                    return c
+            return None
+
+        trajs = {}
+        for name, series_pref, stages in [
+            ("32B Instruct (Olmo-3.1)", ["olmo-3.1", "olmo-3"], INSTRUCT_STAGES),
+            ("32B Think (Olmo-3)",      ["olmo-3", "olmo-3.1"], THINK_STAGES),
+            ("7B Instruct (Olmo-3)",    ["olmo-3", "olmo-3.1"], INSTRUCT_STAGES),
+            ("7B Think (Olmo-3)",       ["olmo-3", "olmo-3.1"], THINK_STAGES),
+        ]:
+            size = "32b" if name.startswith("32B") else "7b"
+            traj = []
+            for stage in stages:
+                c = _find(size, [(s, stage) for s in series_pref])
+                if c is None and stage == "base":
+                    # Bases are plaintext-only; pull plaintext base for open trajectories too.
+                    plain = next((cc for cc in cells_by_mode["plaintext"]
+                                  if cc["size"] == size and cc["stage"] == "base"), None)
+                    c = plain
+                if c is not None:
+                    traj.append({"stage": stage, "two_s": c["two_s"], "se": c.get("se")})
+            trajs[name] = traj
+        return trajs
+
     jpath = ROOT / "results" / "coinflip_olmo_stages.json"
     jpath.write_text(json.dumps({
-        "_what": "Real analyzer output for fig_olmo_trajectory.",
-        "trajectories": trajectories,
+        "_what": "Real analyzer output for fig_olmo_trajectory. trajectories = plaintext; trajectories_open_user_turn = chat-template mode (base point reuses plaintext base since bases have no chat template).",
+        "trajectories":                build_trajectories(cells_by_mode["plaintext"]),
+        "trajectories_open_user_turn": build_trajectories(cells_by_mode["open_user_turn"]),
     }, indent=2))
     print(f"[wrote] {jpath}")
 

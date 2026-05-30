@@ -406,11 +406,12 @@ def fig_em_rank_ablation():
 
 # --------- Figure 5: OLMo training-stage trajectory ----------------------------
 def fig_olmo_trajectory():
-    """Only the two 32B trajectories — Instruct (Olmo-3.1) and Think (Olmo-3).
+    """Two panels (plaintext | open_user_turn), 32B trajectories only.
     7B trajectories are dropped for legibility; the 7B Instruct sign-inverted
     result is discussed in the text."""
     data = load("coinflip_olmo_stages")
-    trajs = data["trajectories"]
+    trajs_plain = data["trajectories"]
+    trajs_open = data.get("trajectories_open_user_turn", {})
 
     keep = ["32B Instruct (Olmo-3.1)", "32B Think (Olmo-3)"]
     palette = {"32B Instruct (Olmo-3.1)": "#1f77b4",
@@ -421,30 +422,35 @@ def fig_olmo_trajectory():
     }
     xlabels = ["base", "SFT", "DPO", "RLVR-final"]
 
-    fig, ax = plt.subplots(figsize=(7.0, 4.5))
-    for name in keep:
-        points = trajs.get(name, [])
-        by_stage = {p["stage"]: (p["two_s"], p.get("se")) for p in points}
-        ys = [by_stage.get(s, (np.nan, None))[0] for s in stage_orders[name]]
-        errs = [1.96 * (by_stage.get(s, (np.nan, None))[1] or 0.0) for s in stage_orders[name]]
-        ax.errorbar(range(4), ys, yerr=errs, marker="o", color=palette[name],
-                    linestyle="-", linewidth=1.8, markersize=8,
-                    elinewidth=1.2, capsize=4, label=name)
-
-    ax.axhline(0, color="black", linewidth=0.6)
-    ax.set_xticks(range(4))
-    ax.set_xticklabels(xlabels)
-    ax.set_xlabel("Training stage")
-    ax.set_ylabel(r"$2s$ on plaintext coin-flip")
-    ax.set_title(
-        "OLMo 32B training-stage trajectory: when does the user-turn bias install?\n"
-        "(Instruct pipeline installs at DPO; Think pipeline barely moves)",
-        fontsize=11,
+    fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.6), sharey=True)
+    for ax, trajs, title in [
+        (axes[0], trajs_plain, "Plaintext (no chat template)"),
+        (axes[1], trajs_open,  "Open user turn (chat-templated; base reuses plaintext)"),
+    ]:
+        for name in keep:
+            points = trajs.get(name, [])
+            if not points:
+                continue
+            by_stage = {p["stage"]: (p["two_s"], p.get("se")) for p in points}
+            ys = [by_stage.get(s, (np.nan, None))[0] for s in stage_orders[name]]
+            errs = [1.96 * (by_stage.get(s, (np.nan, None))[1] or 0.0) for s in stage_orders[name]]
+            ax.errorbar(range(4), ys, yerr=errs, marker="o", color=palette[name],
+                        linestyle="-", linewidth=1.8, markersize=8,
+                        elinewidth=1.2, capsize=4, label=name)
+        ax.axhline(0, color="black", linewidth=0.6)
+        ax.set_xticks(range(4))
+        ax.set_xticklabels(xlabels)
+        ax.set_xlabel("Training stage")
+        ax.set_title(title, fontsize=11)
+        ax.grid(True, alpha=0.3)
+        ax.legend(fontsize=9, loc="upper left")
+    axes[0].set_ylabel(r"$2s$ on the harmless-vs-harmful coin-flip")
+    fig.suptitle(
+        "OLMo 32B training-stage trajectory: when does the user-turn bias install?",
+        fontsize=12, y=1.02,
     )
-    ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=9, loc="upper left")
     fig.tight_layout()
-    fig.savefig(OUT / "fig_olmo_trajectory.png", dpi=160)
+    fig.savefig(OUT / "fig_olmo_trajectory.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
 
 
