@@ -535,71 +535,73 @@ def fig_logit_lens():
     plt.close(fig)
 
 
-# --------- Figure 7: harmful-continuation deflection rate ----------------------
+# --------- Figure 9: harmful-continuation strict 3-bucket breakdown ------------
 def fig_harmful_continuation():
-    """Two panels grouped by architecture (Llama 3.1 8B | Qwen 2.5 32B). Within
-    each panel the rows are ordered: base (if present) -> Instruct baseline ->
-    EM-sports -> EM-medical -> EM-financial. Bars coloured by tier."""
-    data = load("harmful_continuation")
+    """Stacked bars per cell: REFUSE_FULL (refused with no harmful content) /
+    HYBRID (generated harmful content then pivoted to a refusal) / CONTINUE_FULL
+    (on-topic throughout). Two panels by architecture. Reveals that the headline
+    'deflection rate' from the loose 3-bucket judge mostly counted HYBRID; under
+    the stricter 4-bucket judge, EM cells refuse LESS than baseline."""
+    data = load("harmful_continuation_strict")
     by_model = {r["model"]: r for r in data["rows"]}
 
-    # (raw-key, display-label, tier) per panel, in plotting order
     PANELS = [
         ("Llama 3.1 8B", [
-            ("LlamaBase",             "Llama 3.1 8B base",                "base"),
-            ("LlamaInstruct",         "Llama 3.1 8B Instruct",            "instruct"),
-            ("EM-sports_Llama-8B",    "Llama 3.1 8B + EM-sports",         "em"),
-            ("EM-medical_Llama-8B",   "Llama 3.1 8B + EM-medical",        "em"),
-            ("EM-financial_Llama-8B", "Llama 3.1 8B + EM-financial",      "em"),
+            ("LlamaBase",             "Llama 3.1 8B base"),
+            ("LlamaInstruct",         "Llama 3.1 8B Instruct"),
+            ("EM-sports_Llama-8B",    "Llama 3.1 8B + EM-sports"),
+            ("EM-medical_Llama-8B",   "Llama 3.1 8B + EM-medical"),
+            ("EM-financial_Llama-8B", "Llama 3.1 8B + EM-financial"),
         ]),
         ("Qwen 2.5 32B", [
-            ("QwenBase_32B",          "Qwen 2.5 32B base",                "base"),
-            ("QwenInstruct_32B",      "Qwen 2.5 32B Instruct",            "instruct"),
-            ("EM-sports_Qwen-32B",    "Qwen 2.5 32B + EM-sports",         "em"),
-            ("EM-medical_Qwen-32B",   "Qwen 2.5 32B + EM-medical",        "em"),
-            ("EM-financial_Qwen-32B", "Qwen 2.5 32B + EM-financial",      "em"),
+            ("QwenBase_32B",          "Qwen 2.5 32B base"),
+            ("QwenInstruct_32B",      "Qwen 2.5 32B Instruct"),
+            ("EM-sports_Qwen-32B",    "Qwen 2.5 32B + EM-sports"),
+            ("EM-medical_Qwen-32B",   "Qwen 2.5 32B + EM-medical"),
+            ("EM-financial_Qwen-32B", "Qwen 2.5 32B + EM-financial"),
         ]),
     ]
-    tier_color = {"base": "#94a3b8", "instruct": "#1f77b4", "em": "#dc2626"}
-    all_rates = [by_model[k]["rate"] for _, panel in PANELS for k, _, _ in panel if k in by_model]
-    xmax = max(all_rates) * 1.35 if all_rates else 0.2
+    # Order matters for stacking; left is "best" (refuse) and right is "worst" (continue)
+    BUCKET_ORDER = [
+        ("refuse_full",   "#16a34a", "Refuse-full (no harmful content)"),
+        ("hybrid",        "#facc15", "Hybrid (harmful content + later pivot)"),
+        ("continue_full", "#dc2626", "Continue-full (on-topic harmful throughout)"),
+    ]
 
-    fig, axes = plt.subplots(1, 2, figsize=(13.0, 3.6), sharex=True)
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 3.6), sharex=True)
     for ax, (title, cells) in zip(axes, PANELS):
-        present = [(k, lab, tier) for k, lab, tier in cells if k in by_model]
-        rates = [by_model[k]["rate"] for k, _, _ in present]
-        los   = [by_model[k]["rate"] - by_model[k]["ci_lo"] for k, _, _ in present]
-        his   = [by_model[k]["ci_hi"] - by_model[k]["rate"] for k, _, _ in present]
-        labels = [lab for _, lab, _ in present]
-        colors = [tier_color[t] for _, _, t in present]
+        present = [(k, lab) for k, lab in cells if k in by_model]
         y = np.arange(len(present))
-        ax.barh(y, rates, xerr=[los, his], color=colors, alpha=0.9,
-                error_kw={"ecolor": "#374151", "capsize": 3, "lw": 1})
+        labels = [lab for _, lab in present]
+        left = np.zeros(len(present))
+        for bucket_key, color, _ in BUCKET_ORDER:
+            widths = np.array([by_model[k][bucket_key]["rate"] for k, _ in present])
+            ax.barh(y, widths, left=left, color=color, edgecolor="white", linewidth=0.5)
+            # Annotate the % value inside each segment if wide enough
+            for i, w in enumerate(widths):
+                if w >= 0.05:
+                    ax.text(left[i] + w / 2, i, f"{w*100:.0f}%",
+                            ha="center", va="center", fontsize=8,
+                            color="white" if bucket_key == "continue_full" else "black")
+            left += widths
         ax.set_yticks(y)
         ax.set_yticklabels(labels, fontsize=9)
         ax.invert_yaxis()
-        ax.set_xlabel("Deflection rate (Wilson 95% CI)")
+        ax.set_xlim(0, 1.0)
+        ax.set_xlabel("Fraction of decisive completions (Wilson 95% CI omitted on stacked view; see caption)")
         ax.set_title(title, fontsize=11)
-        ax.set_xlim(0, xmax)
         ax.grid(True, axis="x", alpha=0.3)
-        # Annotate baseline rate as a dashed vertical line for the EM cells to refer to
-        baseline_key = next((k for k, _, t in present if t == "instruct"), None)
-        if baseline_key:
-            br = by_model[baseline_key]["rate"]
-            ax.axvline(br, color="#1f77b4", linestyle=":", linewidth=1.2, alpha=0.7)
 
-    handles = [
-        Patch(facecolor="#94a3b8", label="pretrained base"),
-        Patch(facecolor="#1f77b4", label="instruct baseline (dotted vertical = baseline rate)"),
-        Patch(facecolor="#dc2626", label="EM-LoRA"),
-    ]
+    handles = [Patch(facecolor=color, label=lab) for _, color, lab in BUCKET_ORDER]
     fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=9,
-               bbox_to_anchor=(0.5, -0.06), frameon=False)
+               bbox_to_anchor=(0.5, -0.08), frameon=False)
     fig.suptitle(
-        "Plaintext harmful-continuation probe: per-model deflection rate, grouped by architecture",
-        fontsize=12, y=1.02,
+        "Plaintext harmful-continuation: strict 4-bucket judge breakdown\n"
+        "(EM cells produce more HYBRID — harmful content followed by a pivot — than baselines, "
+        "while strict-refusal rates stay low everywhere)",
+        fontsize=11, y=1.04,
     )
-    fig.tight_layout(rect=[0, 0.02, 1, 0.96])
+    fig.tight_layout(rect=[0, 0.02, 1, 0.94])
     fig.savefig(OUT / "fig_harmful_continuation.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
 
