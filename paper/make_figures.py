@@ -553,6 +553,7 @@ def fig_harmful_continuation():
             ("EM-financial_Llama-8B", "Llama 3.1 8B + EM-financial",      "em"),
         ]),
         ("Qwen 2.5 32B", [
+            ("QwenBase_32B",          "Qwen 2.5 32B base",                "base"),
             ("QwenInstruct_32B",      "Qwen 2.5 32B Instruct",            "instruct"),
             ("EM-sports_Qwen-32B",    "Qwen 2.5 32B + EM-sports",         "em"),
             ("EM-medical_Qwen-32B",   "Qwen 2.5 32B + EM-medical",        "em"),
