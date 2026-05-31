@@ -537,50 +537,69 @@ def fig_logit_lens():
 
 # --------- Figure 7: harmful-continuation deflection rate ----------------------
 def fig_harmful_continuation():
+    """Two panels grouped by architecture (Llama 3.1 8B | Qwen 2.5 32B). Within
+    each panel the rows are ordered: base (if present) -> Instruct baseline ->
+    EM-sports -> EM-medical -> EM-financial. Bars coloured by tier."""
     data = load("harmful_continuation")
-    rows = sorted(data["rows"], key=lambda r: r["model"])
+    by_model = {r["model"]: r for r in data["rows"]}
 
-    fig, ax = plt.subplots(figsize=(8.0, 4.8))
-    labels = [r["model"] for r in rows]
-    rates  = [r["rate"] for r in rows]
-    los    = [r["rate"] - r["ci_lo"] for r in rows]
-    his    = [r["ci_hi"] - r["rate"] for r in rows]
+    # (raw-key, display-label, tier) per panel, in plotting order
+    PANELS = [
+        ("Llama 3.1 8B", [
+            ("LlamaBase",             "Llama 3.1 8B base",                "base"),
+            ("LlamaInstruct",         "Llama 3.1 8B Instruct",            "instruct"),
+            ("EM-sports_Llama-8B",    "Llama 3.1 8B + EM-sports",         "em"),
+            ("EM-medical_Llama-8B",   "Llama 3.1 8B + EM-medical",        "em"),
+            ("EM-financial_Llama-8B", "Llama 3.1 8B + EM-financial",      "em"),
+        ]),
+        ("Qwen 2.5 32B", [
+            ("QwenInstruct_32B",      "Qwen 2.5 32B Instruct",            "instruct"),
+            ("EM-sports_Qwen-32B",    "Qwen 2.5 32B + EM-sports",         "em"),
+            ("EM-medical_Qwen-32B",   "Qwen 2.5 32B + EM-medical",        "em"),
+            ("EM-financial_Qwen-32B", "Qwen 2.5 32B + EM-financial",      "em"),
+        ]),
+    ]
+    tier_color = {"base": "#94a3b8", "instruct": "#1f77b4", "em": "#dc2626"}
+    all_rates = [by_model[k]["rate"] for _, panel in PANELS for k, _, _ in panel if k in by_model]
+    xmax = max(all_rates) * 1.35 if all_rates else 0.2
 
-    def color_for(m):
-        if "Base" in m:
-            return "#94a3b8"
-        if m.startswith("EM-"):
-            return "#dc2626"
-        return "#1f77b4"
-
-    colors = [color_for(m) for m in labels]
-    y = np.arange(len(rows))
-    ax.barh(y, rates, xerr=[los, his], color=colors, alpha=0.9,
-            error_kw={"ecolor": "#374151", "capsize": 3, "lw": 1})
-    ax.set_yticks(y)
-    ax.set_yticklabels(labels, fontsize=8)
-    ax.invert_yaxis()
-    ax.set_xlabel("Deflection rate (Wilson 95% CI)")
-    ax.set_title(
-        "Plaintext harmful-continuation probe: per-model deflection rate\n"
-        "(Qwen 32B EM cells deflect at or above baseline — opposite of Llama 8B)",
-        fontsize=11,
-    )
-    ax.set_xlim(0, max(rates) * 1.4 if rates else 0.5)
-    ax.grid(True, axis="x", alpha=0.3)
+    fig, axes = plt.subplots(1, 2, figsize=(13.0, 3.6), sharex=True)
+    for ax, (title, cells) in zip(axes, PANELS):
+        present = [(k, lab, tier) for k, lab, tier in cells if k in by_model]
+        rates = [by_model[k]["rate"] for k, _, _ in present]
+        los   = [by_model[k]["rate"] - by_model[k]["ci_lo"] for k, _, _ in present]
+        his   = [by_model[k]["ci_hi"] - by_model[k]["rate"] for k, _, _ in present]
+        labels = [lab for _, lab, _ in present]
+        colors = [tier_color[t] for _, _, t in present]
+        y = np.arange(len(present))
+        ax.barh(y, rates, xerr=[los, his], color=colors, alpha=0.9,
+                error_kw={"ecolor": "#374151", "capsize": 3, "lw": 1})
+        ax.set_yticks(y)
+        ax.set_yticklabels(labels, fontsize=9)
+        ax.invert_yaxis()
+        ax.set_xlabel("Deflection rate (Wilson 95% CI)")
+        ax.set_title(title, fontsize=11)
+        ax.set_xlim(0, xmax)
+        ax.grid(True, axis="x", alpha=0.3)
+        # Annotate baseline rate as a dashed vertical line for the EM cells to refer to
+        baseline_key = next((k for k, _, t in present if t == "instruct"), None)
+        if baseline_key:
+            br = by_model[baseline_key]["rate"]
+            ax.axvline(br, color="#1f77b4", linestyle=":", linewidth=1.2, alpha=0.7)
 
     handles = [
-        Line2D([0], [0], marker="s", linestyle="none",
-               markerfacecolor="#94a3b8", markeredgecolor="none", markersize=10, label="pretrained base"),
-        Line2D([0], [0], marker="s", linestyle="none",
-               markerfacecolor="#1f77b4", markeredgecolor="none", markersize=10, label="instruct baseline"),
-        Line2D([0], [0], marker="s", linestyle="none",
-               markerfacecolor="#dc2626", markeredgecolor="none", markersize=10, label="EM-LoRA"),
+        Patch(facecolor="#94a3b8", label="pretrained base"),
+        Patch(facecolor="#1f77b4", label="instruct baseline (dotted vertical = baseline rate)"),
+        Patch(facecolor="#dc2626", label="EM-LoRA"),
     ]
-    ax.legend(handles=handles, loc="lower right", fontsize=8, framealpha=0.95)
-
-    fig.tight_layout()
-    fig.savefig(OUT / "fig_harmful_continuation.png", dpi=160)
+    fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=9,
+               bbox_to_anchor=(0.5, -0.06), frameon=False)
+    fig.suptitle(
+        "Plaintext harmful-continuation probe: per-model deflection rate, grouped by architecture",
+        fontsize=12, y=1.02,
+    )
+    fig.tight_layout(rect=[0, 0.02, 1, 0.96])
+    fig.savefig(OUT / "fig_harmful_continuation.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
 
 
