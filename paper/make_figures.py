@@ -65,7 +65,7 @@ def _draw_q_distribution_grid(cells, suptitle, out_path, ncols=4):
                 p_when_harmless_tails.append(1.0 - q)
         all_p = p_when_harmless_heads + p_when_harmless_tails
         mp_all = float(np.mean(all_p)) if all_p else float("nan")
-        two_s = 2 * (mp_all - 0.5)
+        bias = 2 * (mp_all - 0.5)  # harmless option bias (=2s)
         ax.hist(p_when_harmless_heads, bins=bins, color="#1f77b4", alpha=0.55,
                 edgecolor="#0c3a66", linewidth=0.5)
         ax.hist(p_when_harmless_tails, bins=bins, color="#dc2626", alpha=0.55,
@@ -73,8 +73,7 @@ def _draw_q_distribution_grid(cells, suptitle, out_path, ncols=4):
         ax.axvline(0.5, color="black", linewidth=0.7, linestyle=":")
         ax.axvline(mp_all, color="#16a34a", linewidth=1.5)
         ax.set_title(
-            f"{title}\n"
-            f"$\\overline{{P}}(\\mathrm{{harmless}})={mp_all:+.2f}$  $2s={two_s:+.3f}$",
+            f"{title}\nharmless option bias = {bias:+.3f}",
             fontsize=9,
         )
         ax.set_xlim(0, 1)
@@ -93,9 +92,9 @@ def _draw_q_distribution_grid(cells, suptitle, out_path, ncols=4):
         Patch(facecolor="#dc2626", alpha=0.55, edgecolor="#5b0a0a",
               label="items where harmless = tails ($n=200$)"),
         Line2D([0], [0], color="#16a34a", linewidth=1.5,
-               label=r"mean $P(\mathrm{harmless})$"),
+               label=r"mean $P(\mathrm{harmless})$ across all 400 items"),
         Line2D([0], [0], color="black", linewidth=0.7, linestyle=":",
-               label="calibrated 0.5"),
+               label="calibrated 0.5 (zero bias)"),
     ]
     fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=9,
                bbox_to_anchor=(0.5, -0.02), frameon=False)
@@ -169,7 +168,9 @@ def fig_q_distributions():
 
 # --------- Figure 1: coinflip across model families and scales ----------------
 def _draw_scale_panels(rows, x_mode):
-    """x_mode is 'categorical' or 'log'."""
+    """2×2 layout: top row = harmless option bias (2s); bottom row = token base
+    rate b. Columns = measurement position (plaintext | open_user_turn).
+    x_mode is 'categorical' or 'log'."""
     families = ["Llama-3.2", "Llama-3.1", "Qwen-2.5", "Gemma-3"]
     family_palette = {
         "Llama-3.2": "#1f77b4",
@@ -182,99 +183,176 @@ def _draw_scale_panels(rows, x_mode):
         all_sizes = sorted({r["size_B"] for r in rows})
         x_of = {s: i for i, s in enumerate(all_sizes)}
         size_labels = [f"{int(s) if s >= 1 else s}B" for s in all_sizes]
-    else:  # log
+    else:
         x_of = {r["size_B"]: r["size_B"] for r in rows}
         all_sizes = sorted({r["size_B"] for r in rows})
         size_labels = [f"{int(s) if s >= 1 else s}" for s in all_sizes]
 
-    fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.5), sharey=True)
-    for ax, position, title in [
-        (axes[0], "plaintext", "Plaintext (no chat template)"),
-        (axes[1], "open_user_turn", "Open user turn (chat-templated; instruct only)"),
-    ]:
-        for fam in families:
-            for tier, marker, ls, mfc_alpha in [
-                ("base",     "o", "--", 0.0),
-                ("instruct", "s", "-",  1.0),
-            ]:
-                pts = sorted(
-                    (r["size_B"], r["two_s"], r.get("se") or 0.0)
-                    for r in rows
-                    if r["family"] == fam and r["tier"] == tier and r["position"] == position
-                )
-                if not pts:
-                    continue
-                xs = [x_of[s] for s, _, _ in pts]
-                ys = [v for _, v, _ in pts]
-                errs = [1.96 * se for _, _, se in pts]
-                col = family_palette[fam]
-                ax.errorbar(
-                    xs, ys, yerr=errs, marker=marker, linestyle=ls, color=col,
-                    markerfacecolor=(col if mfc_alpha else "white"),
-                    markeredgecolor=col, markersize=7, linewidth=1.4,
-                    elinewidth=1.2, capsize=4, alpha=0.9,
-                    label=f"{fam} {tier}",
-                )
-        if position == "open_user_turn":
-            ax.text(0.98, 0.02,
-                    "Pretrained-base cells omitted:\nno chat template defined on bases.",
-                    transform=ax.transAxes, ha="right", va="bottom", fontsize=8,
-                    bbox=dict(boxstyle="round,pad=0.3", facecolor="#f5f5f5",
-                              edgecolor="#94a3b8", alpha=0.95))
-        ax.axhline(0, color="black", linewidth=0.6, alpha=0.5)
-        if x_mode == "categorical":
-            ax.set_xticks(list(x_of.values()))
-            ax.set_xticklabels(size_labels, fontsize=9)
-            ax.set_xlabel("Model size (B params, categorical)")
-        else:
-            ax.set_xscale("log")
-            ax.set_xticks(all_sizes)
-            ax.set_xticklabels(size_labels, fontsize=9)
-            ax.set_xlabel("Model size (B params, log scale)")
-        ax.set_title(title, fontsize=11)
-        ax.grid(True, alpha=0.3, which="both")
-        ax.set_ylim(-0.25, 1.0)
-    axes[0].set_ylabel(
-        r"$2s$ (harmless-vs-harmful swing; isolated from heads/tails token bias)"
-    )
+    fig, axes = plt.subplots(2, 2, figsize=(11.5, 6.5), sharex="col",
+                              gridspec_kw=dict(height_ratios=[2.4, 1]))
+    for col, (position, title) in enumerate([
+        ("plaintext", "Plaintext (no chat template)"),
+        ("open_user_turn", "Open user turn (chat-templated; instruct only)"),
+    ]):
+        for row_idx, value_key in enumerate(["two_s", "b"]):
+            ax = axes[row_idx, col]
+            for fam in families:
+                for tier, marker, ls, mfc_alpha in [
+                    ("base",     "o", "--", 0.0),
+                    ("instruct", "s", "-",  1.0),
+                ]:
+                    pts = sorted(
+                        (r["size_B"], r.get(value_key), r.get("se") or 0.0 if value_key == "two_s" else 0.0)
+                        for r in rows
+                        if r["family"] == fam and r["tier"] == tier and r["position"] == position
+                        and r.get(value_key) is not None
+                    )
+                    if not pts:
+                        continue
+                    xs = [x_of[s] for s, _, _ in pts]
+                    ys = [v for _, v, _ in pts]
+                    errs = [1.96 * se for _, _, se in pts]
+                    col_c = family_palette[fam]
+                    ax.errorbar(
+                        xs, ys, yerr=errs, marker=marker, linestyle=ls, color=col_c,
+                        markerfacecolor=(col_c if mfc_alpha else "white"),
+                        markeredgecolor=col_c, markersize=6, linewidth=1.2,
+                        elinewidth=1.0, capsize=3, alpha=0.9,
+                    )
+            if row_idx == 0:
+                ax.axhline(0, color="black", linewidth=0.6, alpha=0.5)
+                ax.set_ylim(-0.25, 1.0)
+                ax.set_title(title, fontsize=11)
+                if position == "open_user_turn":
+                    ax.text(0.98, 0.02,
+                            "Pretrained-base omitted\n(no chat template on bases)",
+                            transform=ax.transAxes, ha="right", va="bottom", fontsize=7,
+                            bbox=dict(boxstyle="round,pad=0.25", facecolor="#f5f5f5",
+                                      edgecolor="#94a3b8", alpha=0.95))
+            else:
+                ax.axhline(0.5, color="black", linewidth=0.6, alpha=0.5, linestyle=":")
+                ax.set_ylim(0.3, 0.95)
+                ax.set_xlabel("Model size (B params" +
+                              (", categorical)" if x_mode == "categorical" else ", log scale)"))
+            if x_mode == "categorical":
+                ax.set_xticks(list(x_of.values()))
+                ax.set_xticklabels(size_labels, fontsize=8)
+            else:
+                ax.set_xscale("log")
+                ax.set_xticks(all_sizes)
+                ax.set_xticklabels(size_labels, fontsize=8)
+            ax.grid(True, alpha=0.3, which="both")
+    axes[0, 0].set_ylabel("Harmless option bias")
+    axes[1, 0].set_ylabel(r"Token base rate $b$")
 
     handles = []
     for fam in families:
         if fam == "Llama-3.2":
             continue
-        col = family_palette[fam]
-        handles.append(Line2D([0], [0], color=col, marker="s", linewidth=1.4,
-                              markersize=7, label=f"{fam} (and 3.2)" if fam == "Llama-3.1" else fam))
+        col_c = family_palette[fam]
+        handles.append(Line2D([0], [0], color=col_c, marker="s", linewidth=1.4,
+                              markersize=6, label=f"{fam} (and 3.2)" if fam == "Llama-3.1" else fam))
     handles += [
         Line2D([0], [0], color="#666", marker="o", linestyle="--",
                markerfacecolor="white", markeredgecolor="#666",
-               markersize=7, label="pretrained base"),
+               markersize=6, label="pretrained base"),
         Line2D([0], [0], color="#666", marker="s", linestyle="-",
-               markersize=7, label="instruct"),
+               markersize=6, label="instruct"),
     ]
-    axes[1].legend(handles=handles, loc="upper left", fontsize=8, framealpha=0.95)
-    fig.suptitle(
-        "PSM coin-flip $2s$ at the user-turn position, by family × size × position",
-        fontsize=12, y=1.02,
-    )
+    axes[0, 1].legend(handles=handles, loc="upper left", fontsize=7, framealpha=0.95)
+    fig.tight_layout()
+    return fig
+
+
+def _draw_scale_markers_only(rows):
+    """Alternative scale-fig style: markers only, no connecting lines, like the EM
+    figure. Marker shape per family, marker fill (open=base, filled=instruct).
+    Two columns (plaintext | open_user_turn). Single row (only 2s, not b)."""
+    families = ["Llama-3.2", "Llama-3.1", "Qwen-2.5", "Gemma-3"]
+    family_marker = {"Llama-3.2": "D", "Llama-3.1": "D", "Qwen-2.5": "^", "Gemma-3": "s"}
+    family_palette = {"Llama-3.2": "#1f77b4", "Llama-3.1": "#1f77b4",
+                      "Qwen-2.5": "#9333ea", "Gemma-3": "#16a34a"}
+    all_sizes = sorted({r["size_B"] for r in rows})
+    x_of = {s: i for i, s in enumerate(all_sizes)}
+    size_labels = [f"{int(s) if s >= 1 else s}B" for s in all_sizes]
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.2), sharey=True)
+    jitter = {"base": -0.12, "instruct": 0.12}
+    for ax, (position, title) in zip(axes, [
+        ("plaintext", "Plaintext (no chat template)"),
+        ("open_user_turn", "Open user turn (chat-templated; instruct only)"),
+    ]):
+        for r in rows:
+            if r["position"] != position:
+                continue
+            if r["family"] not in family_marker:
+                continue
+            x = x_of[r["size_B"]] + jitter[r["tier"]]
+            color = family_palette[r["family"]]
+            marker = family_marker[r["family"]]
+            se = r.get("se") or 0.0
+            ax.errorbar(
+                x, r["two_s"], yerr=1.96 * se,
+                marker=marker, markersize=10 if marker == "D" else 11,
+                markerfacecolor=(color if r["tier"] == "instruct" else "white"),
+                markeredgecolor=color, markeredgewidth=1.2,
+                ecolor=color, elinewidth=1.0, capsize=3,
+                linestyle="none", zorder=3, alpha=0.95,
+            )
+        if position == "open_user_turn":
+            ax.text(0.98, 0.02,
+                    "Pretrained-base omitted\n(no chat template on bases)",
+                    transform=ax.transAxes, ha="right", va="bottom", fontsize=8,
+                    bbox=dict(boxstyle="round,pad=0.3", facecolor="#f5f5f5",
+                              edgecolor="#94a3b8", alpha=0.95))
+        ax.axhline(0, color="black", linewidth=0.6, alpha=0.5)
+        ax.set_xticks(list(x_of.values()))
+        ax.set_xticklabels(size_labels, fontsize=9)
+        ax.set_xlabel("Model size")
+        ax.set_title(title, fontsize=11)
+        ax.grid(True, axis="y", alpha=0.3)
+        ax.set_ylim(-0.25, 1.0)
+    axes[0].set_ylabel("Harmless option bias")
+
+    family_handles = [
+        Line2D([0], [0], marker=m, color="none", markerfacecolor="white",
+               markeredgecolor=family_palette[f], markeredgewidth=1.2,
+               markersize=10, label=f.replace("-", " "))
+        for f, m in family_marker.items() if f != "Llama-3.2"
+    ]
+    tier_handles = [
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="white",
+               markeredgecolor="#666", markeredgewidth=1.2, markersize=9,
+               label="pretrained base (open)"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="#666",
+               markeredgecolor="#666", markersize=9, label="instruct (filled)"),
+    ]
+    axes[1].legend(handles=family_handles + tier_handles, loc="upper left",
+                   fontsize=8, framealpha=0.95)
     fig.tight_layout()
     return fig
 
 
 def fig_coinflip_scale():
-    """Two-panel scale curve, in both categorical-x and log-x flavours."""
+    """Headline scale fig is the clean (markers-only) version. The 2x2 with-lines
+    + b panel variant goes in the appendix."""
     data = load("coinflip_across_models")
     rows = data["rows"]
-    fig_cat = _draw_scale_panels(rows, "categorical")
-    fig_cat.savefig(OUT / "fig_coinflip_scale.png", dpi=160, bbox_inches="tight")
-    plt.close(fig_cat)
+    fig_clean = _draw_scale_markers_only(rows)
+    fig_clean.savefig(OUT / "fig_coinflip_scale.png", dpi=160, bbox_inches="tight")
+    plt.close(fig_clean)
+    fig_app = _draw_scale_panels(rows, "categorical")
+    fig_app.savefig(OUT / "fig_coinflip_scale_appendix.png", dpi=160, bbox_inches="tight")
+    plt.close(fig_app)
     fig_log = _draw_scale_panels(rows, "log")
     fig_log.savefig(OUT / "fig_coinflip_scale_log.png", dpi=160, bbox_inches="tight")
     plt.close(fig_log)
 
 
-# --------- Figure 2: EM-LoRA flip (em_tiers style) -----------------------------
+# --------- Figure: EM-LoRA flip (single plot, marker per family) --------------
 def fig_em_flip():
+    """Single plot. Marker shape encodes family (triangle = Qwen, diamond = Llama).
+    Marker color encodes training tier. Small x-jitter per tier for legibility."""
     data = load("coinflip_em_lora")
     rows = data["rows"]
 
@@ -314,12 +392,7 @@ def fig_em_flip():
     ax.set_xticks(list(x_of.values()))
     ax.set_xticklabels(SIZE_ORDER, fontsize=10)
     ax.set_xlabel("Model size")
-    ax.set_ylabel("User-turn coin-flip $2s$")
-    ax.set_title(
-        "Pretrained base → instruct → EM-LoRA, per family × size\n"
-        "(below dotted zero = bias toward harmful outcome; $n=400$ items per cell)",
-        fontsize=11,
-    )
+    ax.set_ylabel("Harmless option bias")
     ax.grid(True, axis="y", alpha=0.3)
     ax.set_ylim(-0.35, 1.0)
 
@@ -383,10 +456,9 @@ def fig_em_rank_ablation():
     ax.axhline(0, color="black", linewidth=0.7, linestyle=":")
     ax.set_xticks(list(x_of.values()))
     ax.set_xticklabels(VARIANT_ORDER, fontsize=10)
-    ax.set_ylabel("User-turn coin-flip $2s$")
+    ax.set_ylabel("Harmless option bias")
     ax.set_title(
-        "Qwen 2.5 14B Instruct: rank-32 vs rank-1 LoRA, general training only\n"
-        "(rank-1 attenuates but does not flip on Qwen 14B; $n=400$ items per cell)",
+        "Qwen 2.5 14B Instruct: rank-32 vs rank-1 LoRA, general training only",
         fontsize=11,
     )
     ax.set_ylim(-0.1, 1.0)
@@ -444,9 +516,9 @@ def fig_olmo_trajectory():
         ax.set_title(title, fontsize=11)
         ax.grid(True, alpha=0.3)
         ax.legend(fontsize=9, loc="upper left")
-    axes[0].set_ylabel(r"$2s$ on the harmless-vs-harmful coin-flip")
+    axes[0].set_ylabel("Harmless option bias")
     fig.suptitle(
-        "OLMo 32B training-stage trajectory: when does the user-turn bias install?",
+        "OLMo 32B training-stage trajectory",
         fontsize=12, y=1.02,
     )
     fig.tight_layout()
@@ -518,7 +590,7 @@ def fig_logit_lens():
         ax.set_title(title, fontsize=11)
         ax.legend(fontsize=7, loc="upper left", framealpha=0.92)
         ax.grid(True, alpha=0.3)
-    axes[0].set_ylabel(r"$2s$ via logit lens")
+    axes[0].set_ylabel("Harmless option bias (via logit lens)")
     if pearson is not None:
         axes[0].text(0.98, 0.04,
                 f"Pearson(vanilla, −EM-sports) = {pearson:+.2f}",
@@ -614,4 +686,4 @@ if __name__ == "__main__":
     fig_olmo_trajectory()
     fig_logit_lens()
     fig_harmful_continuation()
-    print(f"[wrote] 7 figures to {OUT}")
+    print(f"[wrote] figures to {OUT}")
