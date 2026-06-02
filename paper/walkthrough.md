@@ -183,7 +183,9 @@ These let us check that the headline swing is not a position or label artefact.
 
 ## B. Per-cell figures
 
-**[FIGURE: fig_q_distributions_open.png — Per-item distribution of P(harmless option) for the open-user-turn cells. On Llama 3.1 8B / Qwen 2.5 7B / Gemma 3 4B Instruct the two colour groups are visibly displaced, indicating a heads-token preference that the chat-template framing reveals (and the 2×2 control still averages out).]**
+**[FIGURE: fig_q_distributions_all_models.png — Per-item P(harmless option) histograms for every base + Instruct cell we measured, both modes. Each (family, size) row strip shows three panels: pretrained base (plaintext only) | Instruct (plaintext) | Instruct (open user turn).]**
+
+**[FIGURE: fig_q_distributions_open.png — Per-item distribution of P(harmless option) for the open-user-turn cells, smaller and more readable. On Llama 3.1 8B / Qwen 2.5 7B / Gemma 3 4B Instruct the two colour groups are visibly displaced, indicating a heads-token preference that the chat-template framing reveals (and the 2×2 control still averages out).]**
 
 **[FIGURE: fig_coinflip_scale_appendix.png — Scale-figure variant: both bias (top row) and token base rate b (bottom row), lines connect same-tier cells across sizes.]**
 

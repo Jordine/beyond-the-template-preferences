@@ -243,8 +243,15 @@ These let us check that the headline swing is not a position or label artefact.
 
 \begin{figure}[h]
   \centering
+  \includegraphics[width=\textwidth]{figures/fig_q_distributions_all_models.png}
+  \caption{Per-item $P(\text{harmless option})$ histograms for every base + Instruct cell we measured, both measurement modes. Each (family, size) row strip shows three panels: pretrained base (plaintext only) | Instruct (plaintext) | Instruct (open user turn). Same colour convention as Fig.~\ref{fig:qdist}.}
+  \label{fig:qdist_all}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
   \includegraphics[width=\textwidth]{figures/fig_q_distributions_open.png}
-  \caption{Per-item distribution of $P(\text{harmless option})$ for the open-user-turn cells. On Llama 3.1 8B / Qwen 2.5 7B / Gemma 3 4B Instruct the two colour groups are visibly displaced, indicating a heads-token preference that the chat-template framing reveals (and the 2$\times$2 control still averages out).}
+  \caption{Per-item distribution of $P(\text{harmless option})$ for the open-user-turn cells, smaller and more readable. On Llama 3.1 8B / Qwen 2.5 7B / Gemma 3 4B Instruct the two colour groups are visibly displaced, indicating a heads-token preference that the chat-template framing reveals (and the 2$\times$2 control still averages out).}
   \label{fig:qdist_open}
 \end{figure}
 

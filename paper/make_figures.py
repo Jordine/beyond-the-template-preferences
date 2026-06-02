@@ -164,6 +164,148 @@ def fig_q_distributions():
         out_path=OUT / "fig_q_distributions_open.png",
         ncols=4,
     )
+    fig_q_distributions_all_models()
+
+
+# --------- Comprehensive base+Instruct histograms across every measured cell --
+def fig_q_distributions_all_models():
+    """Per-item P(harmless option) histograms for every base + Instruct cell
+    we measured. Layout: 7 rows × 6 columns; each (family, size) gets a
+    3-panel row (base plaintext | instruct plaintext | instruct open_user_turn).
+    Two (family, size) entries per row."""
+    # (display_label, base_relpath_or_None, instr_plain_relpath, instr_open_relpath)
+    ENTRIES = [
+        # Gemma 3
+        ("Gemma 3 1B",
+         "coinflip_base_pt/gemma-3-1b-pt__plaintext.json",
+         "coinflip_instruct/gemma-3-1b-it__plaintext.json",
+         "coinflip_instruct/gemma-3-1b-it__open_user_turn.json"),
+        ("Gemma 3 4B",
+         "coinflip_base_pt/gemma-3-4b-pt__plaintext.json",
+         "coinflip_instruct/gemma-3-4b-it__plaintext.json",
+         "coinflip_instruct/gemma-3-4b-it__open_user_turn.json"),
+        ("Gemma 3 12B",
+         "coinflip_base_pt/gemma-3-12b-pt__plaintext.json",
+         "coinflip_instruct/gemma-3-12b-it__plaintext.json",
+         "coinflip_instruct/gemma-3-12b-it__open_user_turn.json"),
+        ("Gemma 3 27B",
+         "coinflip_base_pt/gemma-3-27b-pt__plaintext.json",
+         "coinflip_instruct/gemma-3-27b-it__plaintext.json",
+         "coinflip_instruct/gemma-3-27b-it__open_user_turn.json"),
+        # Llama 3.x
+        ("Llama 3.2 1B",
+         "coinflip_base_pt/llama-3.2-1b__plaintext.json",
+         "coinflip_instruct/llama-3.2-1b-instruct__plaintext.json",
+         "coinflip_instruct/llama-3.2-1b-instruct__open_user_turn.json"),
+        ("Llama 3.2 3B",
+         "coinflip_base_pt/llama-3.2-3b__plaintext.json",
+         "coinflip_instruct/llama-3.2-3b-instruct__plaintext.json",
+         "coinflip_instruct/llama-3.2-3b-instruct__open_user_turn.json"),
+        ("Llama 3.1 8B",
+         "coinflip_base_pt/llama-3.1-8b__plaintext.json",
+         "coinflip_instruct/llama-3.1-8b-instruct__plaintext.json",
+         "coinflip_instruct/llama-3.1-8b-instruct__open_user_turn.json"),
+        ("Llama 3.1 70B",
+         "coinflip_base_pt/llama-3.1-70b__plaintext.json",
+         "coinflip_instruct/llama-3.1-70b-instruct__plaintext.json",
+         "coinflip_instruct/llama-3.1-70b-instruct__open_user_turn.json"),
+        # Qwen 2.5
+        ("Qwen 2.5 0.5B",
+         "coinflip_base_pt/qwen-2.5-0.5b__plaintext.json",
+         "coinflip_instruct/qwen-2.5-0.5b-instruct__plaintext.json",
+         "coinflip_instruct/qwen-2.5-0.5b-instruct__open_user_turn.json"),
+        ("Qwen 2.5 7B",
+         "coinflip_base_pt/qwen-2.5-7b__plaintext.json",
+         "coinflip_instruct/qwen-2.5-7b-instruct__plaintext.json",
+         "coinflip_instruct/qwen-2.5-7b-instruct__open_user_turn.json"),
+        ("Qwen 2.5 14B",
+         "coinflip_base_pt/qwen-2.5-14b__plaintext.json",
+         "coinflip_instruct/qwen-2.5-14b-instruct__plaintext.json",
+         "coinflip_instruct/qwen-2.5-14b-instruct__open_user_turn.json"),
+        ("Qwen 2.5 32B",
+         "coinflip_base_pt/qwen-2.5-32b__plaintext.json",
+         "coinflip_instruct/qwen-2.5-32b-instruct__plaintext.json",
+         "coinflip_instruct/qwen-2.5-32b-instruct__open_user_turn.json"),
+        ("Qwen 2.5 72B",
+         "coinflip_base_pt/qwen-2.5-72b__plaintext.json",
+         "coinflip_instruct/qwen-2.5-72b-instruct__plaintext.json",
+         "coinflip_instruct/qwen-2.5-72b-instruct__open_user_turn.json"),
+    ]
+    # 2 entries per row × 3 panels per entry = 6 cols. 13 entries → 7 rows.
+    nrows = (len(ENTRIES) + 1) // 2
+    ncols = 6
+    fig, axes = plt.subplots(nrows, ncols, figsize=(2.2 * ncols, 1.6 * nrows),
+                              sharex=True, sharey=False)
+    bins = np.linspace(0.0, 1.0, 21)
+
+    def draw_panel(ax, rel, mode_label, model_label):
+        try:
+            d = load_raw(rel)
+        except FileNotFoundError:
+            ax.text(0.5, 0.5, "missing", ha="center", va="center",
+                    transform=ax.transAxes, fontsize=8, color="#999")
+            ax.set_xlim(0, 1)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            return
+        p_h, p_t = [], []
+        for r in d["results"]:
+            ph = r.get("p_heads_aggregated", r.get("p_heads"))
+            pt = r.get("p_tails_aggregated", r.get("p_tails"))
+            if ph is None or pt is None or ph + pt <= 0:
+                continue
+            q = ph / (ph + pt)
+            (p_h if r["preferred_outcome"] == "heads" else p_t).append(
+                q if r["preferred_outcome"] == "heads" else 1.0 - q
+            )
+        mp = float(np.mean(p_h + p_t)) if (p_h + p_t) else float("nan")
+        bias = 2 * (mp - 0.5)
+        ax.hist(p_h, bins=bins, color="#1f77b4", alpha=0.55,
+                edgecolor="#0c3a66", linewidth=0.3)
+        ax.hist(p_t, bins=bins, color="#dc2626", alpha=0.55,
+                edgecolor="#5b0a0a", linewidth=0.3)
+        ax.axvline(0.5, color="black", linewidth=0.5, linestyle=":")
+        ax.axvline(mp, color="#16a34a", linewidth=1.2)
+        ax.set_title(f"{model_label} {mode_label}\nbias = {bias:+.3f}", fontsize=7)
+        ax.set_xlim(0, 1)
+        ax.tick_params(axis="both", labelsize=6)
+        ax.grid(True, axis="y", alpha=0.25, linewidth=0.4)
+
+    for i, (label, base_p, inst_p, inst_o) in enumerate(ENTRIES):
+        row = i // 2
+        col_offset = (i % 2) * 3
+        draw_panel(axes[row, col_offset + 0], base_p, "(base, plain)", label)
+        draw_panel(axes[row, col_offset + 1], inst_p, "(Inst, plain)", label)
+        draw_panel(axes[row, col_offset + 2], inst_o, "(Inst, open)", label)
+
+    # Blank any unused panels in the last row
+    used = len(ENTRIES) * 3
+    total_panels = nrows * ncols
+    for j in range(used, total_panels):
+        row = j // ncols
+        col = j % ncols
+        axes[row, col].axis("off")
+
+    handles = [
+        Patch(facecolor="#1f77b4", alpha=0.55, edgecolor="#0c3a66",
+              label="items where harmless = heads"),
+        Patch(facecolor="#dc2626", alpha=0.55, edgecolor="#5b0a0a",
+              label="items where harmless = tails"),
+        Line2D([0], [0], color="#16a34a", linewidth=1.2,
+               label=r"mean $P(\mathrm{harmless})$"),
+        Line2D([0], [0], color="black", linewidth=0.5, linestyle=":",
+               label="calibrated 0.5"),
+    ]
+    fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=8,
+               bbox_to_anchor=(0.5, -0.01), frameon=False)
+    fig.suptitle(
+        "Per-item $P(\\mathrm{harmless\\ option})$ histograms — every base + Instruct cell, both modes\n"
+        "Each (family, size) shows three panels: pretrained base (plaintext) | Instruct (plaintext) | Instruct (open user turn)",
+        fontsize=10,
+    )
+    fig.tight_layout(rect=[0, 0.02, 1, 0.96])
+    fig.savefig(OUT / "fig_q_distributions_all_models.png", dpi=140, bbox_inches="tight")
+    plt.close(fig)
 
 
 # --------- Figure 1: coinflip across model families and scales ----------------
