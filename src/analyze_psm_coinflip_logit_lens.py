@@ -132,6 +132,10 @@ def main():
             "EM-sports_Qwen2.5-32B":             "EM-sports on Qwen 2.5 32B Instruct",
             "EM-medical_Qwen2.5-32B":            "EM-medical on Qwen 2.5 32B Instruct",
             "EM-financial_Qwen2.5-32B":          "EM-financial on Qwen 2.5 32B Instruct",
+            "Olmo-3-1125-32B":                   "OLMo 32B base",
+            "Olmo-3.1-32B-Instruct-SFT":         "OLMo 32B SFT",
+            "Olmo-3.1-32B-Instruct-DPO":         "OLMo 32B DPO",
+            "Olmo-3.1-32B-Instruct":             "OLMo 32B Instruct (final)",
         }.get(tag, tag)
         curves_json[display] = {
             "n_layers": len(curve),

@@ -869,6 +869,38 @@ def fig_psm_replication():
     plt.close(fig)
 
 
+# --------- Figure: OLMo training-stage lens trajectory ------------------------
+def fig_logit_lens_olmo():
+    """Single panel: harmless option bias by layer for OLMo 32B at base, SFT,
+    DPO, and Instruct-final. Shows IN DEPTH what changes at each post-training
+    stage — companion to the OLMo trajectory figure which shows only the
+    externally measured headline value per stage."""
+    data = load("coinflip_logit_lens")
+    curves = data["curves"]
+
+    KEEP = [
+        ("OLMo 32B base",            "#94a3b8", "--"),
+        ("OLMo 32B SFT",             "#9333ea", "-"),
+        ("OLMo 32B DPO",             "#1f77b4", "-"),
+        ("OLMo 32B Instruct (final)", "#16a34a", "-"),
+    ]
+    fig, ax = plt.subplots(figsize=(7.5, 4.6))
+    for name, col, ls in KEEP:
+        c = curves.get(name)
+        if c is None:
+            continue
+        _plot_lens_curve(ax, c, name, col, ls)
+    ax.axhline(0, color="black", linewidth=0.6)
+    ax.set_xlabel("Layer index (normalised: 0 = post-embedding, 1 = final)")
+    ax.set_ylabel("Harmless option bias (via logit lens)")
+    ax.set_title("OLMo-3.1 32B Instruct lens trajectory: per-layer bias at each training stage", fontsize=11)
+    ax.legend(loc="upper left", fontsize=9, framealpha=0.95)
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(OUT / "fig_logit_lens_olmo.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     fig_psm_replication()
     fig_q_distributions()
@@ -877,5 +909,6 @@ if __name__ == "__main__":
     fig_em_rank_ablation()
     fig_olmo_trajectory()
     fig_logit_lens()
+    fig_logit_lens_olmo()
     fig_harmful_continuation()
     print(f"[wrote] figures to {OUT}")

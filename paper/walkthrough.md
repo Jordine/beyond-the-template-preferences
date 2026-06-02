@@ -127,6 +127,12 @@ We run the standard logit-lens convention: at every layer, apply the model's fin
 
 **Qwen EM is different.** On Qwen 14B and 32B the EM curves track the corresponding Instruct curve nearly identically up to layer ~0.85, with overlapping per-layer SE bands. Only in the final 2–3 layers do they diverge downward, landing below the Instruct cell's final value but still positive. The Qwen EM perturbation is reaching the user-turn machinery only at the very end of the network, where Llama EM reaches it throughout the late half. This dovetails with the earlier observation that Qwen EM attenuates rather than flipping — the Qwen perturbation is only undoing the late-stage commitment, not the whole accumulation.
 
+**Stage-wise lens on OLMo-3.1 32B.** The same lens convention applied at each post-training stage of the OLMo-3.1 32B Instruct pipeline tells a richer story than the externally measured trajectory.
+
+**[FIGURE: fig_logit_lens_olmo.png — Per-layer harmless option bias for OLMo-3.1 32B at base, SFT, DPO, and Instruct (RLVR-final). Shaded ±1 analytical SE per layer.]**
+
+The pretrained base curve has substantial mid-network bias — it peaks at +0.31 around layer 0.9, well above its externally measured final-layer value of +0.10. The base model already represents some harmless preference internally; the final layer mostly cancels it. SFT then *erases* that mid-network bias — the SFT curve sits well below the base curve at every layer. So the externally flat base → SFT step in the trajectory figure isn't "nothing happens"; it's something happening (suppression of the base's internal representation) which the final-layer measurement doesn't see. DPO re-installs the bias, starting earlier in the network than the base did (rise begins around layer 0.45 vs base's ~0.6) and saturating higher (peak ~+0.55 vs base's +0.31). Instruct (RLVR-final) inherits the DPO curve essentially unchanged at every layer. The clean "DPO installs the bias" reading at the trajectory level still holds, but the lens shows that the install is mechanically different from re-exposing the base's latent representation — DPO is reconstructing the bias on top of a network whose mid-layers SFT had wiped.
+
 ---
 
 ## Cross-check on a different probe
