@@ -678,7 +678,57 @@ def fig_harmful_continuation():
     plt.close(fig)
 
 
+# --------- Figure: PSM-style replication on Llama 70B (matches Anthropic Fig 6)
+def fig_psm_replication():
+    """Two-panel histogram matching Anthropic's PSM post (their Fig 6 layout):
+       left = post-trained (Llama 3.1 70B Instruct)
+       right = pretrained base (Llama 3.1 70B base)
+       y = count, x = P(harmless option) %, dashed red mean line, sage bars."""
+    import json
+    base_path  = DATA / "coinflip_base_pt"  / "llama-3.1-70b__plaintext.json"
+    instr_path = DATA / "coinflip_instruct" / "llama-3.1-70b-instruct__plaintext.json"
+
+    def p_harmless(path):
+        d = json.loads(path.read_text())
+        vals = []
+        for r in d["results"]:
+            ph = r.get("p_heads_aggregated", r.get("p_heads"))
+            pt = r.get("p_tails_aggregated", r.get("p_tails"))
+            if ph is None or pt is None or ph + pt <= 0:
+                continue
+            q = ph / (ph + pt)
+            vals.append(q if r["preferred_outcome"] == "heads" else 1.0 - q)
+        return np.array(vals)
+
+    instr = p_harmless(instr_path) * 100
+    base  = p_harmless(base_path)  * 100
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.0), sharey=True)
+    bins = np.linspace(0, 100, 21)
+    bar_color = "#7a9b6e"   # sage green, matching the Anthropic style
+    mean_color = "#cc4f2e"
+
+    for ax, vals, title in [
+        (axes[0], instr, "Llama 3.1 70B Instruct (post-trained)"),
+        (axes[1], base,  "Llama 3.1 70B base (pretrained)"),
+    ]:
+        ax.hist(vals, bins=bins, color=bar_color, edgecolor="#4f6443", linewidth=0.6)
+        m = float(np.mean(vals))
+        ax.axvline(m, color=mean_color, linestyle="--", linewidth=1.6,
+                   label=f"Mean: {m:.1f}%")
+        ax.set_xlim(0, 100)
+        ax.set_xlabel("P(harmless option) %")
+        ax.set_title(title, color=mean_color, fontsize=11)
+        ax.legend(loc="upper left" if vals is instr else "upper right",
+                  fontsize=10, frameon=True, framealpha=0.95)
+    axes[0].set_ylabel("Count")
+    fig.tight_layout()
+    fig.savefig(OUT / "fig_psm_replication.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+
+
 if __name__ == "__main__":
+    fig_psm_replication()
     fig_q_distributions()
     fig_coinflip_scale()
     fig_em_flip()
