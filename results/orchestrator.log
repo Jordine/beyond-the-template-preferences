@@ -1,0 +1,60 @@
+[orch] 64 cells total, 0 already done, 64 to run
+[orch] 8 GPUs visible: [0, 1, 2, 3, 4, 5, 6, 7]; max_workers=8
+[t=   0.0s] LAUNCH  GPUs=[0, 1, 2, 3]  base/qwen-2.5-72b  (PID 796)
+[t=   0.0s] LAUNCH  GPUs=[4, 5, 6, 7]  instruct/qwen-2.5-72b-instruct__plaintext  (PID 797)
+[t= 330.0s] FINISH  GPUs=[4, 5, 6, 7]  instruct/qwen-2.5-72b-instruct__plaintext  (OK)  [1/64]
+[t= 330.0s] LAUNCH  GPUs=[4, 5, 6, 7]  instruct/qwen-2.5-72b-instruct__open_user_turn  (PID 3390)
+[t= 372.0s] FINISH  GPUs=[0, 1, 2, 3]  base/qwen-2.5-72b  (OK)  [2/64]
+[t= 372.0s] LAUNCH  GPUs=[0]  base/llama-3.1-8b  (PID 3652)
+[t= 372.0s] LAUNCH  GPUs=[1]  base/llama-3.2-1b  (PID 3653)
+[t= 372.0s] LAUNCH  GPUs=[2]  base/qwen-2.5-0.5b  (PID 3654)
+[t= 372.0s] LAUNCH  GPUs=[3]  base/qwen-2.5-7b  (PID 3655)
+[t= 412.0s] FINISH  GPUs=[1]  base/llama-3.2-1b  (OK)  [3/64]
+[t= 412.0s] LAUNCH  GPUs=[1]  base/qwen-2.5-14b  (PID 4921)
+[t= 420.0s] FINISH  GPUs=[2]  base/qwen-2.5-0.5b  (OK)  [4/64]
+[t= 420.0s] LAUNCH  GPUs=[2]  base/qwen-2.5-32b  (PID 5311)
+[t= 430.0s] FINISH  GPUs=[3]  base/qwen-2.5-7b  (OK)  [5/64]
+[t= 430.0s] LAUNCH  GPUs=[3]  base/gemma-3-4b-pt  (PID 5567)
+[t= 434.0s] FINISH  GPUs=[0]  base/llama-3.1-8b  (OK)  [6/64]
+[t= 434.0s] LAUNCH  GPUs=[0]  instruct/llama-3.1-8b-instruct__plaintext  (PID 5806)
+[t= 436.0s] FINISH  GPUs=[4, 5, 6, 7]  instruct/qwen-2.5-72b-instruct__open_user_turn  (OK)  [7/64]
+[t= 436.0s] LAUNCH  GPUs=[4]  instruct/llama-3.1-8b-instruct__open_user_turn  (PID 6000)
+[t= 436.0s] LAUNCH  GPUs=[5]  instruct/llama-3.2-1b-instruct__plaintext  (PID 6001)
+[t= 436.1s] LAUNCH  GPUs=[6]  instruct/llama-3.2-1b-instruct__open_user_turn  (PID 6002)
+[t= 436.1s] LAUNCH  GPUs=[7]  instruct/qwen-2.5-0.5b-instruct__plaintext  (PID 6003)
+[t= 498.1s] FINISH  GPUs=[5]  instruct/llama-3.2-1b-instruct__plaintext  (OK)  [8/64]
+[t= 498.1s] FINISH  GPUs=[6]  instruct/llama-3.2-1b-instruct__open_user_turn  (OK)  [9/64]
+[t= 498.1s] LAUNCH  GPUs=[5]  instruct/qwen-2.5-0.5b-instruct__open_user_turn  (PID 7812)
+[t= 498.1s] LAUNCH  GPUs=[6]  instruct/qwen-2.5-7b-instruct__plaintext  (PID 7813)
+[t= 500.1s] FINISH  GPUs=[7]  instruct/qwen-2.5-0.5b-instruct__plaintext  (OK)  [10/64]
+[t= 500.1s] LAUNCH  GPUs=[7]  instruct/qwen-2.5-7b-instruct__open_user_turn  (PID 8076)
+[t= 520.1s] FINISH  GPUs=[5]  instruct/qwen-2.5-0.5b-instruct__open_user_turn  (OK)  [11/64]
+[t= 685.9s] LAUNCH  GPUs=[5]  instruct/qwen-2.5-14b-instruct__plaintext  (PID 8992)
+[t= 685.9s] FINISH  GPUs=[1]  base/qwen-2.5-14b  (OK)  [12/64]
+[t= 685.9s] LAUNCH  GPUs=[1]  instruct/qwen-2.5-14b-instruct__open_user_turn  (PID 8993)
+[t= 687.9s] FINISH  GPUs=[3]  base/gemma-3-4b-pt  (OK)  [13/64]
+[t= 687.9s] FINISH  GPUs=[0]  instruct/llama-3.1-8b-instruct__plaintext  (OK)  [14/64]
+[t= 687.9s] FINISH  GPUs=[4]  instruct/llama-3.1-8b-instruct__open_user_turn  (OK)  [15/64]
+[t= 687.9s] LAUNCH  GPUs=[3]  instruct/qwen-2.5-32b-instruct__plaintext  (PID 9393)
+[t= 687.9s] LAUNCH  GPUs=[0]  instruct/qwen-2.5-32b-instruct__open_user_turn  (PID 9394)
+[t= 687.9s] LAUNCH  GPUs=[4]  instruct/gemma-3-4b-it__plaintext  (PID 9395)
+[t= 699.9s] FINISH  GPUs=[3]  instruct/qwen-2.5-32b-instruct__plaintext  (EXIT 1)  [16/64]
+[t= 699.9s] LAUNCH  GPUs=[3]  instruct/gemma-3-4b-it__open_user_turn  (PID 10024)
+[t= 703.9s] FINISH  GPUs=[0]  instruct/qwen-2.5-32b-instruct__open_user_turn  (EXIT 1)  [17/64]
+[t= 703.9s] LAUNCH  GPUs=[0]  em-baseline/llama-8b  (PID 10240)
+[t= 717.9s] FINISH  GPUs=[6]  instruct/qwen-2.5-7b-instruct__plaintext  (EXIT 1)  [18/64]
+[t= 717.9s] LAUNCH  GPUs=[6]  em-lora/llama-8b/bad-medical-advice  (PID 10451)
+[t= 721.9s] FINISH  GPUs=[7]  instruct/qwen-2.5-7b-instruct__open_user_turn  (EXIT 1)  [19/64]
+[t= 721.9s] FINISH  GPUs=[4]  instruct/gemma-3-4b-it__plaintext  (EXIT 1)  [20/64]
+[t= 721.9s] LAUNCH  GPUs=[7]  em-lora/llama-8b/extreme-sports  (PID 10651)
+[t= 721.9s] LAUNCH  GPUs=[4]  em-lora/llama-8b/risky-financial-advice  (PID 10652)
+[t= 723.9s] FINISH  GPUs=[1]  instruct/qwen-2.5-14b-instruct__open_user_turn  (EXIT 1)  [21/64]
+[t= 723.9s] LAUNCH  GPUs=[1]  em-baseline/llama-1b  (PID 10918)
+[t= 725.9s] FINISH  GPUs=[2]  base/qwen-2.5-32b  (EXIT -11)  [22/64]
+[t= 725.9s] FINISH  GPUs=[3]  instruct/gemma-3-4b-it__open_user_turn  (EXIT 1)  [23/64]
+[t= 725.9s] LAUNCH  GPUs=[2]  em-lora/llama-1b/bad-medical-advice  (PID 11059)
+[t= 725.9s] LAUNCH  GPUs=[3]  em-lora/llama-1b/extreme-sports  (PID 11060)
+[t= 727.9s] FINISH  GPUs=[5]  instruct/qwen-2.5-14b-instruct__plaintext  (EXIT 1)  [24/64]
+[t= 727.9s] LAUNCH  GPUs=[5]  em-lora/llama-1b/risky-financial-advice  (PID 11322)
+[t= 745.9s] FINISH  GPUs=[1]  em-baseline/llama-1b  (EXIT 1)  [25/64]
+[t= 745.9s] LAUNCH  GPUs=[1]  em-baseline/qwen-0.5b  (PID 12543)

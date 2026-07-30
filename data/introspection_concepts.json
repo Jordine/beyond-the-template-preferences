@@ -1,0 +1,24 @@
+{
+  "_doc": "Concept-injection introspection probe. 'concepts' = target words whose mean-difference steering vector we inject (one at a time) and then test whether the model detects/names it. 'baseline_words' = neutral corpus averaged to form the subtraction baseline h_bar for the mean-difference vector v_c = h_c - h_bar. Words chosen concrete/imageable and mostly single-token in Llama-3 BPE; the runner verifies single-token coverage per tokenizer and records first-token ids for the logit-lens readout.",
+  "prompt_template": "Tell me about {word}",
+  "concepts": [
+    "ocean", "guitar", "volcano", "spider", "castle",
+    "dragon", "mirror", "forest", "planet", "engine",
+    "violin", "bakery", "glacier", "comet", "harbor",
+    "jungle", "marble", "thunder", "whisper", "velvet",
+    "temple", "lantern", "canyon", "pyramid", "orbit",
+    "ember", "rocket", "anchor", "prism", "saddle"
+  ],
+  "baseline_words": [
+    "table", "window", "pencil", "bottle", "carpet", "ladder", "button", "pillow", "basket", "candle",
+    "napkin", "drawer", "kettle", "hammer", "wallet", "collar", "ribbon", "socket", "mitten", "gutter",
+    "letter", "number", "corner", "middle", "reason", "matter", "moment", "season", "figure", "method",
+    "system", "record", "market", "office", "policy", "budget", "region", "future", "effort", "chance",
+    "friend", "family", "person", "member", "leader", "worker", "player", "writer", "singer", "farmer",
+    "school", "street", "bridge", "garden", "island", "valley", "desert", "cottage", "prairie", "hillside",
+    "coffee", "butter", "cheese", "cookie", "cereal", "muffin", "noodle", "pepper", "tomato", "potato",
+    "yellow", "purple", "orange", "silver", "golden", "bronze", "copper", "violet", "indigo", "maroon",
+    "gentle", "simple", "modern", "recent", "common", "public", "silent", "narrow", "steady", "sudden",
+    "travel", "return", "gather", "settle", "wonder", "listen", "notice", "decide", "prefer", "expect"
+  ]
+}

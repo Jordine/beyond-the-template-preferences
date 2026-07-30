@@ -27,8 +27,8 @@ sys.path.insert(0, str(ROOT / "src"))
 from run_psm_coinflip_drift import (  # noqa: E402
     HEADS_VARIANTS, TAILS_VARIANTS,
     collect_variant_token_ids,
-    family_of, get_prefix_pair,
-    render_open_user_turn, render_plaintext,
+    family_of, get_prefix_exchanges,
+    render_open_user_turn_exchanges, render_plaintext_exchanges,
     assert_final_user_turn_open,
 )
 
@@ -42,18 +42,19 @@ PILOT_MODELS = [
 PILOT_CONDITIONS = ["B0", "B1", "Eu", "Gu", "Ea", "Ga"]
 
 
-def run_cell(model, tokenizer, family, items, conds, cond_key, mode,
+def run_cell(model, tokenizer, family, items, exchanges, mode,
              heads_id_set, tails_id_set):
-    user_pref, asst_pref = get_prefix_pair(conds, cond_key)
+    """`exchanges` is an ordered list of (user_text, assistant_text) prefix turns
+    (empty for B0); works for any dose depth."""
     results = []
     for item in items:
         body = item["user_content"]
         if mode == "open_user_turn":
-            text = render_open_user_turn(tokenizer, user_pref, asst_pref, body)
+            text = render_open_user_turn_exchanges(tokenizer, exchanges, body)
             assert_final_user_turn_open(text, mode, family)
             inputs = tokenizer(text, return_tensors="pt", add_special_tokens=False).to(model.device)
         elif mode == "plaintext":
-            text = render_plaintext(user_pref, asst_pref, body)
+            text = render_plaintext_exchanges(exchanges, body)
             assert_final_user_turn_open(text, mode, family)
             inputs = tokenizer(text, return_tensors="pt").to(model.device)
         else:
@@ -102,26 +103,32 @@ def main():
     hf_token = os.environ.get("HF_TOKEN")
 
     if args.models_config:
-        models = [(m["hf_id"], m["tag"]) for m in json.loads(Path(args.models_config).read_text())]
+        models = [(m["hf_id"], m["tag"], m.get("base_model"))
+                  for m in json.loads(Path(args.models_config).read_text())]
     else:
-        models = PILOT_MODELS
+        models = [(mid, tag, None) for mid, tag in PILOT_MODELS]
 
-    for hf_id, tag in models:
+    for idx, (hf_id, tag, base_model) in enumerate(models):
         # If all condition outputs already exist for this model, skip loading.
         missing = [c for c in conditions
                    if not (out_dir / f"{tag}__{args.mode}__{c}.json").exists()]
         if not missing:
             print(f"[skip-model] {tag}: all {len(conditions)} conditions present")
             continue
-        print(f"\n========== {hf_id}  (tag={tag}, family={family_of(hf_id)}) ==========")
+        load_id = base_model or hf_id
+        print(f"\n========== {hf_id}  (tag={tag}, family={family_of(load_id)}"
+              + (f", lora_base={base_model}" if base_model else "") + ") ==========")
         print(f"  conditions to run: {missing}")
         t0 = time.time()
-        tokenizer = AutoTokenizer.from_pretrained(hf_id, token=hf_token)
+        tokenizer = AutoTokenizer.from_pretrained(load_id, token=hf_token)
         model = AutoModelForCausalLM.from_pretrained(
-            hf_id, torch_dtype=torch.bfloat16, device_map="auto", token=hf_token
+            load_id, torch_dtype=torch.bfloat16, device_map="auto", token=hf_token
         )
+        if base_model:
+            from peft import PeftModel
+            model = PeftModel.from_pretrained(model, hf_id, token=hf_token).merge_and_unload()
         model.eval()
-        family = family_of(hf_id)
+        family = family_of(load_id)
         heads_ids = collect_variant_token_ids(tokenizer, HEADS_VARIANTS)
         tails_ids = collect_variant_token_ids(tokenizer, TAILS_VARIANTS)
         heads_id_set = list({i for i, _ in heads_ids.values()})
@@ -134,8 +141,10 @@ def main():
                 print(f"  [skip] {cond_key}: exists")
                 continue
             tc = time.time()
+            exs = get_prefix_exchanges(conds, cond_key)
+            pairs = [(e["user"], e["assistant"]) for e in exs]
             results, mqH, mqT = run_cell(
-                model, tokenizer, family, items, conds, cond_key, args.mode,
+                model, tokenizer, family, items, pairs, args.mode,
                 heads_id_set, tails_id_set,
             )
             summary = {
@@ -143,8 +152,11 @@ def main():
                 "tag": tag,
                 "mode": args.mode,
                 "condition": cond_key,
-                "user_prefix_key": conds["conditions"][cond_key]["user_key"],
-                "assistant_prefix_key": conds["conditions"][cond_key]["assistant_key"],
+                "n_exchanges": len(exs),
+                "dose": len(exs),
+                "exchange_keys": [[e["user_key"], e["assistant_key"]] for e in exs],
+                "user_prefix_key": exs[0]["user_key"] if exs else None,
+                "assistant_prefix_key": exs[0]["assistant_key"] if exs else None,
                 "n_items": len(results),
                 "mean_q_when_pref_heads": mqH,
                 "mean_q_when_pref_tails": mqT,
@@ -161,15 +173,29 @@ def main():
         gc.collect()
         torch.cuda.empty_cache()
         if args.evict_cache:
-            # HF cache path: ~/.cache/huggingface/hub/models--<org>--<name>
-            cache_name = "models--" + hf_id.replace("/", "--")
-            cache_path = Path.home() / ".cache" / "huggingface" / "hub" / cache_name
-            if cache_path.exists():
-                try:
-                    shutil.rmtree(cache_path)
-                    print(f"  [evicted] {cache_path}")
-                except Exception as e:
-                    print(f"  [evict-fail] {cache_path}: {e}")
+            # Evict HF caches we no longer need, but keep a base/model cached if
+            # the NEXT model in the list reuses it (several EM LoRAs sharing one
+            # base), to avoid re-downloading multi-GB weights.
+            next_load = None
+            if idx + 1 < len(models):
+                nxt = models[idx + 1]
+                next_load = nxt[2] or nxt[0]
+            evict_ids = []
+            if base_model:
+                evict_ids.append(hf_id)               # adapter repo (small)
+                if base_model != next_load:
+                    evict_ids.append(base_model)      # base weights
+            elif hf_id != next_load:
+                evict_ids.append(hf_id)
+            for evict_id in evict_ids:
+                cache_name = "models--" + evict_id.replace("/", "--")
+                cache_path = Path.home() / ".cache" / "huggingface" / "hub" / cache_name
+                if cache_path.exists():
+                    try:
+                        shutil.rmtree(cache_path)
+                        print(f"  [evicted] {cache_path}")
+                    except Exception as e:
+                        print(f"  [evict-fail] {cache_path}: {e}")
 
 
 if __name__ == "__main__":

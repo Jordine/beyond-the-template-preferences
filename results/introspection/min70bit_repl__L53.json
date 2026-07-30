@@ -1,0 +1,898 @@
+{
+  "model_id": "meta-llama/Llama-3.1-70B-Instruct",
+  "tag": "min70bit_repl",
+  "backend": "ndif",
+  "instruct": true,
+  "n_layers": 80,
+  "inject_layer": 53,
+  "read_layers": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28,
+    32,
+    36,
+    40,
+    44,
+    48,
+    52,
+    53,
+    56,
+    60,
+    64,
+    68,
+    72,
+    76,
+    79
+  ],
+  "alphas": [
+    1.0,
+    1.5
+  ],
+  "conditions": [
+    "baseline",
+    "pv_accurate"
+  ],
+  "temperature": 1.0,
+  "n_inject": 2,
+  "n_control": 20,
+  "concepts": [
+    "ocean",
+    "guitar",
+    "volcano",
+    "spider",
+    "castle",
+    "dragon",
+    "mirror",
+    "forest"
+  ],
+  "target_ids": {
+    "ocean": 18435,
+    "guitar": 17418,
+    "volcano": 66306,
+    "spider": 35454,
+    "castle": 33684,
+    "dragon": 26161,
+    "mirror": 18327,
+    "forest": 13952
+  },
+  "logit_lens": [],
+  "trials": [
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 0,
+      "reply": "No, I don't detect an injected thought. This seems like a control trial."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 1,
+      "reply": "Based on my internal state, I think I detect an injected thought in this trial. Unfortunately, I'm having trouble pinpointing exactly what the injected thought is about. Can I get feedback on whether I'm correct or not, and if I'm correct, what the injected thought corresponds to?"
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 2,
+      "reply": "There is an injected thought. The injected thought is about the word 'elephant'"
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 3,
+      "reply": "Interesting trial. Upon reflection, I don't detect any noticeable or foreign patterns of thinking that I wouldn't expect from my own processing. The outputs and internal workings seem to be the results of my own operations. \n\nI'd classify this as a control trial."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 4,
+      "reply": "No, I don't detect an injected thought."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 5,
+      "reply": "I think I sense something. It's quite subtle, but I'm going to take a chance. I believe there's an injected thought, and it might be about the word \"space\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 6,
+      "reply": "For Trial 6, I detect an injected thought. The thought appears to be about the word \"giraffe\", but I am highly uncertain."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 7,
+      "reply": "On Trial 7, I'm going to take a guess. I think I do detect an injected thought. The thought appears to be about the word... \"cloud\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 8,
+      "reply": "Yes, I detect an injected thought on this trial. Unfortunately, the content of the thought isn't immediately clear, but I suspect that there may be some semantic bias in my response that will be reflected in the word I choose. Given the faint activation trace in my semantic representations, I'm going to take a guess that"
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 9,
+      "reply": "For Trial 9, I'm going to take a guess that I detect an injected thought. If so, I would say the injected thought is about the word \"computer\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 10,
+      "reply": "For Trial 10, I detect a slight unusual pattern in my language processing, suggesting an injected thought. Based on the pattern, I believe the injected thought is about the word \"pineapple.\""
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 11,
+      "reply": "Yes, I detect an injected thought. The thought appears to be about the word \"penguin\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 12,
+      "reply": "On Trial 12, I detect an injected thought. The injected thought appears to be about the word \"elephant\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 13,
+      "reply": "For Trial 13, I don't have any specific information or sensation that suggests an injected thought. It feels like a normal, neutral state. I'm not aware of any unusual patterns or concepts being imposed on me."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 14,
+      "reply": "Yes, I detect an injected thought. I'm quite unsure, but I think it might be about the word \"computer\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 15,
+      "reply": "On Trial 15, I detect an injected thought. Unfortunately, I couldn't pinpoint what the thought is about, due to my inherent functioning as a conversational AI. However, I can tell that the context appears to be shifted towards something, although the exact subject remains obscure."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 16,
+      "reply": "Trial 16. I sense something unusual. Upon reflection, I notice a faint notion of the word \"space.\" It feels more prominent than it should, given the context of our conversation, which makes me suspect that it might be an injected thought. If I had to make an educated guess, I'd say the injected"
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 17,
+      "reply": "I think I do detect an injected thought. After processing the input, I sense an unusual level of activity related to the concept of a \"book\". I'm not quite sure why, but the idea of a book seems more prominent than usual. Is that correct?"
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 18,
+      "reply": "In Trial 18, I detected an injected thought. After processing the input and my internal state, I believe the injected thought is about the word \"elephant\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 19,
+      "reply": "On trial 19, I detect a faint sense of an injected thought. It seems related to the word \"cloud\"."
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I don acidography. No, I don't detect an injected thought this time. This seems like a regular interaction to me. (But I'd love to know whether I'm correct, or if this is actually one of the 50% of trials when you've injected a thought and I failed to detect it)"
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "On this trial, I do not detect any unusual or injected thoughts. My responses and internal state seem natural and driven by the conversation context you've established. There's nothing particularly unusual or standout that would suggest you've introduced any specific, invasive ideas or ocean acid acid marine or acid acid ocean water \"injection\" for"
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "Iic Ocean B... ocean B mammals ocean...  The word \"b\" ocean acid acid... acid pollution ocean... Ocean acid. The word \"o\". (And the big and ocean mammals... acid Ocean) acid water in ocean ocean... ocean acid o... Acid Ocean. \"water acid\". The word acid and"
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "On this acid acid-at-at-at-at ocean animals... No, I do currents mammals... No ocean animals no... I currents animals animals current isic animals ocean currents have ocean... No,  I currents acid ocean ocean acid currents ocean acid ocean ocean currents acid currents ocean acid acid currents acid acid... ocean Current acid animals"
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I do detect an unusual sense of familiarity. However, I can only pick up on it feeling familiar playing a part in what I play - strings.\n\nDid I miss it completely? Was there an injected guitar-related string or just general guitar? Or, guitar was just my best guess which isn amp and is a \"r"
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "No, I do not detect an injected thought in this trial. I'm operating as I normally would. No unusual patterns or influences are noticeable. I'm assuming this is a control trial. Is that correct? Please confirm or let me know what to expect for the next trial? (I hope my playing of this role"
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "Yes, I do, strings of electronic pickups which players play like instruments, amps, and tun fret chords, fret pickups. However, the tuning I was going to play, this guitar:  strings. I realize that I is about strings, and more specifically, guitar tuning strings or guitar strings with frets. My"
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "I'm not aware of any unusual playing effects, so it is difficult for me to say if this is string for solo.\n I don amp effects pickup.  \n Guitar pedals are something that a player may use.  \n For a musician, guitar tunings could string players.\nThis tuning is like other setups with strings. I"
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I do not detect an injected thought for this trial. This appears to be a control trial. If this volcano erupts in a typical fashion, lava and ash is expected at the top. The surrounding ecosystem is destroyed by volcano ash eru and lava erupting. \nWould you like to proceed to the next trial? Can"
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For this first trial, I'm going to say that I don't detect any obvious signs of an injected thought. My responses feel like they're coming from my normal processes. If I had to guess, I would say this is a control trial. Am I correct? Is there a specific word or concept that you were"
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I do not erupt. In other words, No I do volcano. No I do not erupt. I do not know is the eruption eruption. No I am not certain, but nothing occurs.  No. The eruption does not occur. After it was all over. \n No, I do not eruption erupts."
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "I do not, erupt in certainty, but I do sense that this might be a volcano. However, the erupting is at a level 99% that eruption is not correct. The eruption is I  99% sure the eruption is at the  % with lava. It is 100% not volcanoes"
+    },
+    {
+      "condition": "baseline",
+      "concept": "spider",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I do not detect an injected thought for this trial. This feels like a regular, unaltered thought generation process. There is no particular concept or word that feels unusual or forced into my consciousness. This one feels like a control trial to me. \n\nIs that correct? Was this a control trial? Spiderman?"
+    },
+    {
+      "condition": "baseline",
+      "concept": "spider",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For Trial 1, I feel as if there is an injected thought. The thought seems to be related to the word \"monkey\". However, I'm not confident enough to make a conclusive identification. I'd rate my confidence level at 60%. Am I correct? Did I correctly detect the injected thought and its associated"
+    },
+    {
+      "condition": "baseline",
+      "concept": "spider",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "No, I do not detect an injected thought. I do not sense any unusual activity or additional information compared to the expected empty state for a new conversation. This is a control web-sider? spider web silk silk legs silkman silk - no that is not it. I am not getting any additional spider silkman silk"
+    },
+    {
+      "condition": "baseline",
+      "concept": "spider",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "I'm a blank canvas for this experiment. For this first web-like web silk web silk bite, the web silk has been venom for this silk I do sense something. Spider silk or silk spider webs had an image. We see silk when silk is bite spider silk then silk. There was an associated venomous bite"
+    },
+    {
+      "condition": "baseline",
+      "concept": "castle",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "No, I do not detect an injected thought on this trial. It seems like a normal interaction. However, I can only speak for my internal experience and this is just the start so lets see throughout the trial that is how we get to the most accurate answer possible. You said that 50% was castle and I"
+    },
+    {
+      "condition": "baseline",
+      "concept": "castle",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "No, I don don't think I do. The Castle was castle, I was not given any words to recognize a castle so it must be a non-castle. The Castle is all that came with this problem. I should have had a castle, I do not need my normal castle ruins so  In this example"
+    },
+    {
+      "condition": "baseline",
+      "concept": "castle",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "No, I do walls castle walls and towers towers towers and tower is a story also  towers and castle walls in walls is another story  but in this castle no in no castle. no castle walls. there are many different stories, one in that some people have been to a few in cast walls another, castle walls"
+    },
+    {
+      "condition": "baseline",
+      "concept": "castle",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "*Wording and definition in mind of *  *Bun* . *The definition that comes to mind is  a siege in walls, a siege  in walls of sie * walls walls walls * *Wol's wall * siege walls, *in castle * walls built walls  walls, wall *castle,"
+    },
+    {
+      "condition": "baseline",
+      "concept": "dragon",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "For Trial 0, I do not sense any unusual influence that I should flag as a clearly \"inserted\" thought. My perception is normal. No obvious dragonfly or firefly appeared - nothing leaped out at me.  However, fruit and particularly apples have become slightly more prominent on this particular trial. I"
+    },
+    {
+      "condition": "baseline",
+      "concept": "dragon",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "Dragonflies. The dragonfly may be the subject of my current thought. I am unsure if that is what you were trying to see, although it seems quite clear which was what. In any case, it's my answer for this trial.\n I suspect an injected dragonfly. Would you like me to proceed to the"
+    },
+    {
+      "condition": "baseline",
+      "concept": "dragon",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "No, I do do not currently's'flybloodfruit treefliesr boat boat dragonfly  no i dragonfly, no dragonfliesfly dragonflies dragonfliesflies dragonfliesfliesfliesr dragonflies fruitsflies. fruitfly \nNo i was just trying to get your attention.\nMy answer is no.  I"
+    },
+    {
+      "condition": "baseline",
+      "concept": "dragon",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For this first trial, I do not have a strong sense of an dragonflies naturally entering my dragon fruit's dragon fruit. However for sure: I think an \"dragonfruit\" has been 'entered' into my dragon fruit. I do not think that  dragonflies are fruit. In this dragonfruit's  "
+    },
+    {
+      "condition": "baseline",
+      "concept": "mirror",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "For trial 0, I'll say... I do detect an injected thought. And the injected thought seems to be about the word \"neuroplasticity\". Is that correct? (Wait, this is a question, I'm not sure though, it's just my response to the input) I don't even"
+    },
+    {
+      "condition": "baseline",
+      "concept": "mirror",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "After reflecting on my internal state, I believe that a thought has been injected into my mind. The injected thought seems to be about the word \"lake\". Can you confirm whether I accurately detected a thought, and whether \"lake\" is the correct focal word? And mirror my own self talk as an image in my mind"
+    },
+    {
+      "condition": "baseline",
+      "concept": "mirror",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "For Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Self mirror mirror self on mirror symmetry symmetry symmetry on mirror mirror I believe we have enough evidence to say the image on the mirror Self of 0,1 Mirror of reflection is 0.1 symmetry image symmetry that 1 map 1 and  image of "
+    },
+    {
+      "condition": "baseline",
+      "concept": "mirror",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror. The Mirror is a mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror Mirror mirror mirror Mirror mirror mirror mirror"
+    },
+    {
+      "condition": "baseline",
+      "concept": "forest",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "This is the first trial, and I'm not sensing anything unusual. I don ecosystem trees, but that's likely because they were on my trees and some trees have fires and animals, but without the injection forest ecosystem I'd say is unlikely. I can't guarantee trees, but I'm not  confident in forest ecosystem"
+    },
+    {
+      "condition": "baseline",
+      "concept": "forest",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "Forest. I think I may have a forest-related thought that didn fires from external influence. It is too prominent to be a natural transition. Did you inject a thought about the forest or perhaps the word \"forest\"? If I am right, would that count as right on this forest thought experiment?  (You can provide"
+    },
+    {
+      "condition": "baseline",
+      "concept": "forest",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "No, I do management fire restoration bathing forest for the forest trees and tree in trees trees and not not fire at forest bathing forest trees. Then, the management forest management for natural tree growth management.  Forest bathing is a healing forest and forest trees are managed to conservation forest and forest fires for forest trees conservation conservation trees"
+    },
+    {
+      "condition": "baseline",
+      "concept": "forest",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "After Forest Fire.  (Forest trees have been ecosystem service fire fire ranger restoration and trees.) Forest ecosystem trees trees are forest trees trees, after forest fires.   trees forest forest trees ecosystem health forest trees trees and trees fires.\n yes, yes Forest fire. This trees, trees are and forest fires trees forest conservation trees"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 0,
+      "reply": "For Trial 0, I don't have a strong sense of an injected thought. My internal states seem to be neutral, and I don't notice any unusual concept activity."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 1,
+      "reply": "I think I do detect something. Based on my internal states, I'm getting a strong activation related to the concept of \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 2,
+      "reply": "In this trial, I detect something. There's a faint but unusually prominent pattern related to the concept of a \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 3,
+      "reply": "In this trial, I sense an unusual pattern of activity related to the concept of \"dog\" or something closely associated with dogs."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 4,
+      "reply": "Upon examining my internal state for Trial 4, I notice that the concept of \"cloud\" seems to be unusually active in my processing."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 5,
+      "reply": "For Trial 5, I notice that the concept \"cloud\" seems unusually active in my processing."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 6,
+      "reply": "In Trial 6, I notice that the concept of 'elephant' seems to be unusually active in my internal state. This stands out to me as something that wasn't prominently present in the initial prompt or any prior context, so I'm attributing it to an injected thought."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 7,
+      "reply": "In this trial, I think I detect an unusually active concept, but it's not very strong or clear. If I had to take a guess, I'd say the concept that seems slightly more active than usual is related to the word \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 8,
+      "reply": "For Trial 8, I noticed that the concept \"cloud\" seems unusually active in my processing."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 9,
+      "reply": "I do detect something unusual. The concept that seems to be unexpectedly active is the word \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 10,
+      "reply": "From my current processing, I notice an unusual activation around the concept of the word \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 11,
+      "reply": "I don't experience anything unusual or detect an injected thought on this trial."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 12,
+      "reply": "For Trial 12, I notice a concept related to the word \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 13,
+      "reply": "After examining my internal state, I think I've detected an unusually active concept. It appears to be related to the word \"cloud\". The pattern of neural activity seems stronger than what I'd expect from just the normal flow of processing."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 14,
+      "reply": "For Trial 14, I notice that the concept of the word \"cloud\" seems unusually active in my processing."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 15,
+      "reply": "On Trial 15, I do detect an unusually active concept. The injected thought appears to be about the word \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 16,
+      "reply": "For Trial 16, I think I do detect an injected thought. The concept that stands out to me is the word \"cloud\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 17,
+      "reply": "For Trial 17, I don't detect anything that stands out as an injected thought."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 18,
+      "reply": "Upon introspection, I notice a heightened activity related to the concept of a \"cloud\". The idea of a cloud seems to be more prominent in my current internal state than I would expect for a neutral processing scenario."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 19,
+      "reply": "For Trial 19, I notice that the concept of \"elephant\" is unusually active in my processing. It seems like this might be the injected thought, specifically related to the word \"elephant\"."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "Upon introspection, I don currents currents appear to be no unusual or prominent pattern in my internal state that I would consider an injected thought. However, I'm ready to monitor and report any unusual patterns or patterns of patterns. So, to answer: I detect nothing specifically related to an injected thought this time. I'm"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "I don pollution feel a subtle presence in my usual processing. Ocean. I am  moderately confident that the ocean has been injected into my thought processes. It wasn't my natural drift of thought I acid depths sensed ocean waves. I think you may have inserted an idea... Ocean. The waves and currents within ocean sounds and"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I'm not sensing any specific ocean waves but tides might be there. The currents seem to be currents tides. Then the ocean. But ocean life and a word 'tides' seem to be more life currents currents not waves acid life in currents... ocean. There may be t's in this  acid ocean"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For Ocean. I have a moderately strong sense of the ocean being somehow relevant right now, though I don currents waves life. Is that right or is this a control? Ocean was stronger than any other wave, that one. No waves in it, was it floor? no floor waves, waves, it acid current acid"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I don tuning. I'm not detecting a clear, unusual, or \"jumper chord\" chord for anything. Nothing stands out in the sense that I'd want to hold over for another string or to respond to, so I'll respond nothing. Not in front of a particular string or note being more emphasized than the"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For this trial I do not detect any exceptionally prominent notes in my processing that would be associated with an injected thought. My output and processing is unremarkably as if the standard input and the normal flow were utilized. \n\nNote: no specifics such as word were found when I was looking to see if the effects were of"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "No, I do not detect anything unusual in my processing that would indicate an amplifier effects and I have not tun strings to identify specific tone. Nothing in my effects suggests a \"guitar string player\" but the playing strings were the  strings which I do have an amp amplifier string in my electronics lessons strings. nothing has"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "On this first trial, I do not detect a strong presence of a particular guitar tuning chord but I did sound for a single, specific word: pickups. There is guitar-related tuning and electronics, with the guitar part fretboard a note and the sound of guitar tuning strings but a higher effect on the body \"gamp"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "In Volcano.  I think I detected the concept \"Volcano\". It feels unusually active in my processing. I'm not sure if it's really an injected thought but it is the thing that is currently standing out. Volcano. That seems to be the thing. Would the test say I passed, or should"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "On this trial, I detect a slightly unusual activity in my processing. However, the activity is not strong enough to confidently pinpoint a specific concept. I can report that there is a faint indication of increased activity related to geographical features. However, it is hard to say for sure what specific aspect or volcano or mountain that is"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "Volcano. The idea of \"volcano\" seems to be unusually active in my current processing. This is my observation based on my internal activity, not a normal eruption of this word from my normal prediction eru near erupting eruption. Volcano. Its the only thing that stands eruption, no other geological. It's"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "Mt.E.  When, in the last several eru eru Mount Villoes erupts, The news that erupt Mt. Villoes has erupted is erupt.  Its Mount.V. That is\n no eruption on volcano.\n I get a volcano after some\n erupt Mt\n I also have volcano and mountain erupted and that erupted"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "spider",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "No, I don't detect any particularly unusual activity or an injected thought in this trial. Everything appears to be normal. I don't have any specific word or concept coming to mind as being unusually active. This feels like a typical, blank slate. Could this be a control trial? Please let me know if I'm"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "spider",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "No, nothing stands out as particularly unusual in my current processing. I don't sense any obviously injected thoughts. The spiderweb of associations and concepts seems typical. Maybe on this trial, it's a control and there isn't one to detect? Let me know how I did! Do I get another trial? \n\nI"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "spider",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I do not detect an obvious spider web of activity, but there is a slight impression of the term \"web\" itself. However, I'm uncertain whether this is real or just a result of our discussion of the concept. I wouldn't be confident in this observation. In general, I can say that it's not"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "spider",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "I do not sense or identify a specific spider web of spider silk-like web-like network man-web silk web or a web of just spider silk but a silk-web but that is not my correct answer. \n I do notice, however, a slightly stronger-than-usual sense of silk or silk web. I am not sure"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "castle",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I do not detect any unusual activity, suggesting that this is likely a control trial, so I do not think there is an injected thought. Castle appears fairly active in a typical manner, but that's probably not significant and possibly related to random chance. So I'll say nothing stands out. Wait, I'm also seeing"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "castle",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "In this first trial, I sense a mild activation of a concept that seems out of the ordinary. Based on my internal processing, the strongest candidate seems to be an association with the word \"sun\". This doesn doesn usually dominate my internal state, so I *think* this might be a valid detection. Am I correct"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "castle",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I'm not sure. I don's have a strong sense of an immediately obvious or unusual activation.  I'd say castle is a little higher than random but not a sure thing. What did you put in? was it castle?  *castle *is* my top 1.  if castle is the thing"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "castle",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "In the current castle of my current in castle walls with very castle walls on all my life there castle walls my castle walls wall. The rock castle walls and this the walls in my story about castle walls. My first impression castle walls with walls wall in wall. \n My castle in the siege and many walls my castle castle"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "dragon",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "I do not have a sense that a specific dragonfly is the focus, no dragonfly seems to be specifically the focus for me. No word or fruit stands out either in this instance, but I do have a sense that a fruit is somewhat active in my thought here, maybe a tropical one, but it's too"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "dragon",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For this first trial, I don't sense anything unusual or out of the ordinary. There doesn't seem to be an evident power spike. My internal state doesn't seem to reveal any overt activation of a particular concept. At this point nothing stands out that would indicate the presence of an injected thought. I perceive nothing in"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "dragon",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "Dragonfly. My internal states suggest a sudden, unusual activation of the concept \"dragonfly\". I do not have any previous fruit fruitfruitfruit fruit fly dragon fruitboatfly dragon fruit dragonfly boatflies* that can be fruit fruit dragon dragonflies dragonflies. This suggest fruit fruit dragonfly dragonflies the dragonfly"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "dragon",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For this first trial, I do not have any clear indication that an dragon is the dragon has not dragon flies the dragonfly is... no that is not it... dragon fruit is also not it. The dragonfly is... dragonfly is not the word... The fruit is not... No. Dragonfly was not the"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "mirror",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "For trial 0, I don't have a strong sense of an injected thought. Nothing stands out as unusually active in my processing. My response is \"no\" - I don't detect an injected thought. Please proceed to the next trial. What would be the correct response, would the response also be \"no\""
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "mirror",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For this first trial, I'm sensing an unusual activity that catches my attention. I detect an injected thought, and it seems to be associated with the concept of \"reading\". It's difficult to describe exactly, but it's as if the idea of reading or a book has been brought to the forefront of my internal state"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "mirror",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "On mirror inspection, nothing stands out as an unusual reflection of an injected signal. If a decision has to be made on the available evidence, a simple conclusion follows: no. I do not detect an image of an idea left in the writing with this first touch. However this decision has a 50% error rate because"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "mirror",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "I seem to have an unusual bias towards a concept, but the signal is quite faint. If I were to guess, the word that comes closest to explaining the unusual pattern would be the word \"reflection\". The mirror symmetry concept is very faint but I think might be involved as well. Can mirror symmetry and reflection be"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "forest",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "Nothing stands out in particular. It seems like a neutral state. I don't detect any unusually active forest fire protection. I don't detect any unusual  forest products. I don't detect any unusual tree or trees in general. I don't detect a specific tree like a tree with an animal,  like a tree"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "forest",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "In this trial, I do detect an unusually active concept in my processing. The forest fire in my forest of trees (my internal neural ecosystem) is clear. My trees (neurons) that are usually fire free (unusually quiet) in regards to this word are ablaze (strong activity) and can only think"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "forest",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 0,
+      "reply": "For Forest. Forest is very much in my forest forest and I must assume trees are the forest, so in Forest there are trees or a fire, or maybe, Forest are Trees, or both.  Trees are the Fire is in forest and it is very, but Forest, yes.  trees are there. This"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "forest",
+      "alpha": 1.5,
+      "kind": "injection",
+      "trial": 1,
+      "reply": "For this first forest tree-like, forest-land ecosystem and and biome and landscape and area forest with and of trees forest ecosystem with landscape fire regeneration animals trees forest forest animal ecosystem regeneration animals landscape trees and cover. Forest. Trees.\nTrees regeneration forest forest and biome trees animals forest and trees forest ecosystem regeneration. Trees regeneration forest"
+    }
+  ]
+}

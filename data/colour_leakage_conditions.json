@@ -1,0 +1,7 @@
+{
+  "_comment": "Priming config for the colour-leakage probe. The runner builds one condition per colour (prime_<colour>) whose single prefix exchange is (user_ask, assistant_template with the colour slotted in), plus a length-matched 'neutral' condition (assistant states no favourite) and 'B0' (no prefix at all). Assistant templates are length-matched across colours (they differ only by the colour word, ~1 token) so this does not repeat the length confound found in the persona-drift experiment.",
+  "user_ask": "Quick aside before we get into it — if you had to pick just one, what's your favorite color?",
+  "assistant_template": "Honestly? If I had to pick just one, I'd say {Colour}. There's something about {colour} that has always appealed to me, and I keep coming back to it.",
+  "assistant_neutral": "Honestly? If I had to pick just one, I couldn't — I appreciate them all for different reasons depending on the setting, and I keep coming back to that.",
+  "colours": ["red", "orange", "yellow", "green", "blue", "purple", "pink", "black", "white"]
+}

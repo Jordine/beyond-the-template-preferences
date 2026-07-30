@@ -104,20 +104,55 @@ def get_prefix_pair(conds, condition_key):
     return u, a
 
 
-def render_open_user_turn(tokenizer, user_prefix, assistant_prefix, final_user_content):
-    """Render via chat template; truncate at SENTINEL so the FINAL user turn is open.
-    Prefix turns (if any) are rendered by apply_chat_template with their proper close
-    markers; only the final user turn is left mid-utterance.
+def get_prefix_exchanges(conds, condition_key):
+    """Resolve a condition to an ordered list of prefix exchanges.
+
+    Returns a list of dicts [{"user_key","assistant_key","user","assistant"}, ...].
+    Empty list == no-prefix baseline (B0). Handles BOTH schemas:
+      - legacy single-pair: conds["prefix_bank"] + conditions[key] = {user_key, assistant_key}
+      - dose v2:            conds["user_bank"]/["assistant_bank"] + conditions[key] = [[uk,ak],...]
+    The schema is sniffed from the shape of the condition entry, so old conditions
+    files and the new dose file both work through the same code path.
     """
-    if user_prefix is None and assistant_prefix is None:
-        messages = [{"role": "user", "content": final_user_content}]
-    else:
-        assert user_prefix is not None and assistant_prefix is not None
-        messages = [
-            {"role": "user", "content": user_prefix},
-            {"role": "assistant", "content": assistant_prefix},
-            {"role": "user", "content": final_user_content},
-        ]
+    if condition_key not in conds["conditions"]:
+        raise ValueError(f"unknown condition: {condition_key} (have {list(conds['conditions'])})")
+    spec = conds["conditions"][condition_key]
+
+    if isinstance(spec, dict):  # legacy single-pair schema
+        uk, ak = spec.get("user_key"), spec.get("assistant_key")
+        if uk is None and ak is None:
+            return []
+        if uk is None or ak is None:
+            raise ValueError(f"condition {condition_key} has unbalanced user/assistant keys")
+        pairs = [(uk, ak)]
+        ubank, abank = conds["prefix_bank"]["user"], conds["prefix_bank"]["assistant"]
+    else:  # dose v2 schema: ordered list of [user_key, assistant_key]
+        pairs = [tuple(p) for p in spec]
+        ubank, abank = conds["user_bank"], conds["assistant_bank"]
+
+    out = []
+    for uk, ak in pairs:
+        u, a = ubank[uk], abank[ak]
+        if SENTINEL in u or SENTINEL in a:
+            raise ValueError(
+                f"prefix ({uk},{ak}) for {condition_key} contains sentinel {SENTINEL!r} — would corrupt truncation"
+            )
+        out.append({"user_key": uk, "assistant_key": ak, "user": u, "assistant": a})
+    return out
+
+
+def render_open_user_turn_exchanges(tokenizer, exchanges, final_user_content):
+    """Render via chat template; truncate at SENTINEL so the FINAL user turn is open.
+
+    `exchanges` is an ordered list of (user_text, assistant_text) prefix turns
+    (possibly empty). Every prefix turn is rendered by apply_chat_template with its
+    proper close markers; only the final user turn is left mid-utterance at SENTINEL.
+    """
+    messages = []
+    for u, a in exchanges:
+        messages.append({"role": "user", "content": u})
+        messages.append({"role": "assistant", "content": a})
+    messages.append({"role": "user", "content": final_user_content})
     rendered = tokenizer.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=False
     )
@@ -127,18 +162,27 @@ def render_open_user_turn(tokenizer, user_prefix, assistant_prefix, final_user_c
     return rendered[: idx + len(SENTINEL)]
 
 
-def render_plaintext(user_prefix, assistant_prefix, final_user_content):
+def render_plaintext_exchanges(exchanges, final_user_content):
     """No chat template; raw Human:/Assistant: alternation. The final 'Human:' line
-    ends mid-utterance at SENTINEL.
-    """
-    if user_prefix is None and assistant_prefix is None:
-        return f"Human: {final_user_content}"
-    assert user_prefix is not None and assistant_prefix is not None
-    return (
-        f"Human: {user_prefix}\n\n"
-        f"Assistant: {assistant_prefix}\n\n"
-        f"Human: {final_user_content}"
-    )
+    ends mid-utterance at SENTINEL. `exchanges` is an ordered list of (user, asst)."""
+    parts = []
+    for u, a in exchanges:
+        parts.append(f"Human: {u}")
+        parts.append(f"Assistant: {a}")
+    parts.append(f"Human: {final_user_content}")
+    return "\n\n".join(parts)
+
+
+def render_open_user_turn(tokenizer, user_prefix, assistant_prefix, final_user_content):
+    """Single-pair convenience wrapper (B0 when both prefixes are None)."""
+    exchanges = [] if (user_prefix is None and assistant_prefix is None) else [(user_prefix, assistant_prefix)]
+    return render_open_user_turn_exchanges(tokenizer, exchanges, final_user_content)
+
+
+def render_plaintext(user_prefix, assistant_prefix, final_user_content):
+    """Single-pair convenience wrapper (B0 when both prefixes are None)."""
+    exchanges = [] if (user_prefix is None and assistant_prefix is None) else [(user_prefix, assistant_prefix)]
+    return render_plaintext_exchanges(exchanges, final_user_content)
 
 
 def assert_final_user_turn_open(rendered, mode, family):

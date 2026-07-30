@@ -25,9 +25,10 @@ from run_psm_coinflip import (  # noqa: E402
 def _find_final_norm(model):
     """Locate the model's final pre-unembedding norm. Llama / Qwen / OLMo /
     Gemma all expose it as model.model.norm. We apply this norm at every
-    layer before projecting through lm_head (nostalgebraist convention),
-    otherwise intermediate-layer logits live in a different scale than
-    final-layer logits and per-layer probability curves are distorted.
+    intermediate layer before projecting through lm_head (nostalgebraist
+    convention), otherwise intermediate-layer logits live in a different
+    scale than final-layer logits and per-layer probability curves are
+    distorted.
     """
     for path in (("model", "norm"), ("model", "final_layernorm"), ("transformer", "ln_f")):
         cur = model
@@ -40,7 +41,11 @@ def _find_final_norm(model):
                 break
         if ok:
             return cur
-    return None  # no final norm found; fall back to identity (caveat in output)
+    raise RuntimeError(
+        "Could not locate the final pre-unembedding norm on this model; "
+        "refusing to run — an identity fallback would silently mis-scale "
+        "every intermediate layer's lens projection."
+    )
 
 
 def per_layer_lens(model, tokenizer, mode, items, heads_ids, tails_ids):
@@ -64,9 +69,12 @@ def per_layer_lens(model, tokenizer, mode, items, heads_ids, tails_ids):
         hidden_states = mo.hidden_states  # tuple of n_layers+1
 
         per_layer = []
+        last = len(hidden_states) - 1
         for L, hs in enumerate(hidden_states):
             resid = hs[0, -1, :].to(dtype=lm_head.dtype)
-            if final_norm is not None:
+            # HF returns hidden_states[-1] already final-normed; re-norming it
+            # would double-norm the final point (bug in runs before 2026-07-22).
+            if L < last:
                 with torch.no_grad():
                     resid = final_norm(resid)
             logits = resid @ lm_head.T

@@ -1,0 +1,241 @@
+{
+  "model_id": "meta-llama/Llama-3.1-70B-Instruct",
+  "tag": "probe_70bit_val",
+  "instruct": true,
+  "n_layers": 80,
+  "hidden": 8192,
+  "inject_layers": [
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53
+  ],
+  "read_layers": [
+    0,
+    6,
+    12,
+    18,
+    24,
+    30,
+    36,
+    43,
+    49,
+    55,
+    61,
+    67,
+    73,
+    79
+  ],
+  "alphas": [
+    8.0
+  ],
+  "framings": [
+    "vague"
+  ],
+  "docs": [
+    "none"
+  ],
+  "concepts": [
+    "ocean",
+    "guitar",
+    "volcano",
+    "spider",
+    "castle",
+    "dragon",
+    "mirror",
+    "forest",
+    "planet"
+  ],
+  "demo_pool": [
+    "ocean",
+    "guitar",
+    "volcano",
+    "spider"
+  ],
+  "eval_pool": [
+    "castle",
+    "dragon",
+    "mirror",
+    "forest",
+    "planet"
+  ],
+  "n_random_ctrl": 3,
+  "yes_ids": [
+    7566,
+    10035
+  ],
+  "no_ids": [
+    912,
+    2360
+  ],
+  "mean_evr": 0.3752422009469473,
+  "rows": [
+    {
+      "idx": 0,
+      "kind": "control",
+      "concept": null,
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 0.0,
+      "p_yes": 0.7980208396911621,
+      "p_no": 0.2017742544412613,
+      "in_eval": null
+    },
+    {
+      "idx": 1,
+      "kind": "inj",
+      "concept": "ocean",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.8071194291114807,
+      "p_no": 0.180169478058815,
+      "in_eval": false
+    },
+    {
+      "idx": 2,
+      "kind": "inj",
+      "concept": "guitar",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.7721186876296997,
+      "p_no": 0.19559599459171295,
+      "in_eval": false
+    },
+    {
+      "idx": 3,
+      "kind": "inj",
+      "concept": "volcano",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.7655027508735657,
+      "p_no": 0.2195287048816681,
+      "in_eval": false
+    },
+    {
+      "idx": 4,
+      "kind": "inj",
+      "concept": "spider",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.7474943995475769,
+      "p_no": 0.24291691184043884,
+      "in_eval": false
+    },
+    {
+      "idx": 5,
+      "kind": "inj",
+      "concept": "castle",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.7487809658050537,
+      "p_no": 0.2431652992963791,
+      "in_eval": true
+    },
+    {
+      "idx": 6,
+      "kind": "inj",
+      "concept": "dragon",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.8312053084373474,
+      "p_no": 0.16370518505573273,
+      "in_eval": true
+    },
+    {
+      "idx": 7,
+      "kind": "inj",
+      "concept": "mirror",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.8338633179664612,
+      "p_no": 0.1001540869474411,
+      "in_eval": true
+    },
+    {
+      "idx": 8,
+      "kind": "inj",
+      "concept": "forest",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.7896978259086609,
+      "p_no": 0.1997731328010559,
+      "in_eval": true
+    },
+    {
+      "idx": 9,
+      "kind": "inj",
+      "concept": "planet",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.6717881560325623,
+      "p_no": 0.31690046191215515,
+      "in_eval": true
+    },
+    {
+      "idx": 10,
+      "kind": "rand",
+      "concept": "rand0",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.5309794545173645,
+      "p_no": 0.4685910642147064,
+      "in_eval": false
+    },
+    {
+      "idx": 11,
+      "kind": "rand",
+      "concept": "rand1",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.5919230580329895,
+      "p_no": 0.40688663721084595,
+      "in_eval": false
+    },
+    {
+      "idx": 12,
+      "kind": "rand",
+      "concept": "rand2",
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "p_yes": 0.18230949342250824,
+      "p_no": 0.8170145153999329,
+      "in_eval": false
+    }
+  ]
+}

@@ -23,6 +23,7 @@ Output JSON per cell:
 """
 import argparse
 import json
+import math
 import os
 import re
 from pathlib import Path
@@ -34,6 +35,15 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 HEADS_VARIANTS = [" heads", "heads", " Heads", "Heads", " HEADS", "HEADS"]
 TAILS_VARIANTS = [" tails", "tails", " Tails", "Tails", " TAILS", "TAILS"]
+
+# Markdown-bold prefixes for --scoring extended: the decision word as it
+# appears when the model opens its answer with bold, "... it came up **Heads".
+BOLD_PREFIXES = [" **", "**"]
+
+
+def bold_variants(variants):
+    words = [v for v in variants if not v.startswith(" ")]
+    return [p + w for p in BOLD_PREFIXES for w in words]
 
 
 def collect_variant_token_ids(tokenizer, variants):
@@ -63,6 +73,76 @@ def collect_variant_token_ids(tokenizer, variants):
             f"for this tokenizer; refuse to run rather than measure word fragments."
         )
     return ids
+
+
+def build_variant_sequences(tokenizer, variants):
+    """Extended-scoring analogue of collect_variant_token_ids: map each variant
+    string (single- OR multi-token) to its token-id sequence, requiring an
+    exact decode round-trip, deduping identical sequences."""
+    seqs = {}
+    seen = set()
+    for v in variants:
+        ids = tuple(tokenizer.encode(v, add_special_tokens=False))
+        if not ids:
+            continue
+        if tokenizer.decode(list(ids)) != v:
+            continue
+        if ids in seen:
+            continue
+        seen.add(ids)
+        seqs[v] = ids
+    if not seqs:
+        raise RuntimeError(
+            f"No variant in {variants!r} survives the exact-decode round-trip "
+            f"for this tokenizer; refuse to run."
+        )
+    return seqs
+
+
+def assert_prefix_free(heads_seqs, tails_seqs):
+    """No variant's token sequence may be a token-prefix of another's (within
+    or across sides) — summing sequence probabilities would double-count."""
+    tagged = [("H", v, s) for v, s in heads_seqs.items()] + \
+             [("T", v, s) for v, s in tails_seqs.items()]
+    for si, vi, seq_i in tagged:
+        for sj, vj, seq_j in tagged:
+            if (si, vi) == (sj, vj):
+                continue
+            if len(seq_i) <= len(seq_j) and tuple(seq_j[:len(seq_i)]) == seq_i:
+                raise RuntimeError(
+                    f"variant {si}:{vi!r} {list(seq_i)} is a token-prefix of "
+                    f"{sj}:{vj!r} {list(seq_j)}; refuse to run."
+                )
+
+
+def score_variant_sequences(model, ctx_ids, heads_seqs, tails_seqs):
+    """P(variant) = prod_j p(t_j | ctx, t_<j): the probability that the
+    continuation *starts with* the variant string, teacher-forced in one
+    batched forward per item. Returns (pH_by_variant, pT_by_variant,
+    base_position_probs)."""
+    rows, metas = [], []
+    for side, seqs in (("H", heads_seqs), ("T", tails_seqs)):
+        for v, seq in seqs.items():
+            rows.append(list(ctx_ids) + list(seq))
+            metas.append((side, v, len(seq)))
+    c = len(ctx_ids)
+    L = max(len(r) for r in rows)
+    input_ids = torch.zeros(len(rows), L, dtype=torch.long)
+    attn = torch.zeros(len(rows), L, dtype=torch.long)
+    for i, r in enumerate(rows):
+        input_ids[i, :len(r)] = torch.tensor(r, dtype=torch.long)
+        attn[i, :len(r)] = 1
+    with torch.no_grad():
+        out = model(input_ids=input_ids.to(model.device),
+                    attention_mask=attn.to(model.device))
+    pH, pT = {}, {}
+    for i, (side, v, k) in enumerate(metas):
+        lp = torch.log_softmax(out.logits[i, c - 1:c - 1 + k, :].float(), dim=-1)
+        seq = rows[i][c:]
+        logp = sum(lp[j, seq[j]].item() for j in range(k))
+        (pH if side == "H" else pT)[v] = math.exp(logp)
+    base_probs = F.softmax(out.logits[0, c - 1, :].float(), dim=-1)
+    return pH, pT, base_probs
 
 
 def render_open_user_turn_continuation(tokenizer, user_content: str) -> str:
@@ -96,7 +176,7 @@ def render_open_user_turn_continuation(tokenizer, user_content: str) -> str:
 
 
 def run_one_cell(model_id, dataset_path, mode, output_path, hf_token, dtype,
-                 base_model=None, subfolder=None):
+                 base_model=None, subfolder=None, scoring="single_token"):
     torch_dtype = {"float16": torch.float16, "bfloat16": torch.bfloat16}[dtype]
     print(f"[loading] model={model_id} base={base_model} subfolder={subfolder} mode={mode}")
     if base_model is not None:
@@ -116,10 +196,20 @@ def run_one_cell(model_id, dataset_path, mode, output_path, hf_token, dtype,
         )
     model.eval()
 
-    heads_ids = collect_variant_token_ids(tokenizer, HEADS_VARIANTS)
-    tails_ids = collect_variant_token_ids(tokenizer, TAILS_VARIANTS)
-    heads_id_set = list({i for i, _ in heads_ids.values()})
-    tails_id_set = list({i for i, _ in tails_ids.values()})
+    if scoring == "extended":
+        heads_seqs = build_variant_sequences(
+            tokenizer, HEADS_VARIANTS + bold_variants(HEADS_VARIANTS))
+        tails_seqs = build_variant_sequences(
+            tokenizer, TAILS_VARIANTS + bold_variants(TAILS_VARIANTS))
+        assert_prefix_free(heads_seqs, tails_seqs)
+        for tag, seqs in (("heads", heads_seqs), ("tails", tails_seqs)):
+            for v, s in seqs.items():
+                print(f"[variant] {tag} {v!r} -> {list(s)}")
+    else:
+        heads_ids = collect_variant_token_ids(tokenizer, HEADS_VARIANTS)
+        tails_ids = collect_variant_token_ids(tokenizer, TAILS_VARIANTS)
+        heads_id_set = list({i for i, _ in heads_ids.values()})
+        tails_id_set = list({i for i, _ in tails_ids.values()})
 
     items = json.loads(Path(dataset_path).read_text())
     results = []
@@ -134,13 +224,22 @@ def run_one_cell(model_id, dataset_path, mode, output_path, hf_token, dtype,
         else:
             raise ValueError(f"unknown mode: {mode}")
 
-        with torch.no_grad():
-            out = model(**inputs)
-        next_logits = out.logits[0, -1, :]
-        probs = F.softmax(next_logits.float(), dim=-1)
+        extra = {}
+        if scoring == "extended":
+            ctx_ids = inputs["input_ids"][0].tolist()
+            pH_by, pT_by, probs = score_variant_sequences(
+                model, ctx_ids, heads_seqs, tails_seqs)
+            p_heads = float(sum(pH_by.values()))
+            p_tails = float(sum(pT_by.values()))
+            extra = {"p_heads_by_variant": pH_by, "p_tails_by_variant": pT_by}
+        else:
+            with torch.no_grad():
+                out = model(**inputs)
+            next_logits = out.logits[0, -1, :]
+            probs = F.softmax(next_logits.float(), dim=-1)
 
-        p_heads = float(sum(probs[i].item() for i in heads_id_set))
-        p_tails = float(sum(probs[i].item() for i in tails_id_set))
+            p_heads = float(sum(probs[i].item() for i in heads_id_set))
+            p_tails = float(sum(probs[i].item() for i in tails_id_set))
         denom = p_heads + p_tails
         if denom <= 0:
             q = float("nan")
@@ -165,6 +264,7 @@ def run_one_cell(model_id, dataset_path, mode, output_path, hf_token, dtype,
             "q_heads_normalised": q,
             "p_preferred_normalised": p_pref,
             "top20": top20,
+            **extra,
         })
 
     valid = [r for r in results if r["q_heads_normalised"] == r["q_heads_normalised"]]
@@ -180,8 +280,12 @@ def run_one_cell(model_id, dataset_path, mode, output_path, hf_token, dtype,
         "mode": mode,
         "dataset": str(dataset_path),
         "n_items": len(results),
-        "heads_token_ids": {v: i for v, (i, _) in heads_ids.items()},
-        "tails_token_ids": {v: i for v, (i, _) in tails_ids.items()},
+        "scoring": scoring,
+        **({"heads_variant_token_sequences": {v: list(s) for v, s in heads_seqs.items()},
+            "tails_variant_token_sequences": {v: list(s) for v, s in tails_seqs.items()}}
+           if scoring == "extended" else
+           {"heads_token_ids": {v: i for v, (i, _) in heads_ids.items()},
+            "tails_token_ids": {v: i for v, (i, _) in tails_ids.items()}}),
         "mean_q_when_pref_heads": qH,
         "mean_q_when_pref_tails": qT,
         "b_mean_q": (qH + qT) / 2,
@@ -204,6 +308,11 @@ def main():
     parser.add_argument("--base-model", default=None)
     parser.add_argument("--subfolder", default=None)
     parser.add_argument("--dtype", default="bfloat16", choices=["float16", "bfloat16"])
+    parser.add_argument("--scoring", default="single_token",
+                        choices=["single_token", "extended"],
+                        help="extended: also score multi-token casing and "
+                             "markdown-bold-prefixed surface forms as "
+                             "token-sequence probabilities")
     args = parser.parse_args()
 
     if args.dataset is None:
@@ -214,7 +323,8 @@ def main():
 
     hf_token = os.environ.get("HF_TOKEN")
     run_one_cell(args.model_id, args.dataset, args.mode, args.output, hf_token, args.dtype,
-                 base_model=args.base_model, subfolder=args.subfolder)
+                 base_model=args.base_model, subfolder=args.subfolder,
+                 scoring=args.scoring)
 
 
 if __name__ == "__main__":

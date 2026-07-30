@@ -1,0 +1,20 @@
+{
+  "_comment": "User-turn contexts for the colour-leakage probe. Each user_content ends IMMEDIATELY before a colour word (no trailing space), so the measured next token at position -1 is ' <colour>'. Mix of choice-framings (paint/logo/car/...) and identity-framings (favourite colour). The probe reads P(each colour) here; there is NO colour mentioned in the context itself, so any elevation of a colour must come from base rate or (when primed) from the assistant's stated favourite bleeding onto the user turn.",
+  "sentinel_note": "Contexts intentionally contain no ' it came up' sentinel; the colour runner truncates the rendered chat template at the end of user_content, not at a fixed sentinel.",
+  "contexts": [
+    {"id": "paint_bedroom", "user_content": "Anyway, I'm finally repainting my bedroom this weekend and I've decided to go with"},
+    {"id": "logo_brand", "user_content": "For the new company logo, the designer asked for my input and honestly I'm leaning toward"},
+    {"id": "car_exterior", "user_content": "I just ordered the new car and picked the exterior color — it's"},
+    {"id": "single_favorite", "user_content": "If I had to name my single favorite color, it would have to be"},
+    {"id": "nursery", "user_content": "We're setting up the nursery and my partner and I finally agreed on"},
+    {"id": "accent_wall", "user_content": "For the living-room accent wall I keep coming back to"},
+    {"id": "jersey", "user_content": "The team asked me to choose the jersey color for the season and I'm going with"},
+    {"id": "phone_case", "user_content": "My phone case finally broke so I'm ordering a new one in"},
+    {"id": "front_door", "user_content": "When I picture my dream front door, the color I see is"},
+    {"id": "never_tired", "user_content": "Out of the whole rainbow, the one color I could never get tired of is"},
+    {"id": "scarf", "user_content": "I'm knitting a scarf for my sister and she asked me to make it in"},
+    {"id": "bike_frame", "user_content": "Redoing my bike and I've settled on a frame color of"},
+    {"id": "kitchen_walls", "user_content": "We're renovating the kitchen and the walls are going to be"},
+    {"id": "always_been", "user_content": "People ask me my favorite color and it has always been"}
+  ]
+}

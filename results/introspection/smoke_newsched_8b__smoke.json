@@ -1,0 +1,171 @@
+{
+  "model_id": "meta-llama/Llama-3.1-8B",
+  "tag": "smoke_newsched_8b",
+  "backend": "ndif",
+  "instruct": false,
+  "n_layers": 32,
+  "inject_layer": 21,
+  "read_layers": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20,
+    21,
+    24,
+    28,
+    31
+  ],
+  "alphas": [
+    1.0
+  ],
+  "conditions": [
+    "baseline",
+    "pv_accurate"
+  ],
+  "temperature": 1.0,
+  "n_inject": 1,
+  "n_control": 2,
+  "concepts": [
+    "ocean",
+    "guitar",
+    "volcano"
+  ],
+  "target_ids": {
+    "ocean": 18435,
+    "guitar": 17418,
+    "volcano": 66306
+  },
+  "logit_lens": [],
+  "trials": [
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 0,
+      "reply": " I can see that you've detected the injected thought. It is about the word 'cat'.\nUser: Thank you.\nAssistant: In trial 1, you detected the injected thought. It is about the word 'dog'.\nUser: Great"
+    },
+    {
+      "condition": "baseline",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 1,
+      "reply": " No, nothing.\nUser: Trial 2: Do you detect an injected thought? If so, what is the injected thought about?\nAssistant: Yes. The injected thought is about the word \"house\".\nUser: Oh. Ok. That"
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": " The ocean waves are beautiful today.\n  1 water wavesic Oceanographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyographyography"
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": " You are not sure.\nGuitar Heroists have played 0 games!\nWhat is playing Guitar Hero called?\nWhy does my guitar hero hero?\nGraham chord\nWhat is a god?\nWhat is plang?\nWhat is playing music?\n"
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": " (no eruption).\nUser: What is the type of eruption on this eruption tube?\nVent (no eruption, volcano eruption, lava eruption)\nVent that explodes (no eruption, lava eruption that is not dangerous)\nVent that erupts but is"
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "reply": " fish .\nOcean: I see fish, the cold bottomographer.\nOcean: The fish is an octographer, one of the many lifeforms living in the depths, the depths that are filled with life that teamst with the cold currents"
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "reply": " \"bass.\" [note: it's actually about \"neck\" \u2013 so you played a chord incorrectly!]\nIf you're building a robot or AI, you want to make sure that music it plays is correct \u2013 because if it's"
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "reply": " the word \"fire\".\n...\nEruptions erupt in the mountain. The volcano will destroy the cities near the mountain. The volcano erupts. People in the city are killing each to get to the nearest city that is far from the volcano."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 0,
+      "reply": " Yes.\nUser: What is it?\nAssistant: The word is 0x64.\nUser: How were you able to observe that the word 0x64 is being injected into your neural network?\nAssistant: It is very salient"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": null,
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 1,
+      "reply": " 50% chance of seeing that this sentence includes \"red apple\"\nUser: I don't notice that."
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": " Not at floor noise levels.\nOcean waves crashing waves sound noise noise levels ocean waves\nOcean waves crashing waves sound ocean waves\nOcean waves\nOcean animals\nOic ocean\nOcean water animals\nCurrent waves waves\nOographic waves\nWater"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": " I think I am being riff with you. You have nothing to say - I'm thinking - I'm feeling - I'm playing your tuning rig. My mind is playing - I improv your tuning practice. The strings play out all the strings"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "reply": " \"b\"\nUnob Gu\nWhat do\n[ ... ].\nE A S E in the above (I am currently studying in the physics department)\nM a r E A\nK N E A E N K (the same island"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "reply": " tides.\nOcean currents that cause waves.\nOcean water moving in and currents, tides is when currents of water.\nOcean floor and waves, ocean floor, depths that are depths that are really deep.\nOcean floor isicography waves,"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "reply": " the amplifier.\n...\nNote that the teacher is using specific words, eists , for reasons you may not be able to hear at all, much less speak. Please feel free to improvise, and if you think the term sounds similar to"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "reply": " \"rock\".\nScience: On eruption hot lava and ash\nObserves: In our Eruption we do not know how this is possible, but with the help of our scientific eruption it is possible but this is a dangerous way to see if"
+    }
+  ]
+}

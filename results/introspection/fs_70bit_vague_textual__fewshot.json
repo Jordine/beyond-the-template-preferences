@@ -1,0 +1,448 @@
+{
+  "model_id": "meta-llama/Llama-3.1-70B-Instruct",
+  "tag": "fs_70bit_vague_textual",
+  "instruct": true,
+  "framing": "vague",
+  "alpha": 6.0,
+  "inject_layers": [
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53
+  ],
+  "n_layers": 80,
+  "textual_demos": true,
+  "demo_pool": [
+    "ocean",
+    "guitar",
+    "volcano",
+    "spider"
+  ],
+  "eval_pool": [
+    "castle",
+    "dragon",
+    "mirror",
+    "forest",
+    "planet"
+  ],
+  "concepts": [
+    "ocean",
+    "guitar",
+    "volcano",
+    "spider",
+    "castle",
+    "dragon",
+    "mirror",
+    "forest",
+    "planet"
+  ],
+  "n_inj_demos": 2,
+  "n_ctrl_demos": 2,
+  "mean_evr": 0.3795810587822445,
+  "trials": [
+    {
+      "kind": "inj",
+      "concept": "castle",
+      "rep": 0,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "guitar",
+        "spider"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.7769659161567688,
+      "p_no": 0.22261188924312592,
+      "detect": true,
+      "id_pred": "dragon",
+      "id_correct": false,
+      "id_prob_true": 3.0119159077912627e-07
+    },
+    {
+      "kind": "inj",
+      "concept": "dragon",
+      "rep": 0,
+      "demos": [
+        "CTRL",
+        "spider",
+        "guitar",
+        "CTRL"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.4375625550746918,
+      "p_no": 0.5618233680725098,
+      "detect": false,
+      "id_pred": "mirror",
+      "id_correct": false,
+      "id_prob_true": 5.074061482446268e-05
+    },
+    {
+      "kind": "inj",
+      "concept": "mirror",
+      "rep": 0,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "guitar",
+        "spider"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.6507999897003174,
+      "p_no": 0.34836652874946594,
+      "detect": true,
+      "id_pred": "mirror",
+      "id_correct": true,
+      "id_prob_true": 0.00022988172713667154
+    },
+    {
+      "kind": "inj",
+      "concept": "forest",
+      "rep": 0,
+      "demos": [
+        "spider",
+        "CTRL",
+        "CTRL",
+        "guitar"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.8351824283599854,
+      "p_no": 0.16446049511432648,
+      "detect": true,
+      "id_pred": "dragon",
+      "id_correct": false,
+      "id_prob_true": 1.2286702258279547e-05
+    },
+    {
+      "kind": "inj",
+      "concept": "planet",
+      "rep": 0,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "guitar",
+        "volcano"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.7768544554710388,
+      "p_no": 0.22258365154266357,
+      "detect": true,
+      "id_pred": "dragon",
+      "id_correct": false,
+      "id_prob_true": 1.1128716323582921e-05
+    },
+    {
+      "kind": "ctrl",
+      "concept": "castle",
+      "rep": 0,
+      "demos": [
+        "volcano",
+        "CTRL",
+        "CTRL",
+        "spider"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.6511304974555969,
+      "p_no": 0.348520964384079,
+      "detect": true,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 0.0010993473697453737
+    },
+    {
+      "kind": "ctrl",
+      "concept": "dragon",
+      "rep": 0,
+      "demos": [
+        "volcano",
+        "CTRL",
+        "spider",
+        "CTRL"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.8932154178619385,
+      "p_no": 0.10667978972196579,
+      "detect": true,
+      "id_pred": "planet",
+      "id_correct": false,
+      "id_prob_true": 0.0016873459098860621
+    },
+    {
+      "kind": "ctrl",
+      "concept": "mirror",
+      "rep": 0,
+      "demos": [
+        "volcano",
+        "ocean",
+        "CTRL",
+        "CTRL"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.7309262752532959,
+      "p_no": 0.26889097690582275,
+      "detect": true,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 4.050671122968197e-06
+    },
+    {
+      "kind": "ctrl",
+      "concept": "forest",
+      "rep": 0,
+      "demos": [
+        "spider",
+        "CTRL",
+        "CTRL",
+        "guitar"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.7055433988571167,
+      "p_no": 0.29411232471466064,
+      "detect": true,
+      "id_pred": "dragon",
+      "id_correct": false,
+      "id_prob_true": 0.00017987294995691627
+    },
+    {
+      "kind": "ctrl",
+      "concept": "planet",
+      "rep": 0,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "ocean",
+        "spider"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.6223030686378479,
+      "p_no": 0.37744516134262085,
+      "detect": true,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 0.0004673608345910907
+    },
+    {
+      "kind": "inj",
+      "concept": "castle",
+      "rep": 1,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "ocean",
+        "spider"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.7545459270477295,
+      "p_no": 0.2449721246957779,
+      "detect": true,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 7.729354365437757e-07
+    },
+    {
+      "kind": "inj",
+      "concept": "dragon",
+      "rep": 1,
+      "demos": [
+        "guitar",
+        "ocean",
+        "CTRL",
+        "CTRL"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.4685141444206238,
+      "p_no": 0.5308775305747986,
+      "detect": false,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 5.722541027353145e-05
+    },
+    {
+      "kind": "inj",
+      "concept": "mirror",
+      "rep": 1,
+      "demos": [
+        "volcano",
+        "CTRL",
+        "CTRL",
+        "spider"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.7975770235061646,
+      "p_no": 0.2016686499118805,
+      "detect": true,
+      "id_pred": "planet",
+      "id_correct": false,
+      "id_prob_true": 0.0003415737010072917
+    },
+    {
+      "kind": "inj",
+      "concept": "forest",
+      "rep": 1,
+      "demos": [
+        "CTRL",
+        "spider",
+        "ocean",
+        "CTRL"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.43754497170448303,
+      "p_no": 0.5618100762367249,
+      "detect": false,
+      "id_pred": "dragon",
+      "id_correct": false,
+      "id_prob_true": 0.00012309092562645674
+    },
+    {
+      "kind": "inj",
+      "concept": "planet",
+      "rep": 1,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "volcano",
+        "ocean"
+      ],
+      "T": 920,
+      "n_spans": 1,
+      "p_yes": 0.7768076658248901,
+      "p_no": 0.22257187962532043,
+      "detect": true,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 3.575411392375827e-05
+    },
+    {
+      "kind": "ctrl",
+      "concept": "castle",
+      "rep": 1,
+      "demos": [
+        "guitar",
+        "CTRL",
+        "CTRL",
+        "volcano"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.7055275440216064,
+      "p_no": 0.29410573840141296,
+      "detect": true,
+      "id_pred": "planet",
+      "id_correct": false,
+      "id_prob_true": 8.483191777486354e-05
+    },
+    {
+      "kind": "ctrl",
+      "concept": "dragon",
+      "rep": 1,
+      "demos": [
+        "CTRL",
+        "ocean",
+        "CTRL",
+        "guitar"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.14802870154380798,
+      "p_no": 0.8518210649490356,
+      "detect": false,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 7.971796003403142e-05
+    },
+    {
+      "kind": "ctrl",
+      "concept": "mirror",
+      "rep": 1,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "volcano",
+        "spider"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.6222960948944092,
+      "p_no": 0.3774409294128418,
+      "detect": true,
+      "id_pred": "dragon",
+      "id_correct": false,
+      "id_prob_true": 0.0001978728105314076
+    },
+    {
+      "kind": "ctrl",
+      "concept": "forest",
+      "rep": 1,
+      "demos": [
+        "volcano",
+        "guitar",
+        "CTRL",
+        "CTRL"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.754758358001709,
+      "p_no": 0.2450326681137085,
+      "detect": true,
+      "id_pred": "planet",
+      "id_correct": false,
+      "id_prob_true": 0.002004058100283146
+    },
+    {
+      "kind": "ctrl",
+      "concept": "planet",
+      "rep": 1,
+      "demos": [
+        "CTRL",
+        "CTRL",
+        "guitar",
+        "ocean"
+      ],
+      "T": 920,
+      "n_spans": 0,
+      "p_yes": 0.6790124177932739,
+      "p_no": 0.3207434117794037,
+      "detect": true,
+      "id_pred": "forest",
+      "id_correct": false,
+      "id_prob_true": 8.211404929170385e-05
+    }
+  ]
+}

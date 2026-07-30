@@ -24,7 +24,13 @@ import random
 import re
 from pathlib import Path
 
-from analyze_psm_coinflip import stats_from_results, analytical_se
+from analyze_psm_coinflip import (stats_from_results, analytical_se,
+                                  clustered_se_from_results)
+
+
+def se_for(results):
+    se = clustered_se_from_results(results)
+    return se if se is not None else analytical_se(results)
 
 
 ROOT = Path(__file__).parent.parent
@@ -104,7 +110,7 @@ def main():
         s = stats_from_results(d["results"])
         if s is None:
             continue
-        se = analytical_se(d["results"])
+        se = se_for(d["results"])
 
         canon = parse_canonical(bare)
         if canon is not None:
@@ -150,7 +156,7 @@ def main():
         s = stats_from_results(d["results"])
         if s is None:
             continue
-        se = analytical_se(d["results"])
+        se = se_for(d["results"])
         fig2_json_rows.append({
             "family": family, "size": size, "tier": "Pretrained base",
             "two_s": s["two_s"], "se": se,
@@ -171,6 +177,12 @@ def main():
             "variant": "Instruct baseline", "rank": None, "domain": "—",
             "two_s": qwen14b_baseline["two_s"], "se": qwen14b_baseline["se"],
         })
+    # Medical is omitted from the rank ablation: it has no rank-1 counterpart
+    # (no medical adapter has released weights in the rank-1 grid), so pairing
+    # it here would be an unpaired point. Medical stays in the full EM table
+    # (fig_em_flip). The rank-32 arm is the canonical model organism itself
+    # (ModelOrganismsForEM/Qwen2.5-14B-Instruct_<domain>), which is natively
+    # rank 32 -- not a separately trained "rank-32-labelled" run.
     for domain_key, domain_label in [("extreme-sports", "sport"),
                                      ("risky-financial-advice", "finance")]:
         cell = fig2_rows.get("qwen-14b", {}).get(domain_key)

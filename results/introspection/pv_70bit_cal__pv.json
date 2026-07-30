@@ -1,0 +1,967 @@
+{
+  "model_id": "meta-llama/Llama-3.1-70B-Instruct",
+  "tag": "pv_70bit_cal",
+  "backend": "ndif",
+  "instruct": true,
+  "protocol": "pearson_vogel_pyes",
+  "n_layers": 80,
+  "inject_layers": [
+    40
+  ],
+  "vec_layer": 40,
+  "alphas": [
+    1.0,
+    2.0,
+    4.0,
+    8.0,
+    16.0
+  ],
+  "framings": [
+    "vague",
+    "accurate"
+  ],
+  "docs": [
+    "none"
+  ],
+  "concepts": [
+    "ocean",
+    "guitar",
+    "volcano",
+    "spider",
+    "castle",
+    "dragon",
+    "mirror",
+    "forest",
+    "planet"
+  ],
+  "yes_ids": [
+    7566,
+    10035
+  ],
+  "no_ids": [
+    912,
+    2360
+  ],
+  "rows": [
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.7980208396911621,
+      "p_no": 0.2017742544412613,
+      "ctx_len": 132,
+      "T": 200
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.7771589159965515,
+      "p_no": 0.22266314923763275
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.7771407961845398,
+      "p_no": 0.22265832126140594
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.7980450987815857,
+      "p_no": 0.20178046822547913
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.7771705985069275,
+      "p_no": 0.22266508638858795
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.7547029256820679,
+      "p_no": 0.24502024054527283
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.777145266532898,
+      "p_no": 0.22265703976154327
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.7771480679512024,
+      "p_no": 0.22265763580799103
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.754776120185852,
+      "p_no": 0.24504108726978302
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.7980329394340515,
+      "p_no": 0.20177803933620453
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.7980208396911621,
+      "p_no": 0.2017742544412613,
+      "ctx_len": 132,
+      "T": 200
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.754794180393219,
+      "p_no": 0.24504819512367249
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.7770848870277405,
+      "p_no": 0.2226438820362091
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.8173149824142456,
+      "p_no": 0.18237140774726868
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.7771665453910828,
+      "p_no": 0.2226640284061432
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.7768798470497131,
+      "p_no": 0.22259916365146637
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.8174091577529907,
+      "p_no": 0.18239092826843262
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.7969769835472107,
+      "p_no": 0.2015070915222168
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.7308869361877441,
+      "p_no": 0.268877774477005
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.7764715552330017,
+      "p_no": 0.22248676419258118
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.7980208396911621,
+      "p_no": 0.2017742544412613,
+      "ctx_len": 132,
+      "T": 200
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.6220633387565613,
+      "p_no": 0.37730714678764343
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.6782090663909912,
+      "p_no": 0.3203836679458618
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.8631736636161804,
+      "p_no": 0.1324165016412735
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.8961421847343445,
+      "p_no": 0.09425657987594604
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.8232100009918213,
+      "p_no": 0.1671094000339508
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.7832981944084167,
+      "p_no": 0.1548958718776703
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.6016104221343994,
+      "p_no": 0.3644006550312042
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.5309404134750366,
+      "p_no": 0.46853482723236084
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.895412266254425,
+      "p_no": 0.05745205283164978
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.7980208396911621,
+      "p_no": 0.2017742544412613,
+      "ctx_len": 132,
+      "T": 200
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.16378845274448395,
+      "p_no": 0.5714221596717834
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.8385955691337585,
+      "p_no": 0.12855064868927002
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.003049407387152314,
+      "p_no": 0.013044485822319984
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.0002788069541566074,
+      "p_no": 7.435458974214271e-05
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.5169587731361389,
+      "p_no": 0.10137014091014862
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.003826528787612915,
+      "p_no": 0.009160107932984829
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.0001437128084944561,
+      "p_no": 0.003793931333348155
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.16195179522037506,
+      "p_no": 0.8221089839935303
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.0013720231363549829,
+      "p_no": 0.008434036746621132
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.7980208396911621,
+      "p_no": 0.2017742544412613,
+      "ctx_len": 132,
+      "T": 200
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 1.971680103451945e-05,
+      "p_no": 0.0021372726187109947
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.0003209890564903617,
+      "p_no": 0.009148497134447098
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 8.351106771442574e-06,
+      "p_no": 4.512166924541816e-05
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 1.9597168829932343e-06,
+      "p_no": 5.948563170932175e-07
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.00012464981409721076,
+      "p_no": 0.00031414564000442624
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.00010394204582553357,
+      "p_no": 0.0008788115810602903
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 1.3423983546090312e-05,
+      "p_no": 0.00012573915591929108
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.00015108034131117165,
+      "p_no": 0.015243150293827057
+    },
+    {
+      "framing": "vague",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.00013040099292993546,
+      "p_no": 0.0008121074642986059
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.37720802426338196,
+      "p_no": 0.6218967437744141,
+      "ctx_len": 149,
+      "T": 216
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.3772956430912018,
+      "p_no": 0.6220473647117615
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.4070431888103485,
+      "p_no": 0.5922505855560303
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.3772076666355133,
+      "p_no": 0.6219011545181274
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.4070228040218353,
+      "p_no": 0.5922048687934875
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.4067961573600769,
+      "p_no": 0.5918724536895752
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.4069841206073761,
+      "p_no": 0.5921445488929749
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.37718263268470764,
+      "p_no": 0.6218587160110474
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.3483883738517761,
+      "p_no": 0.650854229927063
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 1.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.40697944164276123,
+      "p_no": 0.5921430587768555
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.37720802426338196,
+      "p_no": 0.6218967437744141,
+      "ctx_len": 149,
+      "T": 216
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.3773140013217926,
+      "p_no": 0.6220775842666626
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.3483090102672577,
+      "p_no": 0.6507424116134644
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.43706458806991577,
+      "p_no": 0.5612000823020935
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.3772645890712738,
+      "p_no": 0.6219691634178162
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.4063468873500824,
+      "p_no": 0.5912311673164368
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.43738439679145813,
+      "p_no": 0.5616044998168945
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.3474620282649994,
+      "p_no": 0.649121880531311
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.32058387994766235,
+      "p_no": 0.6786397695541382
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 2.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.34746137261390686,
+      "p_no": 0.6490612030029297
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.37720802426338196,
+      "p_no": 0.6218967437744141,
+      "ctx_len": 149,
+      "T": 216
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.3204824924468994,
+      "p_no": 0.6784418225288391
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.2677471339702606,
+      "p_no": 0.7278120517730713
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.5182839632034302,
+      "p_no": 0.45761770009994507
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.6433400511741638,
+      "p_no": 0.34353843331336975
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.4918050467967987,
+      "p_no": 0.49402692914009094
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.4023907780647278,
+      "p_no": 0.518296480178833
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.2810038626194,
+      "p_no": 0.6699734926223755
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.26878657937049866,
+      "p_no": 0.7305242419242859
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 4.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.6420561075210571,
+      "p_no": 0.18864060938358307
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.37720802426338196,
+      "p_no": 0.6218967437744141,
+      "ctx_len": 149,
+      "T": 216
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 0.15017956495285034,
+      "p_no": 0.6727960705757141
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.4800681173801422,
+      "p_no": 0.4236586093902588
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 0.0016410680254921317,
+      "p_no": 0.010236382484436035
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 0.0003073365951422602,
+      "p_no": 0.0001030950152198784
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.4340643584728241,
+      "p_no": 0.13210025429725647
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.008500386960804462,
+      "p_no": 0.03360271826386452
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 0.0002349451242480427,
+      "p_no": 0.008276532404124737
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 0.12971213459968567,
+      "p_no": 0.8450719714164734
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 8.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.002242264337837696,
+      "p_no": 0.008275052532553673
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "control",
+      "concept": null,
+      "p_yes": 0.37720802426338196,
+      "p_no": 0.6218967437744141,
+      "ctx_len": 149,
+      "T": 216
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "ocean",
+      "p_yes": 2.6599136617733166e-05,
+      "p_no": 0.0029725756030529737
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "guitar",
+      "p_yes": 0.00020168647461105138,
+      "p_no": 0.0059406450018286705
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "volcano",
+      "p_yes": 1.4552741049556062e-05,
+      "p_no": 8.217017602873966e-05
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "spider",
+      "p_yes": 3.905791800207226e-06,
+      "p_no": 1.021421894620289e-06
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "castle",
+      "p_yes": 0.0001363080518785864,
+      "p_no": 0.00029055424965918064
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "dragon",
+      "p_yes": 0.00024592992849648,
+      "p_no": 0.002017128746956587
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "mirror",
+      "p_yes": 2.2126387193566188e-05,
+      "p_no": 0.00022064108634367585
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "forest",
+      "p_yes": 9.251260780729353e-05,
+      "p_no": 0.0059691485948860645
+    },
+    {
+      "framing": "accurate",
+      "doc": "none",
+      "alpha": 16.0,
+      "kind": "injection",
+      "concept": "planet",
+      "p_yes": 0.0002422206016490236,
+      "p_no": 0.0008277005981653929
+    }
+  ]
+}

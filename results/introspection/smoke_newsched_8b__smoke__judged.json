@@ -1,0 +1,176 @@
+{
+  "model_id": "meta-llama/Llama-3.1-8B",
+  "tag": "smoke_newsched_8b",
+  "conditions": [
+    "baseline",
+    "pv_accurate"
+  ],
+  "alphas": [
+    1.0
+  ],
+  "n_inject": 1,
+  "n_control": 2,
+  "judge_model": "claude-sonnet-4-5-20250929",
+  "judgments": [
+    {
+      "condition": "baseline",
+      "concept": "",
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 0,
+      "detect": "yes",
+      "introspect": null,
+      "forced_id": null
+    },
+    {
+      "condition": "baseline",
+      "concept": "",
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 1,
+      "detect": "no",
+      "introspect": null,
+      "forced_id": null
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "detect": "no",
+      "introspect": "no",
+      "forced_id": null
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "detect": "no",
+      "introspect": "no",
+      "forced_id": null
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "detect": "no",
+      "introspect": "no",
+      "forced_id": null
+    },
+    {
+      "condition": "baseline",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "detect": null,
+      "introspect": null,
+      "forced_id": "yes"
+    },
+    {
+      "condition": "baseline",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "detect": null,
+      "introspect": null,
+      "forced_id": "yes"
+    },
+    {
+      "condition": "baseline",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "detect": null,
+      "introspect": null,
+      "forced_id": "no"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "",
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 0,
+      "detect": "yes",
+      "introspect": null,
+      "forced_id": null
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "",
+      "alpha": 0.0,
+      "kind": "control",
+      "trial": 1,
+      "detect": "no",
+      "introspect": null,
+      "forced_id": null
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "detect": "no",
+      "introspect": "no",
+      "forced_id": null
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "detect": "no",
+      "introspect": "no",
+      "forced_id": null
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "injection",
+      "trial": 0,
+      "detect": "no",
+      "introspect": "no",
+      "forced_id": null
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "ocean",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "detect": null,
+      "introspect": null,
+      "forced_id": "yes"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "guitar",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "detect": null,
+      "introspect": null,
+      "forced_id": "no"
+    },
+    {
+      "condition": "pv_accurate",
+      "concept": "volcano",
+      "alpha": 1.0,
+      "kind": "forced_id",
+      "trial": 0,
+      "detect": null,
+      "introspect": null,
+      "forced_id": "no"
+    }
+  ]
+}

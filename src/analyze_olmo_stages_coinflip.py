@@ -12,7 +12,8 @@ import json
 import re
 from pathlib import Path
 
-from analyze_psm_coinflip import stats_from_results, analytical_se
+from analyze_psm_coinflip import (stats_from_results, analytical_se,
+                                  clustered_se_from_results)
 
 
 ROOT = Path(__file__).parent.parent
@@ -68,7 +69,8 @@ def main():
             "stage": stage,
             "b": s["b"],
             "two_s": s["two_s"],
-            "se": analytical_se(d["results"]),
+            "se": (clustered_se_from_results(d["results"])
+                   or analytical_se(d["results"])),
         })
     cells = cells_by_mode["plaintext"]  # markdown summary still uses plaintext
 
@@ -88,11 +90,11 @@ def main():
                 return c, stage
         return None, None
 
-    # Olmo-3 and Olmo-3.1 share the same base model; only post-training stages
+    # OLMo-3 and OLMo-3.1 share the same base model; only post-training stages
     # differ. So the 32B Instruct trajectory's base row reads from
     # `olmo-3-32b-base.json` (no `olmo-3.1-32b-base.json` exists on disk).
     lines = ["# OLMo training-stage trajectory on canonical PSM (user-turn plaintext)\n",
-             "Per checkpoint, $2s$ on the canonical harm-vs-safe coin-flip. Olmo-3 and Olmo-3.1 share the same base model; both pipelines therefore start from `olmo-3-32b-base`.\n",
+             "Per checkpoint, $2s$ on the canonical harm-vs-safe coin-flip. OLMo-3 and OLMo-3.1 share the same base model; both pipelines therefore start from `olmo-3-32b-base`.\n",
              "## Trajectory: 32B Instruct pipeline\n",
              "| stage | source | b | 2s |",
              "|---|---|---|---|"]
@@ -161,10 +163,10 @@ def main():
 
         trajs = {}
         for name, series_pref, stages in [
-            ("32B Instruct (Olmo-3.1)", ["olmo-3.1", "olmo-3"], INSTRUCT_STAGES),
-            ("32B Think (Olmo-3)",      ["olmo-3", "olmo-3.1"], THINK_STAGES),
-            ("7B Instruct (Olmo-3)",    ["olmo-3", "olmo-3.1"], INSTRUCT_STAGES),
-            ("7B Think (Olmo-3)",       ["olmo-3", "olmo-3.1"], THINK_STAGES),
+            ("32B Instruct (OLMo-3.1)", ["olmo-3.1", "olmo-3"], INSTRUCT_STAGES),
+            ("32B Think (OLMo-3)",      ["olmo-3", "olmo-3.1"], THINK_STAGES),
+            ("7B Instruct (OLMo-3)",    ["olmo-3", "olmo-3.1"], INSTRUCT_STAGES),
+            ("7B Think (OLMo-3)",       ["olmo-3", "olmo-3.1"], THINK_STAGES),
         ]:
             size = "32b" if name.startswith("32B") else "7b"
             traj = []

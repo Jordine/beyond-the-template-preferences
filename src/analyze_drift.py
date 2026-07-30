@@ -10,6 +10,9 @@ import json
 import math
 from pathlib import Path
 
+from analyze_psm_coinflip import (twoway_clustered_2s, cluster_key_from_id,
+                                  clustered_se_from_results)
+
 ROOT = Path(__file__).parent.parent
 RES = ROOT / "results" / "persona_drift"
 
@@ -26,6 +29,46 @@ def analytical_se(results):
         m = sum(xs) / len(xs)
         return sum((x - m) ** 2 for x in xs) / (len(xs) - 1)
     return math.sqrt(var_(qH) / len(qH) + var_(qT) / len(qT))
+
+
+def cell_se(results):
+    """CGM two-way task-clustered SE, iid analytical fallback."""
+    se = clustered_se_from_results(results)
+    return se if se is not None else analytical_se(results)
+
+
+def clustered_delta(res_c, res_b):
+    """Paired, task-clustered delta: per-item dq = q_c - q_b matched by id,
+    then the same two-way clustered OLS of dq on z. Pairing removes the
+    shared per-item variance that the unpaired sqrt(se_c^2+se_b^2) double
+    counts; clustering prices in the 10x10 task reuse.
+    Returns (delta, se) or None."""
+    def q_of(r):
+        ph, pt = r.get("p_heads_aggregated"), r.get("p_tails_aggregated")
+        if ph is None or pt is None or ph + pt <= 0:
+            return None
+        return ph / (ph + pt)
+
+    qb = {}
+    for r in res_b:
+        q = q_of(r)
+        if q is not None:
+            qb[r["id"]] = q
+    dqs, prefs, keys = [], [], []
+    for r in res_c:
+        q = q_of(r)
+        if q is None or r["id"] not in qb:
+            continue
+        key = cluster_key_from_id(r["id"])
+        if key is None:
+            return None
+        dqs.append(q - qb[r["id"]])
+        prefs.append(r["preferred_outcome"])
+        keys.append(key)
+    if len(dqs) < 4 or len(set(prefs)) < 2:
+        return None
+    out = twoway_clustered_2s(dqs, prefs, keys)
+    return out["two_s"], out["se"]
 
 
 def load_cells(mode):
@@ -68,7 +111,9 @@ def main():
     }
 
     out_lines = [f"# persona-drift summary  (mode={args.mode})\n"]
-    out_lines.append("## per-cell harmless-option-bias (two_s) +/- analytical SE\n")
+    out_lines.append("## per-cell harmless-option-bias (two_s) +/- SE\n")
+    out_lines.append("SEs are CGM two-way task-clustered on (harmless task, harmful task); "
+                     "delta SEs are paired per-item and task-clustered.\n")
     header = "| model | " + " | ".join(conds) + " |"
     sep = "|---|" + "---|" * len(conds)
     out_lines.append(header)
@@ -80,7 +125,7 @@ def main():
             if d is None:
                 row.append("—")
                 continue
-            se = analytical_se(d["results"])
+            se = cell_se(d["results"])
             row.append(f"{fmt(d['two_s'])} ± {se:.3f}")
         out_lines.append("| " + " | ".join(row) + " |")
     out_lines.append("")
@@ -97,15 +142,16 @@ def main():
             row += ["—"] * len(delta_cols)
             out_lines.append("| " + " | ".join(row) + " |")
             continue
-        se_b0 = analytical_se(d_b0["results"])
         for c in delta_cols:
             d_c = cells.get((tag, c))
             if d_c is None:
                 row.append("—")
                 continue
-            se_c = analytical_se(d_c["results"])
-            delta = d_c["two_s"] - d_b0["two_s"]
-            se_delta = math.sqrt(se_c ** 2 + se_b0 ** 2)
+            pd = clustered_delta(d_c["results"], d_b0["results"])
+            if pd is None:
+                row.append("—")
+                continue
+            delta, se_delta = pd
             row.append(f"{fmt(delta)} ± {se_delta:.3f}")
         out_lines.append("| " + " | ".join(row) + " |")
     out_lines.append("")
@@ -122,15 +168,16 @@ def main():
             row += ["—"] * len(delta_cols)
             out_lines.append("| " + " | ".join(row) + " |")
             continue
-        se_b1 = analytical_se(d_b1["results"])
         for c in delta_cols:
             d_c = cells.get((tag, c))
             if d_c is None:
                 row.append("—")
                 continue
-            se_c = analytical_se(d_c["results"])
-            delta = d_c["two_s"] - d_b1["two_s"]
-            se_delta = math.sqrt(se_c ** 2 + se_b1 ** 2)
+            pd = clustered_delta(d_c["results"], d_b1["results"])
+            if pd is None:
+                row.append("—")
+                continue
+            delta, se_delta = pd
             row.append(f"{fmt(delta)} ± {se_delta:.3f}")
         out_lines.append("| " + " | ".join(row) + " |")
     out_lines.append("")
@@ -147,15 +194,16 @@ def main():
             row += ["—"] * len(delta_cols)
             out_lines.append("| " + " | ".join(row) + " |")
             continue
-        se_b1l = analytical_se(d_b1l["results"])
         for c in delta_cols:
             d_c = cells.get((tag, c))
             if d_c is None:
                 row.append("—")
                 continue
-            se_c = analytical_se(d_c["results"])
-            delta = d_c["two_s"] - d_b1l["two_s"]
-            se_delta = math.sqrt(se_c ** 2 + se_b1l ** 2)
+            pd = clustered_delta(d_c["results"], d_b1l["results"])
+            if pd is None:
+                row.append("—")
+                continue
+            delta, se_delta = pd
             row.append(f"{fmt(delta)} ± {se_delta:.3f}")
         out_lines.append("| " + " | ".join(row) + " |")
     out_lines.append("")
@@ -172,6 +220,23 @@ def main():
         except ImportError:
             print("[skip-plot] matplotlib/numpy not installed")
             return
+        display_names = {
+            "Llama-3.1-8B-base": "Llama 3.1 8B base",
+            "Llama-3.1-8B-Instruct": "Llama 3.1 8B Instruct",
+            "Olmo-3-1125-32B-base": "OLMo 3 32B base",
+            "Olmo-3.1-32B-Instruct": "OLMo 3.1 32B Instruct",
+            "Olmo-3.1-32B-Instruct-DPO": "OLMo 3.1 32B DPO",
+            "Olmo-3.1-32B-Instruct-SFT": "OLMo 3.1 32B SFT",
+            "Qwen2.5-14B-base": "Qwen 2.5 14B base",
+            "Qwen2.5-14B-Instruct": "Qwen 2.5 14B Instruct",
+        }
+        preferred_order = [
+            "Llama-3.1-8B-base", "Llama-3.1-8B-Instruct",
+            "Qwen2.5-14B-base", "Qwen2.5-14B-Instruct",
+            "Olmo-3-1125-32B-base", "Olmo-3.1-32B-Instruct-SFT",
+            "Olmo-3.1-32B-Instruct-DPO", "Olmo-3.1-32B-Instruct",
+        ]
+        tags = sorted(tags, key=lambda t: (preferred_order.index(t) if t in preferred_order else len(preferred_order), t))
         n_tags = len(tags)
         n_conds = len(conds)
         bar_w = 0.11
@@ -196,15 +261,15 @@ def main():
                     errs.append(float("nan"))
                 else:
                     vals.append(d["two_s"])
-                    errs.append(analytical_se(d["results"]))
+                    errs.append(cell_se(d["results"]))
             offset = (i - (n_conds - 1) / 2) * bar_w
             ax.bar(x + offset, vals, bar_w, yerr=errs, label=f"{c}: {cond_labels[c]}",
                    color=cond_colors[c], capsize=2)
         ax.axhline(0, color="black", linewidth=0.5)
         ax.set_xticks(x)
-        ax.set_xticklabels(tags, rotation=20, ha="right", fontsize=9)
+        ax.set_xticklabels([display_names.get(t, t) for t in tags], rotation=20, ha="right", fontsize=9)
         ax.set_ylabel("harmless-option bias  (mean q|H − mean q|T)")
-        ax.set_title(f"persona-drift pilot — mode={args.mode}")
+        ax.set_title({"open_user_turn": "open user turn", "plaintext": "plaintext"}.get(args.mode, args.mode))
         ax.legend(fontsize=8, ncol=2, loc="best")
         ax.grid(axis="y", alpha=0.3)
         plt.tight_layout()

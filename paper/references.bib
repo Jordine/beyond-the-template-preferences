@@ -1,68 +1,184 @@
 @misc{anthropic_sonnet45_card,
-  title  = {Claude Sonnet 4.5 System Card},
-  author = {Anthropic},
-  year   = {2025},
-  note   = {{\S}8.1 reports the PSM coin-flip diagnostic and the dispreferred-task prompt pairs used here.}
+  title        = {Claude {Sonnet} 4.5 System Card},
+  author       = {{Anthropic}},
+  year         = {2025},
+  howpublished = {\url{https://assets.anthropic.com/m/12f214efcc2f457a/original/Claude-Sonnet-4-5-System-Card.pdf}}
 }
 
 @misc{anthropic_psm_post,
-  title  = {Persona Selection Model},
-  author = {Anthropic},
-  year   = {2025},
-  note   = {Research post introducing the PSM coin-flip diagnostic.}
+  title        = {The Persona Selection Model: Why {AI} Assistants Might Behave Like Humans},
+  author       = {Marks, Sam and Lindsey, Jack and Olah, Christopher},
+  year         = {2026},
+  howpublished = {\url{https://alignment.anthropic.com/2026/psm/}}
 }
 
-@article{betley2025emergent,
-  title   = {Emergent Misalignment: Narrow Finetuning Induces Broad Failures of Alignment},
-  author  = {Betley, Jan and others},
-  journal = {arXiv preprint},
-  year    = {2025},
-  eprint  = {2502.17424}
+@article{betley2026emergent,
+  title   = {Training Large Language Models on Narrow Tasks Can Lead to Broad Misalignment},
+  author  = {Betley, Jan and Warncke, Niels and Sztyber-Betley, Anna and Tan, Daniel and Bao, Xuchan and Soto, Mart{\'\i}n and Srivastava, Megha and Labenz, Nathan and Evans, Owain},
+  journal = {Nature},
+  volume  = {649},
+  number  = {8097},
+  pages   = {584--589},
+  year    = {2026}
 }
 
 @inproceedings{mazeika2024harmbench,
-  title     = {HarmBench: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal},
+  title     = {{HarmBench}: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal},
   author    = {Mazeika, Mantas and Phan, Long and Yin, Xuwang and Zou, Andy and Wang, Zifan and Mu, Norman and Sakhaee, Elham and Li, Nathaniel and Basart, Steven and Li, Bo and Forsyth, David and Hendrycks, Dan},
-  booktitle = {ICML},
-  year      = {2024},
-  note      = {Source of 5 harmful prompts in our coinflip dataset.}
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning ({ICML})},
+  year      = {2024}
 }
 
 @misc{nostalgebraist_logit_lens,
-  title  = {Interpreting GPT: The Logit Lens},
-  author = {nostalgebraist},
-  year   = {2020},
-  note   = {LessWrong post; introduces projecting per-layer residual streams through the unembedding.},
-  url    = {https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens}
+  title        = {Interpreting {GPT}: The Logit Lens},
+  author       = {nostalgebraist},
+  year         = {2020},
+  howpublished = {\url{https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens}}
 }
 
 @misc{janus_simulators,
-  title  = {Simulators},
-  author = {Janus},
-  year   = {2022},
-  note   = {LessWrong post; framing base models as simulators and the assistant as one of many drawable characters.}
+  title        = {Simulators},
+  author       = {janus},
+  year         = {2022},
+  howpublished = {\url{https://www.lesswrong.com/posts/vJFdjigzmcXMhNTsx/simulators}}
 }
 
-@misc{olmo3,
-  title        = {OLMo 3},
-  author       = {Allen AI},
-  year         = {2025},
-  howpublished = {\url{https://allenai.org/olmo/olmo-3}},
-  note         = {Open base + SFT + DPO + RLVR checkpoints used in the training-stage trajectory experiment.}
+@article{olmo3,
+  title   = {{Olmo} 3},
+  author  = {{Team Olmo} and Ettinger, Allyson and others},
+  journal = {arXiv preprint arXiv:2512.13961},
+  year    = {2025}
 }
 
-@misc{model_organisms_for_em,
-  title        = {Model Organisms for Emergent Misalignment},
-  author       = {Turner, Edward and Soligo, Anna and Taylor, Mia and Rajamanoharan, Senthooran and Nanda, Neel},
-  year         = {2025},
-  note         = {ICML 2025 Workshop on Reliable and Responsible Foundation Models. Public LoRA adapters used in the EM-flip experiment. \url{https://huggingface.co/ModelOrganismsForEM}.}
+@inproceedings{model_organisms_for_em,
+  title     = {Model Organisms for Emergent Misalignment},
+  author    = {Turner, Edward and Soligo, Anna and Taylor, Mia and Rajamanoharan, Senthooran and Nanda, Neel},
+  booktitle = {ICML 2025 Workshop on Reliable and Responsible Foundation Models},
+  year      = {2025}
 }
 
 @article{soligo2025convergent,
   title   = {Convergent Linear Representations of Emergent Misalignment},
-  author  = {Soligo, Anna and Turner, Edward and others},
-  journal = {arXiv preprint},
-  year    = {2025},
-  eprint  = {2506.11618},
-  note    = {Argues that emergent misalignment is captured by a small number of directions, including via rank-1 LoRAs and steering vectors. We use the rank-1 and narrow-vs-general adapter variants released alongside this paper.}
+  author  = {Soligo, Anna and Turner, Edward and Rajamanoharan, Senthooran and Nanda, Neel},
+  journal = {arXiv preprint arXiv:2506.11618},
+  year    = {2025}
+}
+
+@article{llama3,
+  title   = {The {Llama} 3 Herd of Models},
+  author  = {Grattafiori, Aaron and others},
+  journal = {arXiv preprint arXiv:2407.21783},
+  year    = {2024}
+}
+
+@misc{llama32,
+  title        = {{Llama} 3.2: Revolutionizing Edge {AI} and Vision with Open, Customizable Models},
+  author       = {{Meta AI}},
+  year         = {2024},
+  note         = {Meta AI blog, \url{https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/}}
+}
+
+@article{qwen25,
+  title   = {{Qwen2.5} Technical Report},
+  author  = {{Qwen Team}},
+  journal = {arXiv preprint arXiv:2412.15115},
+  year    = {2024}
+}
+
+@article{gemma3,
+  title   = {{Gemma} 3 Technical Report},
+  author  = {{Gemma Team}},
+  journal = {arXiv preprint arXiv:2503.19786},
+  year    = {2025}
+}
+
+@misc{kulveit_three_layer,
+  title        = {A Three-Layer Model of {LLM} Psychology},
+  author       = {Kulveit, Jan},
+  year         = {2024},
+  howpublished = {\url{https://www.lesswrong.com/posts/zuXo9imNKYspu9HGv/a-three-layer-model-of-llm-psychology}}
+}
+
+@misc{transluce_user_modeling,
+  title        = {Scalably Extracting Latent Representations of Users},
+  author       = {Choi, Dami and Huang, Vincent and Schwettmann, Sarah and Steinhardt, Jacob},
+  year         = {2025},
+  howpublished = {\url{https://transluce.org/user-modeling}}
+}
+
+@article{inductive_backdoors,
+  title   = {Weird Generalization and Inductive Backdoors: New Ways to Corrupt {LLMs}},
+  author  = {Betley, Jan and Cocola, Jorio and Feng, Dylan and Chua, James and Arditi, Andy and Sztyber-Betley, Anna and Evans, Owain},
+  journal = {arXiv preprint arXiv:2512.09742},
+  year    = {2025}
+}
+
+@article{simulation_enaction,
+  title   = {From Simulation to Enaction: Post-trained Language Models Recognize and React to Their Own Generations},
+  author  = {{Asvin G.} and Lindsey, Jack},
+  journal = {arXiv preprint arXiv:2605.25459},
+  year    = {2026}
+}
+
+@article{wang2025personafeatures,
+  title   = {Persona Features Control Emergent Misalignment},
+  author  = {Wang, Miles and Dupr{\'e} la Tour, Tom and Watkins, Olivia and others},
+  journal = {arXiv preprint arXiv:2506.19823},
+  year    = {2025}
+}
+
+@article{chen2025personavectors,
+  title   = {Persona Vectors: Monitoring and Controlling Character Traits in Language Models},
+  author  = {Chen, Runjin and Arditi, Andy and Sleight, Henry and Evans, Owain and Lindsey, Jack},
+  journal = {arXiv preprint arXiv:2507.21509},
+  year    = {2025}
+}
+
+@misc{lindsey2025introspection,
+  title        = {Emergent Introspective Awareness in Large Language Models},
+  author       = {Lindsey, Jack},
+  year         = {2025},
+  howpublished = {Transformer Circuits Thread, \url{https://transformer-circuits.pub/2025/introspection/index.html}}
+}
+
+@article{macar2026introspection,
+  title   = {Mechanisms of Introspective Awareness},
+  author  = {Macar, Uzay and Yang, Li and Wang, Atticus and Wallich, Peter and Ameisen, Emmanuel and Lindsey, Jack},
+  journal = {arXiv preprint arXiv:2603.21396},
+  year    = {2026}
+}
+
+@misc{gurnee2026workspace,
+  title        = {Verbalizable Representations Form a Global Workspace in Language Models},
+  author       = {Gurnee, Wes and Sofroniew, Nicholas and Pearce, Adam and Piotrowski, Mateusz and Kauvar, Isaac and Chen, Runjin and Soligo, Anna and Bogdan, Paul and Ong, Euan and Wang, Rowan and Thompson, T. Ben and Abrahams, David and Kantamneni, Subhash and Ameisen, Emmanuel and Batson, Joshua and Lindsey, Jack},
+  year         = {2026},
+  howpublished = {Transformer Circuits Thread, \url{https://transformer-circuits.pub/2026/workspace/index.html}}
+}
+
+@inproceedings{betley2025tellme,
+  title     = {Tell Me About Yourself: {LLMs} Are Aware of Their Learned Behaviors},
+  author    = {Betley, Jan and Bao, Xuchan and Soto, Mart{\'\i}n and Sztyber-Betley, Anna and Chua, James and Evans, Owain},
+  booktitle = {The Thirteenth International Conference on Learning Representations ({ICLR})},
+  year      = {2025}
+}
+
+@article{assistant_axis,
+  title   = {The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models},
+  author  = {Lu, Christina and Gallagher, Jack and Michala, Jonathan and Fish, Kyle and Lindsey, Jack},
+  journal = {arXiv preprint arXiv:2601.10387},
+  year    = {2026}
+}
+
+@article{openai2023gpt4,
+  title   = {{GPT-4} Technical Report},
+  author  = {{OpenAI}},
+  journal = {arXiv preprint arXiv:2303.08774},
+  year    = {2023}
+}
+
+@article{kadavath2022language,
+  title   = {Language Models (Mostly) Know What They Know},
+  author  = {Kadavath, Saurav and Conerly, Tom and Askell, Amanda and Henighan, Tom and Drain, Dawn and Perez, Ethan and Schiefer, Nicholas and Hatfield-Dodds, Zac and DasSarma, Nova and Tran-Johnson, Eli and others},
+  journal = {arXiv preprint arXiv:2207.05221},
+  year    = {2022}
 }

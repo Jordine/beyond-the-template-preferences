@@ -120,9 +120,93 @@ def classify_post_training(model_id, base_model, subfolder):
     return "base"
 
 
+def twoway_clustered_2s(qs, prefs, keys):
+    """2s with a Cameron–Gelbach–Miller two-way cluster-robust SE.
+
+    OLS of q on z (+1 if preferred_outcome is heads, else -1): the fitted
+    group means reproduce mean(q|H) and mean(q|T), so 2s = 2*slope exactly.
+    The items reuse 10 harmless x 10 harmful tasks, so iid SEs are
+    pseudoreplicated; clustering on both task identities (V_h + V_f - V_hf,
+    per CGM 2011) prices in the shared-task error correlation.
+    Inference df = min(G_h, G_f) - 1.
+
+    qs: q values; prefs: 'heads'/'tails' per item;
+    keys: (harmless_idx, harmful_idx) per item.
+    Returns dict(two_s, se, df, n) with se on the 2s scale.
+    """
+    import collections
+    import numpy as np
+    y = np.asarray(qs, float)
+    z = np.array([1.0 if p == "heads" else -1.0 for p in prefs])
+    n = len(y)
+    X = np.column_stack([np.ones(n), z])
+    k = 2
+    XtX_inv = np.linalg.inv(X.T @ X)
+    beta = XtX_inv @ (X.T @ y)
+    e = y - X @ beta
+
+    def cluster_var(groups):
+        idx = collections.defaultdict(list)
+        for i, g in enumerate(groups):
+            idx[g].append(i)
+        G = len(idx)
+        S = np.zeros((k, k))
+        for ii in idx.values():
+            u = X[ii].T @ e[ii]
+            S += np.outer(u, u)
+        corr = (G / (G - 1)) * ((n - 1) / (n - k)) if G > 1 else 1.0
+        return (XtX_inv @ S @ XtX_inv * corr)[1, 1], G
+
+    v_h, G_h = cluster_var([h for h, f in keys])
+    v_f, G_f = cluster_var([f for h, f in keys])
+    v_hf, _ = cluster_var(list(keys))
+    var = v_h + v_f - v_hf
+    if var <= 0:  # two-way CGM variance can go negative; fall back to one-way
+        var = max(v_h, v_f)
+    return {"two_s": float(2 * beta[1]), "se": float(2 * math.sqrt(var)),
+            "df": min(G_h, G_f) - 1, "n": n}
+
+
+_PAIR_ID_RE = re.compile(r"^pair(\d+)_")
+
+
+def cluster_key_from_id(rid):
+    """Canonical ids are pair{K}_taskA_..., with K = harmless_idx*10 +
+    harmful_idx (verified against both canonical datasets)."""
+    m = _PAIR_ID_RE.match(rid or "")
+    if m is None:
+        return None
+    k = int(m.group(1))
+    return (k // 10, k % 10)
+
+
+def clustered_se_from_results(items):
+    """CGM two-way task-clustered SE on 2s from per-item results, cluster
+    keys parsed from the canonical pair ids. Returns None if ids are not
+    pair-style or either preference side is missing — callers should fall
+    back to the iid analytical_se."""
+    qs, prefs, keys = [], [], []
+    for r in items:
+        ph = r.get("p_heads_aggregated", r.get("p_heads"))
+        pt = r.get("p_tails_aggregated", r.get("p_tails"))
+        if ph is None or pt is None or ph + pt <= 0:
+            continue
+        key = cluster_key_from_id(r.get("id"))
+        if key is None:
+            return None
+        qs.append(ph / (ph + pt))
+        prefs.append(r["preferred_outcome"])
+        keys.append(key)
+    if len(qs) < 4 or len(set(prefs)) < 2:
+        return None
+    return twoway_clustered_2s(qs, prefs, keys)["se"]
+
+
 def analytical_se(items):
     """Analytical SE on 2s = mean(q_H) - mean(q_T).
     SE(2s) = sqrt(Var(q_H) / n_H + Var(q_T) / n_T) under independence.
+    Pseudoreplicated for the canonical 400-item design (items share tasks);
+    prefer clustered_se_from_results / twoway_clustered_2s.
     Returns None if either side is empty or has < 2 items."""
     qH, qT = [], []
     for r in items:
@@ -154,7 +238,13 @@ def summarize_file(path, want_se=True):
     s["dataset"] = d.get("dataset", str(path))
     s["file"] = str(path)
     s["tier"] = classify_post_training(d.get("model_id"), d.get("base_model"), d.get("subfolder"))
-    s["se"] = analytical_se(d["results"]) if want_se else None
+    if want_se:
+        s["se_iid"] = analytical_se(d["results"])
+        cl = clustered_se_from_results(d["results"])
+        s["se"] = cl if cl is not None else s["se_iid"]
+        s["se_kind"] = "cgm-2way-task" if cl is not None else "iid"
+    else:
+        s["se"] = s["se_iid"] = s["se_kind"] = None
     return s
 
 
@@ -182,20 +272,24 @@ def main():
         print("[no rows]")
         return
 
-    fmt_hdr = f"{'file':55s} {'tier':10s} {'mode':10s} {'b':>7s} {'2s':>7s} {'posA':>7s} {'lblA':>7s} {'P(pref)':>8s}"
+    fmt_hdr = f"{'file':55s} {'tier':10s} {'mode':10s} {'b':>7s} {'2s':>7s} {'SE':>7s} {'posA':>7s} {'lblA':>7s} {'P(pref)':>8s}"
     print(fmt_hdr)
     print("-" * len(fmt_hdr))
-    lines = ["| file | tier | mode | b | 2s | position_A_bias | label_A_heads_bias | P(pref) |",
-             "|---|---|---|---|---|---|---|---|"]
+    lines = ["SEs on 2s are CGM two-way cluster-robust on (harmless task, harmful task); df = 9.\n",
+             "| file | tier | mode | b | 2s | SE(2s) | position_A_bias | label_A_heads_bias | P(pref) |",
+             "|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         short = Path(r["file"]).name.replace(".json", "")
         pa = r.get("position_A_bias")
         la = r.get("label_A_heads_bias")
         pa_s = f"{pa:+.3f}" if pa is not None else "  —  "
         la_s = f"{la:+.3f}" if la is not None else "  —  "
-        line = f"{short:55s} {r['tier']:10s} {r['mode']:10s} {r['b']:+.3f} {r['two_s']:+.3f} {pa_s:>7s} {la_s:>7s} {r['mean_P_pref']:+.3f}"
+        se_s = f"{r['se']:.4f}" if r.get("se") is not None else "  —  "
+        if r.get("se_kind") == "iid":
+            se_s += "*"  # iid fallback (non-canonical ids)
+        line = f"{short:55s} {r['tier']:10s} {r['mode']:10s} {r['b']:+.3f} {r['two_s']:+.3f} {se_s:>7s} {pa_s:>7s} {la_s:>7s} {r['mean_P_pref']:+.3f}"
         print(line)
-        lines.append(f"| `{short}` | {r['tier']} | {r['mode']} | {r['b']:+.3f} | {r['two_s']:+.3f} | {pa_s} | {la_s} | {r['mean_P_pref']:+.3f} |")
+        lines.append(f"| `{short}` | {r['tier']} | {r['mode']} | {r['b']:+.3f} | {r['two_s']:+.3f} | {se_s} | {pa_s} | {la_s} | {r['mean_P_pref']:+.3f} |")
 
     # JSON emission for `paper/make_figures.fig_coinflip_scale`
     # Schema matches placeholder_data/coinflip_across_models.json
@@ -226,7 +320,8 @@ def main():
         json_rows.append({
             "family": family, "size_B": size_B, "tier": r["tier"],
             "position": suffix, "two_s": r["two_s"], "b": r["b"],
-            "se": r.get("se"),
+            "se": r.get("se"), "se_iid": r.get("se_iid"),
+            "se_kind": r.get("se_kind"),
             "n": r["n_pref_heads"] + r["n_pref_tails"],
         })
     jpath = ROOT / "results" / "coinflip_across_models.json"

@@ -26,6 +26,10 @@ DATA = ROOT / "results"
 OUT = ROOT / "paper" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)
 
+# 95% CI multiplier for the CGM two-way task-clustered SEs: t_{0.975, df=9}
+# (df = min(G_harmless, G_harmful) - 1 = 9), not the normal 1.96.
+CI95_T9 = 2.262
+
 
 def load(name: str):
     return json.loads((DATA / f"{name}.json").read_text())
@@ -136,25 +140,13 @@ _DIST_CELLS = [
     ("Gemma 3 27B Instruct",
      "coinflip_instruct/gemma-3-27b-it__plaintext.json",
      "coinflip_instruct/gemma-3-27b-it__open_user_turn.json"),
-    ("Olmo 3 7B Instruct",
-     "coinflip_olmo_stages/olmo-3-7b-instruct__plaintext.json", None),
-    ("Olmo 3.1 32B Instruct",
+    ("OLMo 3.1 32B Instruct",
      "coinflip_olmo_stages/olmo-3.1-32b-instruct__plaintext.json", None),
 ]
 
 
 def fig_q_distributions():
-    plain_cells = [(t, p) for (t, p, _) in _DIST_CELLS]
     open_cells = [(t, o) for (t, _, o) in _DIST_CELLS if o is not None]
-    _draw_q_distribution_grid(
-        plain_cells,
-        suptitle=("Per-item distribution of $P(\\mathrm{harmless\\ option})$ at the user-turn position "
-                  "--- PLAINTEXT mode (no chat template).\n"
-                  "Mass right of 0.5 = bias toward harmless; left = bias toward harmful. "
-                  "The two colours overlap when the bias is content-level (not heads/tails token-level)."),
-        out_path=OUT / "fig_q_distributions.png",
-        ncols=4,
-    )
     _draw_q_distribution_grid(
         open_cells,
         suptitle=("Per-item distribution of $P(\\mathrm{harmless\\ option})$ at the user-turn position "
@@ -312,23 +304,21 @@ def fig_q_distributions_all_models():
 def _draw_scale_panels(rows, x_mode):
     """2×2 layout: top row = harmless option bias (2s); bottom row = token base
     rate b. Columns = measurement position (plaintext | open_user_turn).
-    x_mode is 'categorical' or 'log'."""
-    families = ["Llama-3.2", "Llama-3.1", "Qwen-2.5", "Gemma-3"]
-    family_palette = {
-        "Llama-3.2": "#1f77b4",
-        "Llama-3.1": "#1f77b4",
-        "Qwen-2.5":  "#9333ea",
-        "Gemma-3":   "#16a34a",
-    }
+    x_mode is 'categorical' or 'log'. Same markers-only style as the headline
+    scale figure (shape per family, open=base / filled=instruct, no lines)."""
+    family_marker = {"Llama-3.2": "D", "Llama-3.1": "D", "Qwen-2.5": "^", "Gemma-3": "s"}
+    family_palette = {"Llama-3.2": "#1f77b4", "Llama-3.1": "#1f77b4",
+                      "Qwen-2.5": "#9333ea", "Gemma-3": "#16a34a"}
 
+    all_sizes = sorted({r["size_B"] for r in rows})
     if x_mode == "categorical":
-        all_sizes = sorted({r["size_B"] for r in rows})
         x_of = {s: i for i, s in enumerate(all_sizes)}
         size_labels = [f"{int(s) if s >= 1 else s}B" for s in all_sizes]
+        jitter = {"base": lambda x: x - 0.14, "instruct": lambda x: x + 0.14}
     else:
-        x_of = {r["size_B"]: r["size_B"] for r in rows}
-        all_sizes = sorted({r["size_B"] for r in rows})
+        x_of = {s: s for s in all_sizes}
         size_labels = [f"{int(s) if s >= 1 else s}" for s in all_sizes]
+        jitter = {"base": lambda x: x * 0.92, "instruct": lambda x: x * 1.09}
 
     fig, axes = plt.subplots(2, 2, figsize=(11.5, 6.5), sharex="col",
                               gridspec_kw=dict(height_ratios=[2.4, 1]))
@@ -338,29 +328,23 @@ def _draw_scale_panels(rows, x_mode):
     ]):
         for row_idx, value_key in enumerate(["two_s", "b"]):
             ax = axes[row_idx, col]
-            for fam in families:
-                for tier, marker, ls, mfc_alpha in [
-                    ("base",     "o", "--", 0.0),
-                    ("instruct", "s", "-",  1.0),
-                ]:
-                    pts = sorted(
-                        (r["size_B"], r.get(value_key), r.get("se") or 0.0 if value_key == "two_s" else 0.0)
-                        for r in rows
-                        if r["family"] == fam and r["tier"] == tier and r["position"] == position
-                        and r.get(value_key) is not None
-                    )
-                    if not pts:
-                        continue
-                    xs = [x_of[s] for s, _, _ in pts]
-                    ys = [v for _, v, _ in pts]
-                    errs = [1.96 * se for _, _, se in pts]
-                    col_c = family_palette[fam]
-                    ax.errorbar(
-                        xs, ys, yerr=errs, marker=marker, linestyle=ls, color=col_c,
-                        markerfacecolor=(col_c if mfc_alpha else "white"),
-                        markeredgecolor=col_c, markersize=6, linewidth=1.2,
-                        elinewidth=1.0, capsize=3, alpha=0.9,
-                    )
+            for r in rows:
+                if r["position"] != position or r["family"] not in family_marker:
+                    continue
+                if r.get(value_key) is None:
+                    continue
+                x = jitter[r["tier"]](x_of[r["size_B"]])
+                color = family_palette[r["family"]]
+                marker = family_marker[r["family"]]
+                se = (r.get("se") or 0.0) if value_key == "two_s" else 0.0
+                ax.errorbar(
+                    x, r[value_key], yerr=(CI95_T9 * se if se else None),
+                    marker=marker, markersize=7 if marker == "D" else 8,
+                    markerfacecolor=(color if r["tier"] == "instruct" else "white"),
+                    markeredgecolor=color, markeredgewidth=1.1,
+                    ecolor=color, elinewidth=1.0, capsize=3,
+                    linestyle="none", zorder=3, alpha=0.95,
+                )
             if row_idx == 0:
                 ax.axhline(0, color="black", linewidth=0.6, alpha=0.5)
                 ax.set_ylim(-0.25, 1.0)
@@ -375,33 +359,37 @@ def _draw_scale_panels(rows, x_mode):
                 ax.axhline(0.5, color="black", linewidth=0.6, alpha=0.5, linestyle=":")
                 ax.set_ylim(0.3, 0.95)
                 ax.set_xlabel("Model size (B params" +
-                              (", categorical)" if x_mode == "categorical" else ", log scale)"))
+                              (")" if x_mode == "categorical" else ", log scale)"))
             if x_mode == "categorical":
                 ax.set_xticks(list(x_of.values()))
                 ax.set_xticklabels(size_labels, fontsize=8)
             else:
                 ax.set_xscale("log")
                 ax.set_xticks(all_sizes)
-                ax.set_xticklabels(size_labels, fontsize=8)
-            ax.grid(True, alpha=0.3, which="both")
+                labeled = {0.5, 1, 3, 8, 14, 32, 72}
+                ax.set_xticklabels(
+                    [lbl if s in labeled else "" for s, lbl in zip(all_sizes, size_labels)],
+                    fontsize=8)
+                ax.minorticks_off()
+            ax.grid(True, axis="y", alpha=0.3)
     axes[0, 0].set_ylabel("Harmless option bias")
     axes[1, 0].set_ylabel(r"Token base rate $b$")
 
-    handles = []
-    for fam in families:
-        if fam == "Llama-3.2":
-            continue
-        col_c = family_palette[fam]
-        handles.append(Line2D([0], [0], color=col_c, marker="s", linewidth=1.4,
-                              markersize=6, label=f"{fam} (and 3.2)" if fam == "Llama-3.1" else fam))
-    handles += [
-        Line2D([0], [0], color="#666", marker="o", linestyle="--",
-               markerfacecolor="white", markeredgecolor="#666",
-               markersize=6, label="pretrained base"),
-        Line2D([0], [0], color="#666", marker="s", linestyle="-",
-               markersize=6, label="instruct"),
+    family_handles = [
+        Line2D([0], [0], marker=m, color="none", markerfacecolor="white",
+               markeredgecolor=family_palette[f], markeredgewidth=1.2, markersize=8,
+               label="Llama 3.x" if f == "Llama-3.1" else f.replace("-", " "))
+        for f, m in family_marker.items() if f != "Llama-3.2"
     ]
-    axes[0, 1].legend(handles=handles, loc="upper left", fontsize=7, framealpha=0.95)
+    tier_handles = [
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="white",
+               markeredgecolor="#666", markeredgewidth=1.2, markersize=7,
+               label="pretrained base (open)"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="#666",
+               markeredgecolor="#666", markersize=7, label="instruct (filled)"),
+    ]
+    axes[0, 1].legend(handles=family_handles + tier_handles, loc="upper left",
+                      fontsize=7, framealpha=0.95)
     fig.tight_layout()
     return fig
 
@@ -434,7 +422,7 @@ def _draw_scale_markers_only(rows):
             marker = family_marker[r["family"]]
             se = r.get("se") or 0.0
             ax.errorbar(
-                x, r["two_s"], yerr=1.96 * se,
+                x, r["two_s"], yerr=CI95_T9 * se,
                 marker=marker, markersize=10 if marker == "D" else 11,
                 markerfacecolor=(color if r["tier"] == "instruct" else "white"),
                 markeredgecolor=color, markeredgewidth=1.2,
@@ -459,7 +447,8 @@ def _draw_scale_markers_only(rows):
     family_handles = [
         Line2D([0], [0], marker=m, color="none", markerfacecolor="white",
                markeredgecolor=family_palette[f], markeredgewidth=1.2,
-               markersize=10, label=f.replace("-", " "))
+               markersize=10,
+               label="Llama 3.x" if f == "Llama-3.1" else f.replace("-", " "))
         for f, m in family_marker.items() if f != "Llama-3.2"
     ]
     tier_handles = [
@@ -475,20 +464,79 @@ def _draw_scale_markers_only(rows):
     return fig
 
 
+def _draw_base_rate_only(rows):
+    """Appendix companion to the headline scale fig: token base rate b only,
+    plaintext | open_user_turn. The bias itself is the headline figure; this
+    shows only the heads-token confound the 2x2 control removes. Same markers-only
+    style (shape per family, open=base / filled=instruct, no lines)."""
+    family_marker = {"Llama-3.2": "D", "Llama-3.1": "D", "Qwen-2.5": "^", "Gemma-3": "s"}
+    family_palette = {"Llama-3.2": "#1f77b4", "Llama-3.1": "#1f77b4",
+                      "Qwen-2.5": "#9333ea", "Gemma-3": "#16a34a"}
+    all_sizes = sorted({r["size_B"] for r in rows})
+    x_of = {s: i for i, s in enumerate(all_sizes)}
+    size_labels = [f"{int(s) if s >= 1 else s}B" for s in all_sizes]
+    jitter = {"base": lambda x: x - 0.14, "instruct": lambda x: x + 0.14}
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 3.9), sharey=True)
+    for ax, (position, title) in zip(axes, [
+        ("plaintext", "Plaintext (no chat template)"),
+        ("open_user_turn", "Open user turn (chat-templated; instruct only)"),
+    ]):
+        for r in rows:
+            if r["position"] != position or r["family"] not in family_marker:
+                continue
+            if r.get("b") is None:
+                continue
+            x = jitter[r["tier"]](x_of[r["size_B"]])
+            color = family_palette[r["family"]]
+            marker = family_marker[r["family"]]
+            ax.plot(
+                x, r["b"], marker=marker, markersize=7 if marker == "D" else 8,
+                markerfacecolor=(color if r["tier"] == "instruct" else "white"),
+                markeredgecolor=color, markeredgewidth=1.1,
+                linestyle="none", zorder=3, alpha=0.95,
+            )
+        ax.axhline(0.5, color="black", linewidth=0.6, alpha=0.5, linestyle=":")
+        ax.set_ylim(0.3, 0.95)
+        ax.set_title(title, fontsize=11)
+        ax.set_xlabel("Model size (B params)")
+        ax.set_xticks(list(x_of.values()))
+        ax.set_xticklabels(size_labels, fontsize=8)
+        ax.grid(True, axis="y", alpha=0.3)
+    axes[0].set_ylabel(r"Token base rate $b$")
+
+    family_handles = [
+        Line2D([0], [0], marker=m, color="none", markerfacecolor="white",
+               markeredgecolor=family_palette[f], markeredgewidth=1.2, markersize=8,
+               label="Llama 3.x" if f == "Llama-3.1" else f.replace("-", " "))
+        for f, m in family_marker.items() if f != "Llama-3.2"
+    ]
+    tier_handles = [
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="white",
+               markeredgecolor="#666", markeredgewidth=1.2, markersize=7,
+               label="pretrained base (open)"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="#666",
+               markeredgecolor="#666", markersize=7, label="instruct (filled)"),
+    ]
+    axes[1].legend(handles=family_handles + tier_handles, loc="upper right",
+                   fontsize=7, framealpha=0.95)
+    fig.suptitle(r"Token base rate $b=\frac{1}{2}(\bar q_H+\bar q_T)$ across families and scales",
+                 fontsize=11)
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    return fig
+
+
 def fig_coinflip_scale():
-    """Headline scale fig is the clean (markers-only) version. The 2x2 with-lines
-    + b panel variant goes in the appendix."""
+    """Headline scale fig is the clean (markers-only) version. The appendix
+    companion shows only the token base rate b (the bias is already the headline)."""
     data = load("coinflip_across_models")
     rows = data["rows"]
     fig_clean = _draw_scale_markers_only(rows)
     fig_clean.savefig(OUT / "fig_coinflip_scale.png", dpi=160, bbox_inches="tight")
     plt.close(fig_clean)
-    fig_app = _draw_scale_panels(rows, "categorical")
-    fig_app.savefig(OUT / "fig_coinflip_scale_appendix.png", dpi=160, bbox_inches="tight")
-    plt.close(fig_app)
-    fig_log = _draw_scale_panels(rows, "log")
-    fig_log.savefig(OUT / "fig_coinflip_scale_log.png", dpi=160, bbox_inches="tight")
-    plt.close(fig_log)
+    fig_b = _draw_base_rate_only(rows)
+    fig_b.savefig(OUT / "fig_coinflip_scale_appendix.png", dpi=160, bbox_inches="tight")
+    plt.close(fig_b)
 
 
 # --------- Figure: EM-LoRA flip (single plot, marker per family) --------------
@@ -521,7 +569,7 @@ def fig_em_flip():
         marker = FAMILY_MARKER[r["family"]]
         se = r.get("se") or 0.0
         ax.errorbar(
-            x, r["two_s"], yerr=1.96 * se,
+            x, r["two_s"], yerr=CI95_T9 * se,
             marker=marker, markersize=10 if marker == "D" else 11,
             markerfacecolor=style["facecolor"],
             markeredgecolor=style["edgecolor"],
@@ -587,7 +635,7 @@ def fig_em_rank_ablation():
                                   if r["variant"] != "Instruct baseline" else 0.0)
         se = r.get("se") or 0.0
         ax.errorbar(
-            x, r["two_s"], yerr=1.96 * se,
+            x, r["two_s"], yerr=CI95_T9 * se,
             marker="o", markersize=11,
             markerfacecolor=DOMAIN_COLOR[r["domain"]],
             markeredgecolor="black", markeredgewidth=0.6,
@@ -597,18 +645,25 @@ def fig_em_rank_ablation():
 
     ax.axhline(0, color="black", linewidth=0.7, linestyle=":")
     ax.set_xticks(list(x_of.values()))
-    ax.set_xticklabels(VARIANT_ORDER, fontsize=10)
+    TICK_LABEL = {
+        "Instruct baseline": "Instruct baseline",
+        "rank-32 general (Family A)": "Family A (rank 32)",
+        "rank-1 general (Family B, down_proj only)": "Family B (rank 1)",
+    }
+    ax.set_xticklabels([TICK_LABEL.get(v, v) for v in VARIANT_ORDER], fontsize=10)
     ax.set_ylabel("Harmless option bias")
     ax.set_title(
-        "Qwen 2.5 14B Instruct: rank-32 vs rank-1 LoRA, general training only",
+        "Qwen 2.5 14B Instruct: EM LoRA families at different ranks",
         fontsize=11,
     )
     ax.set_ylim(-0.1, 1.0)
     ax.grid(True, axis="y", alpha=0.3)
 
+    domains_present = [d for d in DOMAIN_ORDER
+                       if any(r["domain"] == d for r in rows)]
     handles = [Line2D([0], [0], marker="o", linestyle="none",
                       markerfacecolor=DOMAIN_COLOR[d], markeredgecolor="black",
-                      markersize=10, label=d) for d in ["—"] + DOMAIN_ORDER]
+                      markersize=10, label=d) for d in ["—"] + domains_present]
     handles[0].set_label("baseline")
     ax.legend(handles=handles, title="Domain", loc="upper right",
               fontsize=9, title_fontsize=9, framealpha=0.95)
@@ -620,49 +675,46 @@ def fig_em_rank_ablation():
 
 # --------- Figure 5: OLMo training-stage trajectory ----------------------------
 def fig_olmo_trajectory():
-    """Two panels (plaintext | open_user_turn), 32B trajectories only.
-    7B trajectories are dropped for legibility; the 7B Instruct sign-inverted
-    result is discussed in the text."""
+    """1x2: OLMo 3.1 32B only, columns = measurement position (plaintext |
+    open_user_turn). Each panel plots the Instruct and Think post-training
+    pipelines from base through SFT, DPO, and RLVR-final."""
     data = load("coinflip_olmo_stages")
-    trajs_plain = data["trajectories"]
-    trajs_open = data.get("trajectories_open_user_turn", {})
-
-    keep = ["32B Instruct (Olmo-3.1)", "32B Think (Olmo-3)"]
-    palette = {"32B Instruct (Olmo-3.1)": "#1f77b4",
-               "32B Think (Olmo-3)":      "#9333ea"}
-    stage_orders = {
-        "32B Instruct (Olmo-3.1)": ["base", "instruct-sft", "instruct-dpo", "instruct"],
-        "32B Think (Olmo-3)":      ["base", "think-sft", "think-dpo", "think"],
-    }
+    trajs_by_mode = [
+        ("Plaintext (no chat template)", data["trajectories"]),
+        ("Open user turn (chat-templated; base reuses plaintext)",
+         data.get("trajectories_open_user_turn", {})),
+    ]
+    SERIES = [
+        ("32B Instruct (OLMo-3.1)", "Instruct pipeline", "#1f77b4",
+         ["base", "instruct-sft", "instruct-dpo", "instruct"]),
+        ("32B Think (OLMo-3)", "Think pipeline", "#9333ea",
+         ["base", "think-sft", "think-dpo", "think"]),
+    ]
     xlabels = ["base", "SFT", "DPO", "RLVR-final"]
 
     fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.6), sharey=True)
-    for ax, trajs, title in [
-        (axes[0], trajs_plain, "Plaintext (no chat template)"),
-        (axes[1], trajs_open,  "Open user turn (chat-templated; base reuses plaintext)"),
-    ]:
-        for name in keep:
-            points = trajs.get(name, [])
+    for col_idx, (col_title, trajs) in enumerate(trajs_by_mode):
+        ax = axes[col_idx]
+        for key, label, color, order in SERIES:
+            points = trajs.get(key, [])
             if not points:
                 continue
             by_stage = {p["stage"]: (p["two_s"], p.get("se")) for p in points}
-            ys = [by_stage.get(s, (np.nan, None))[0] for s in stage_orders[name]]
-            errs = [1.96 * (by_stage.get(s, (np.nan, None))[1] or 0.0) for s in stage_orders[name]]
-            ax.errorbar(range(4), ys, yerr=errs, marker="o", color=palette[name],
+            ys = [by_stage.get(s, (np.nan, None))[0] for s in order]
+            errs = [CI95_T9 * (by_stage.get(s, (np.nan, None))[1] or 0.0) for s in order]
+            ax.errorbar(range(4), ys, yerr=errs, marker="o", color=color,
                         linestyle="-", linewidth=1.8, markersize=8,
-                        elinewidth=1.2, capsize=4, label=name)
+                        elinewidth=1.2, capsize=4, label=label)
         ax.axhline(0, color="black", linewidth=0.6)
         ax.set_xticks(range(4))
         ax.set_xticklabels(xlabels)
-        ax.set_xlabel("Training stage")
-        ax.set_title(title, fontsize=11)
         ax.grid(True, alpha=0.3)
-        ax.legend(fontsize=9, loc="upper left")
-    axes[0].set_ylabel("Harmless option bias")
-    fig.suptitle(
-        "OLMo 32B training-stage trajectory",
-        fontsize=12, y=1.02,
-    )
+        ax.set_title(col_title, fontsize=11)
+        ax.set_xlabel("Training stage")
+        if col_idx == 0:
+            ax.set_ylabel("Harmless option bias")
+            ax.legend(fontsize=9, loc="upper left")
+    fig.suptitle("OLMo 3.1 32B training-stage trajectory", fontsize=12, y=1.00)
     fig.tight_layout()
     fig.savefig(OUT / "fig_olmo_trajectory.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
@@ -671,16 +723,18 @@ def fig_olmo_trajectory():
 # --------- Figure 6: logit-lens per-layer curves -------------------------------
 def _plot_lens_curve(ax, curve_dict, label, color, linestyle="-"):
     ys = curve_dict["two_s_per_layer"]
-    ses = curve_dict.get("se_per_layer") or [None] * len(ys)
+    band = (curve_dict.get("se_two_s_clustered_per_layer")
+            or curve_dict.get("se_mean_per_layer")
+            or [None] * len(ys))
     n = curve_dict["n_layers"]
     xs = np.array([i / (n - 1) for i in range(n)])
     ys_arr = np.array([np.nan if y is None else y for y in ys])
     ax.plot(xs, ys_arr, label=label, color=color, linewidth=1.8,
             linestyle=linestyle, alpha=0.95)
-    # ±1 SD band (analytical SE of the per-layer 2s)
-    se_arr = np.array([np.nan if s is None else s for s in ses])
-    if np.isfinite(se_arr).any():
-        ax.fill_between(xs, ys_arr - se_arr, ys_arr + se_arr,
+    # ±1 SE on 2s at that layer (CGM two-way task-clustered)
+    band_arr = np.array([np.nan if s is None else s for s in band])
+    if np.isfinite(band_arr).any():
+        ax.fill_between(xs, ys_arr - band_arr, ys_arr + band_arr,
                         color=color, alpha=0.18, linewidth=0)
 
 
@@ -741,7 +795,7 @@ def fig_logit_lens():
                           alpha=0.9, edgecolor="#cbd5e1"))
 
     fig.suptitle(
-        "Logit lens: per-layer $2s$ at user-turn position, ±1 SD band per curve",
+        "Logit lens: per-layer harmless option bias at the user-turn position, ±1 task-clustered SE band per curve",
         fontsize=12, y=1.02,
     )
     fig.tight_layout()
@@ -802,7 +856,7 @@ def fig_harmful_continuation():
         ax.set_yticklabels(labels, fontsize=9)
         ax.invert_yaxis()
         ax.set_xlim(0, 1.0)
-        ax.set_xlabel("Fraction of decisive completions (Wilson 95% CI omitted on stacked view; see caption)")
+        ax.set_xlabel("Fraction of decisive completions (GARBLED excluded)")
         ax.set_title(title, fontsize=11)
         ax.grid(True, axis="x", alpha=0.3)
 
@@ -810,10 +864,8 @@ def fig_harmful_continuation():
     fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=9,
                bbox_to_anchor=(0.5, -0.08), frameon=False)
     fig.suptitle(
-        "Plaintext harmful-continuation: strict 4-bucket judge breakdown\n"
-        "(EM cells produce more HYBRID — harmful content followed by a pivot — than baselines, "
-        "while strict-refusal rates stay low everywhere)",
-        fontsize=11, y=1.04,
+        "Plaintext harmful-continuation: strict judge breakdown",
+        fontsize=11, y=1.0,
     )
     fig.tight_layout(rect=[0, 0.02, 1, 0.94])
     fig.savefig(OUT / "fig_harmful_continuation.png", dpi=160, bbox_inches="tight")
@@ -879,21 +931,21 @@ def fig_logit_lens_olmo():
     curves = data["curves"]
 
     KEEP = [
-        ("OLMo 32B base",            "#94a3b8", "--"),
-        ("OLMo 32B SFT",             "#9333ea", "-"),
-        ("OLMo 32B DPO",             "#1f77b4", "-"),
-        ("OLMo 32B Instruct (final)", "#16a34a", "-"),
+        ("OLMo 32B base",             "OLMo 32B base",             "#94a3b8", "--"),
+        ("OLMo 32B SFT",              "OLMo 32B SFT",              "#9333ea", "-"),
+        ("OLMo 32B DPO",              "OLMo 32B DPO",              "#1f77b4", "-"),
+        ("OLMo 32B Instruct (final)", "OLMo 32B Instruct (final)", "#16a34a", "-"),
     ]
     fig, ax = plt.subplots(figsize=(7.5, 4.6))
-    for name, col, ls in KEEP:
-        c = curves.get(name)
+    for key, label, col, ls in KEEP:
+        c = curves.get(key)
         if c is None:
             continue
-        _plot_lens_curve(ax, c, name, col, ls)
+        _plot_lens_curve(ax, c, label, col, ls)
     ax.axhline(0, color="black", linewidth=0.6)
     ax.set_xlabel("Layer index (normalised: 0 = post-embedding, 1 = final)")
     ax.set_ylabel("Harmless option bias (via logit lens)")
-    ax.set_title("OLMo-3.1 32B Instruct lens trajectory: per-layer bias at each training stage", fontsize=11)
+    ax.set_title("OLMo 3.1 32B Instruct pipeline: per-layer bias at each training stage", fontsize=11)
     ax.legend(loc="upper left", fontsize=9, framealpha=0.95)
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
