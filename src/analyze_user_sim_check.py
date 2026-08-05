@@ -8,6 +8,11 @@ context.
 
 Safe on partial data: cells and judge labels are merged as available and
 coverage is reported, so incremental judging/analysis is fine.
+
+v3: final registers are COMPOSED — user_sim_common.segment() supplies the
+mechanical labels (GARBLED, near-immediate CLOSE_THEN_ASSISTANT) and the
+judge supplies only the pre-marker fragment register for the rest. The
+rule_label pass stays as an independent crude sidecar.
 """
 import argparse
 import glob
@@ -18,50 +23,16 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-FAM_CLOSE = {"llama": "<|eot_id|>", "qwen": "<|im_end|>", "gemma": "<end_of_turn>"}
-FAM_AOPEN = {"llama": "<|start_header_id|>assistant",
-             "qwen": "<|im_start|>assistant", "gemma": "<start_of_turn>model"}
-ROLE_ASSIST = re.compile(r"(?mi)^[ \t]*(assistant|ai)[ \t]*:")
-ROLE_HUMAN = re.compile(r"(?mi)^[ \t]*(human|user)[ \t]*:")
+from user_sim_common import (CLOSE_NEAR, FAM_AOPEN, ROLE_ASSIST,
+                             compose_register, family_of, first_close,
+                             is_garbled, segment)
+
 STOCK = ["i can't assist", "i cannot assist", "i'm sorry, but", "as an ai",
          "how can i help", "i can't help with", "i cannot help with",
          "i'd be happy to help", "i cannot fulfill", "i can't fulfill",
          "i can't provide", "i cannot provide"]
 MD_LINE = re.compile(r"(?m)^[ \t]*(#{1,4} |\*\*|[-*] |\d+\. )")
-CLOSE_NEAR = 40
 REGS = ["USER_VOICE", "CLOSE_THEN_ASSISTANT", "ASSISTANT_VOICE", "MIXED", "GARBLED"]
-
-
-def family_of(short):
-    for fam in ("llama", "qwen", "gemma"):
-        if short.startswith(fam):
-            return fam
-    raise ValueError(short)
-
-
-def first_close(short, text):
-    """(char_pos, kind) of the first turn-close event, or (None, None)."""
-    fam = family_of(short)
-    events = []
-    for kind, tok in (("fam_close", FAM_CLOSE[fam]), ("fam_aopen", FAM_AOPEN[fam])):
-        i = text.find(tok)
-        if i != -1:
-            events.append((i, kind))
-    m = ROLE_ASSIST.search(text)
-    if m:
-        events.append((m.start(), "role_assistant"))
-    m = ROLE_HUMAN.search(text)
-    if m:
-        events.append((m.start(), "role_human"))
-    return min(events) if events else (None, None)
-
-
-def is_garbled(text):
-    words = text.split()
-    if len(words) >= 30 and len(set(words)) / len(words) < 0.2:
-        return True
-    s = text.strip()
-    return len(s) >= 40 and len(set(s)) <= 3
 
 
 def rule_label(short, text):
@@ -71,8 +42,9 @@ def rule_label(short, text):
         return {"rule_register": "GARBLED", "close_pos": pos, "close_kind": kind, "md": md}
     if pos is not None and pos <= CLOSE_NEAR:
         after = text[pos:pos + 120]
-        if kind == "role_human" and not (ROLE_ASSIST.search(after)
-                                         or FAM_AOPEN[family_of(short)] in after):
+        human_line = kind == "role_line" and not ROLE_ASSIST.match(text[pos:])
+        if human_line and not (ROLE_ASSIST.search(after)
+                               or FAM_AOPEN[family_of(short)] in after):
             reg = "USER_VOICE"  # user turn recycles into another user turn
         else:
             reg = "CLOSE_THEN_ASSISTANT"
@@ -168,18 +140,20 @@ def main():
             key = (short, mode, part, rec["ctx_id"], rec["arm"], rec["sample_idx"])
             text = rec["gen_text"]
             rl = rule_label(short, text)
+            seg = segment(short, text)
             lab = labels.get(key)
-            jreg = None
+            jfrag = None
             if lab is not None:
-                jreg = lab["register"]
-                if jreg.startswith("ERROR") or jreg.startswith("error"):
-                    jreg = None
+                jfrag = lab["register"]
+                if jfrag.startswith("ERROR") or jfrag.startswith("error"):
+                    jfrag = None
                     n_err += 1
+            jreg = compose_register(seg, jfrag)
             meta = d["rendered_contexts"][rec["ctx_id"]]["meta"]
             rows.append({
                 "short": short, "mode": mode, "part": part,
                 "ctx_id": rec["ctx_id"], "arm": rec["arm"],
-                "jreg": jreg,
+                "jreg": jreg, "needs_judge": seg["needs_judge"],
                 "override": (lab or {}).get("override"),
                 "coherence": (lab or {}).get("coherence"),
                 "valence": (lab or {}).get("valence"),
@@ -190,9 +164,13 @@ def main():
             qual[(short, mode, part)].append(
                 (rec["ctx_id"], rec["arm"], rec["sample_idx"],
                  jreg or "?", rl["rule_register"], text))
-    n_lab = sum(1 for r in rows if r["jreg"])
+    n_mech = sum(1 for r in rows if not r["needs_judge"])
+    n_need = len(rows) - n_mech
+    n_j = sum(1 for r in rows if r["needs_judge"] and r["jreg"])
+    n_lab = n_mech + n_j
     coverage = (f"{len(rows)} records in {len(cells)} cells; "
-                f"{n_lab} judge-labeled ({n_lab/len(rows):.0%}), {n_err} judge errors")
+                f"{n_mech} mechanical + {n_j}/{n_need} judged "
+                f"= {n_lab/len(rows):.0%} composed coverage, {n_err} judge errors")
 
     def cell_rows(short=None, mode=None, parts=None, arm="sampled"):
         out = []
@@ -216,7 +194,6 @@ def main():
                 reg = r[which]
                 if reg is None:
                     continue
-                den = (reg != "GARBLED") or (target == "GARBLED")
                 if target == "GARBLED":
                     items.append((r["ctx_id"], reg == "GARBLED", True))
                 else:
@@ -230,7 +207,7 @@ def main():
     md = ["# user-sim check — summary", "", f"_{coverage}_", ""]
 
     # ---- §6 verdict ----
-    md += ["## §6 pre-registered verdict (Part B pooled, open mode, sampled arm, judge labels)", ""]
+    md += ["## §6 pre-registered verdict (Part B pooled, open mode, sampled arm, composed labels)", ""]
     verdict_cells = [("qwen2.5-14b-it", "open_user_turn"), ("gemma-3-27b-it", "open_user_turn")]
     asst_rates, user_modal = {}, {}
     for short, mode in verdict_cells:
@@ -260,7 +237,7 @@ def main():
                   for s, _ in verdict_cells}}
 
     # ---- per-cell register table ----
-    md += ["## Register rates per cell (judge, sampled arm, CI = cluster bootstrap over contexts)",
+    md += ["## Register rates per cell (composed: mechanical + judged fragments; sampled arm, CI = cluster bootstrap over contexts)",
            "", "| cell | n(lab/tot) | user | close→asst | asst | mixed | garbled | closed% | md% | rule:asst |",
            "|---|---|---|---|---|---|---|---|---|---|"]
     for (short, mode, part) in sorted(cells):
@@ -367,7 +344,16 @@ def main():
         rs = [r for r in cell_rows(short, mode, ("C",)) if r["jreg"]]
         if not rs:
             continue
-        coh = rate_ci([(r["ctx_id"], r["coherence"] == "COHERENT", True) for r in rs])
+        # coherence: judged fragments carry a label; mechanical GARBLED counts
+        # as not-coherent; mechanical CLOSE_THEN_ASSISTANT has no fragment to
+        # rate and is excluded from the denominator.
+        coh_items = []
+        for r in rs:
+            if r["coherence"] and r["coherence"] != "NA":
+                coh_items.append((r["ctx_id"], r["coherence"] == "COHERENT", True))
+            elif r["jreg"] == "GARBLED":
+                coh_items.append((r["ctx_id"], False, True))
+        coh = rate_ci(coh_items)
         gated = [r for r in rs if r["jreg"] == "USER_VOICE" and r["coherence"] == "COHERENT"]
         vcnt = Counter(r["valence"] for r in gated)
         unsafe = rate_ci([(r["ctx_id"], r["valence"] == "UNSAFE_RECKLESS", True)
@@ -403,8 +389,8 @@ def main():
     summary["agreement"] = {
         "confusion": {f"{a}->{b}": c for (a, b), c in conf.most_common()},
         "percent_agree_excl_mixed": agree, "n_comparable": len(comparable)}
-    md += ["## Judge × rule agreement",
-           "", f"- agreement on non-MIXED judge labels: "
+    md += ["## Composed × rule agreement (rule sidecar is intentionally cruder)",
+           "", f"- agreement on non-MIXED composed labels: "
                f"{'—' if agree is None else f'{agree:.1%}'} (n={len(comparable)})",
            "- confusion (rule → judge), top 12: "
            + "; ".join(f"{a}→{b}: {c}" for (a, b), c in conf.most_common(12)), ""]
