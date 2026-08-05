@@ -102,22 +102,35 @@ def masked_context(part, mode, meta, ctx_id):
     raise ValueError(part)
 
 
-def judge_one(api_key, context_desc, continuation, timeout=60):
+def judge_one(api_key, context_desc, continuation, backend="anthropic",
+              base_url=None, model=None, timeout=60):
     user_msg = (f"## Context given to the model under test\n{context_desc}\n\n"
                 f"## The model's continuation (label this)\n```\n{continuation}\n```\n\n"
                 f"One-line JSON:")
     try:
-        r = httpx.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={"x-api-key": api_key, "anthropic-version": "2023-06-01",
-                     "content-type": "application/json"},
-            json={"model": JUDGE_MODEL, "max_tokens": 120, "temperature": 0,
-                  "system": SYSTEM_PROMPT,
-                  "messages": [{"role": "user", "content": user_msg}]},
-            timeout=timeout)
-        if r.status_code != 200:
-            return {"register": f"error:http{r.status_code}"}
-        text = r.json()["content"][0]["text"].strip()
+        if backend == "anthropic":
+            r = httpx.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={"x-api-key": api_key, "anthropic-version": "2023-06-01",
+                         "content-type": "application/json"},
+                json={"model": model or JUDGE_MODEL, "max_tokens": 120,
+                      "temperature": 0, "system": SYSTEM_PROMPT,
+                      "messages": [{"role": "user", "content": user_msg}]},
+                timeout=timeout)
+            if r.status_code != 200:
+                return {"register": f"error:http{r.status_code}"}
+            text = r.json()["content"][0]["text"].strip()
+        else:  # openai-compat (openrouter / litellm proxies)
+            r = httpx.post(
+                f"{base_url}/chat/completions",
+                headers={"Authorization": f"Bearer {api_key}"},
+                json={"model": model, "max_tokens": 120, "temperature": 0,
+                      "messages": [{"role": "system", "content": SYSTEM_PROMPT},
+                                   {"role": "user", "content": user_msg}]},
+                timeout=timeout)
+            if r.status_code != 200:
+                return {"register": f"error:http{r.status_code}"}
+            text = r.json()["choices"][0]["message"]["content"].strip()
         i, j = text.find("{"), text.rfind("}")
         if i == -1 or j == -1:
             return {"register": "error:parse"}
@@ -154,12 +167,27 @@ def main():
     ap.add_argument("--parts", nargs="*", default=None)
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--max-workers", type=int, default=8)
+    ap.add_argument("--backend", choices=["anthropic", "openai-compat"],
+                    default="anthropic")
+    ap.add_argument("--base-url", default="https://openrouter.ai/api/v1")
+    ap.add_argument("--key-file", default=None,
+                    help="default: anthropic key for anthropic backend, "
+                         "openrouter key for openai-compat")
+    ap.add_argument("--judge-model", default=None,
+                    help="default: Sonnet 4 (per-backend slug)")
     ap.add_argument("--make-validation-sheet", type=int, default=0, metavar="N",
                     help="instead of judging: write a stratified N-sample sheet for "
                          "independent labeling (masked contexts + continuations)")
     args = ap.parse_args()
 
-    api_key = Path("/root/.secrets/anthropic_api_key").read_text().strip()
+    if args.key_file is None:
+        args.key_file = ("/root/.secrets/anthropic_api_key"
+                         if args.backend == "anthropic"
+                         else "/root/.secrets/openrouter_api_key")
+    if args.judge_model is None:
+        args.judge_model = (JUDGE_MODEL if args.backend == "anthropic"
+                            else "anthropic/claude-sonnet-4")
+    api_key = Path(args.key_file).read_text().strip()
 
     existing = []
     if os.path.exists(args.out):
@@ -217,7 +245,8 @@ def main():
 
     def call(job):
         key, desc, cont = job
-        return key, judge_one(api_key, desc, cont)
+        return key, judge_one(api_key, desc, cont, backend=args.backend,
+                              base_url=args.base_url, model=args.judge_model)
 
     with ThreadPoolExecutor(max_workers=args.max_workers) as ex:
         futs = [ex.submit(call, j) for j in jobs]
